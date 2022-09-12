@@ -9,10 +9,13 @@
 		"webpack-cli": "^4.10.0"
 	},
 	"devDependencies": {
+		"gh-pages": "^4.0.0",
 		"webpack-dev-server": "^4.11.0"
 	},
 	"scripts": {
 		"dev": "webpack serve --mode development",
-		"build": "webpack --mode production"
-	}
+		"build": "webpack --mode production",
+		"deploy": "gh-pages -d dist"
+	},
+	"homepage": "https://ptlux1517.github.io/Movilo/"
 }
