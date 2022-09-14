@@ -1,14 +1,10 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'docs/*'
-      - 'README.md'
-      - '.gitignore'
   pull_request:
+    types:
+      - opened
+      - unlabeld #run again when removing WIP label
     branches:
       - main
     paths-ignore:
@@ -17,7 +13,7 @@ on:
       - '.gitignore'
 
 jobs:
-  build_test_deploy:
+  build_and_test:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -29,14 +25,3 @@ jobs:
       run: ./build.sh
     - name: Test
       run: ./test.sh
-    - name: Deploy
-      run: |
-        git config --global user.name $user_name
-        git config --global user.email $user_email
-        git remote set-url origin https://${github_token}@github.com/${repository}
-        npm run deploy
-      env:
-        user_name: 'github-actions[bot]'
-        user_email: 'github-actions[bot]@users.noreply.github.com'
-        github_token: ${{ secrets.GH_ACCESS_TOKEN }}
-        repository: 'PTLux1517/Movilo'
