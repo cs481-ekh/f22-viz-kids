@@ -9,16 +9,16 @@
 		"webpack-cli": "^4.10.0"
 	},
 	"devDependencies": {
-		"@testing-library/jest-dom": "^5.16.5", //added
-    		"@testing-library/react": "^13.4.0", //added
-  		"@types/jest": "^29.0.2", //added
+		"@testing-library/jest-dom": "^5.16.5",
+    		"@testing-library/react": "^13.4.0",
+  		"@types/jest": "^29.0.2",
 		"@types/react": "^18.0.20",
 		"@types/react-dom": "^18.0.6",
 		"webpack-dev-server": "^4.11.0",
-		"jest": "^29.0.3", //added
-  		"jest-environment-jsdom": "^29.0.3", //added
-  		"react-test-renderer": "^18.2.0", //added, but mentioned in your README npm command
- 		"ts-jest": "^29.0.1" //added
+		"jest": "^29.0.3",
+  		"jest-environment-jsdom": "^29.0.3",
+  		"react-test-renderer": "^18.2.0",
+ 		"ts-jest": "^29.0.1" 
 	},
 	"scripts": {
 		"dev": "webpack serve --mode development",
