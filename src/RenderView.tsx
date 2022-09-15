@@ -36,11 +36,11 @@ export default function RenderView() {
 		renderer.render(scene, camera);
 	}, [renderer, scene, camera]);
 
-	const root = useRef();
+	const root = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
 		renderer.setAnimationLoop(animationLoop);
-		root.current.appendChild(renderer.domElement);
+		root.current!.appendChild(renderer.domElement);
 	}, [renderer, animationLoop]);
 
 	useEffect(() => {
