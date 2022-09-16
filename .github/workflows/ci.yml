@@ -4,7 +4,7 @@ on:
   pull_request:
     types:
       - opened
-      - unlabeld #run again when removing WIP label
+      - synchronize
     branches:
       - main
     paths-ignore:
