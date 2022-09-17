@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 module.exports = {
    preset: 'ts-jest',
    testEnvironment: 'jsdom',
@@ -9,6 +10,6 @@ module.exports = {
    moduleNameMapper: {
       '@components(.*)': '<rootDir>/src/components$1'
    },
-   moduleDirectories: ['<rootDir>/node_modules', '<rootDir>/src'],
+   moduleDirectories: ['node_modules', 'src'],
    setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts']
 };
