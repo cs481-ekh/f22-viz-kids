@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/*'
+      - 'README.md'
+      - '.gitignore'
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+    - name: Install environment
+      run: ./install.sh
+    - name: Build
+      run: ./build.sh
+    - name: Test
+      run: ./test.sh
