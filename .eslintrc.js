@@ -5,5 +5,8 @@ module.exports = {
 	root: true,
 	settings: {
 		react: {version: "detect"}
+	},
+	rules: {
+		"@typescript-eslint/no-non-null-assertion": "off"
 	}
 };
