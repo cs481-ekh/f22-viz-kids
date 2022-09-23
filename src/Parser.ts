@@ -9,7 +9,7 @@ export async function parseMarkerFileData(file: File): Promise<MarkerFileData> {
     const timesCol = 1;
     const marker1Col = 2;
 
-    if (!file || !(file.type==="text/plain" || file.type==="text/csv")) {
+    if (!file || !(file.type==="text/plain" || file.type==="text/csv" || file.type==="text/tab-separated-values")) {
         return Promise.reject(new Error("Unsupported file type "+file.type));
     }
 
