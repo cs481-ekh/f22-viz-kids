@@ -6,8 +6,8 @@ import type {MarkerFileData,MarkerFrame,Marker,Point3D} from '../src/DataTypes';
 
 
 test('parse valid marker data',async () => {
-    const fileContent: Buffer = fs.readFileSync(path.resolve(__dirname,"./fixtures/Trial001_Markers.csv"));
-    const file: File = new File([fileContent],"Trial001_Markers.csv",{type: "text/csv"});
+    const fileContent: Buffer = fs.readFileSync(path.resolve(__dirname,"./fixtures/Trial001_Markers.tsv"));
+    const file: File = new File([fileContent],"Trial001_Markers.tsv",{type: "text/tab-separated-values"});
     await expect(parseMarkerFileData(file)).resolves.toEqual<MarkerFileData>(
         {
             markers: expect.arrayContaining<Marker>([
