@@ -9,13 +9,13 @@ export interface Marker {
     label: string;
 }
 
-export interface Frame {
+export interface MarkerFrame {
     time: number;
     positions: Array<Point3D|null>; //indices match
 }
 
 export interface MarkerFileData {
     markers: Array<Marker>; //indices match
-    frames: Array<Frame>;
+    frames: Array<MarkerFrame>;
 }
 
