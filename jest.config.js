@@ -1,4 +1,4 @@
-// eslint-disable-next-line no-undef
+/* eslint-env node */
 module.exports = {
    preset: 'ts-jest',
    testEnvironment: 'jsdom',
