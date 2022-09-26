@@ -1,5 +1,5 @@
 import * as TSV from 'papaparse';
-import type {MarkerFileData} from './DataTypes';
+import type {MarkerFileData, ForceFileData} from './DataTypes';
 
 
 export async function parseMarkerFileData(file: File): Promise<MarkerFileData> {
@@ -56,4 +56,9 @@ export async function parseMarkerFileData(file: File): Promise<MarkerFileData> {
     }
 
     return fileData;
+}
+
+
+export async function parseForceFileData(file: File): Promise<ForceFileData> {
+    return Promise.reject(new Error("parseForceFileData not implemented yet"));
 }
