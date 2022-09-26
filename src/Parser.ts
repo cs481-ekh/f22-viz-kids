@@ -1,4 +1,4 @@
-import * as CSV from 'papaparse';
+import * as TSV from 'papaparse';
 import type {MarkerFileData} from './DataTypes';
 
 
@@ -13,8 +13,8 @@ export async function parseMarkerFileData(file: File): Promise<MarkerFileData> {
         return Promise.reject(new Error("Unsupported file type "+file.type));
     }
 
-    const parseResult: CSV.ParseResult<string>|null = await new Promise((resolve, reject) => {
-        CSV.parse(file, {delimiter: "\t", complete: resolve, error: reject});
+    const parseResult: TSV.ParseResult<string>|null = await new Promise((resolve, reject) => {
+        TSV.parse(file, {delimiter: "\t", complete: resolve, error: reject});
     });
 
     if (!parseResult || !parseResult.data || parseResult.data.length<6 || parseResult.data[4][0] !== "ITEM") {
