@@ -27,8 +27,8 @@ export default function RenderView(props: Props) {
 
 	const pointsRep = useMemo(() => {
 		return props.data.markers.map(marker => {
-			const geometry = new THREE.BoxGeometry(0.01, 0.01, 0.01);
-			const material = new THREE.MeshNormalMaterial();
+			const geometry = new THREE.SphereGeometry(0.01, 16, 16);
+			const material = new THREE.MeshBasicMaterial();
 
 			const mesh = new THREE.Mesh(geometry, material);
 
