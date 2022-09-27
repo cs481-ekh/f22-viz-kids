@@ -18,8 +18,11 @@
             color: black;
             padding: 30px;
             padding-top: 20px;
-            padding-bottom: 40px;
-            outline: 1px solid black;
+            padding-bottom: 100px;
+        }
+        .fileUpButton {
+            margin-left: 175px;
+            margin-top: -35px;
         }
         .titleText {
             text-align: right;
@@ -52,6 +55,17 @@
         .tablePosition {
             float: right;
             padding-right: 5%;
+        }
+         .button.play {
+            box-sizing: border-box;
+            width: 25px;
+            height: 25px;
+            border-width: 15px 0px 15px 25px;
+            border-style: solid;
+            border-color: transparent transparent transparent #202020;
+         }
+         .scroller {
+            text-align: center;
          }
     }
 
@@ -61,8 +75,25 @@
 
     <!-- Header -->
     <header class="header">
-        <b>*Marker Data Button*</b><br>
-        <b>*Force Data Button*</b>
+        <p>Choose Marker Data File:</p>
+        <form action="/action_page.php" class="fileUpButton">
+            <input type="file" id="markerDataFile" name="filename">
+            <input type="submit">
+        </form>
+
+        <p>Choose Force Data File:</p>
+        <form action="/action_page.php" class="fileUpButton">
+            <input type="file" id="forceDataFile" name="filename">
+            <input type="submit">
+        </form>
+
+        <!-- Another kind of button using React. -->
+        <div id="upload_button_container"></div>
+        <!-- Loads React. -->
+        <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+        <!-- Loads React component. -->
+        <script src="upload_button.js"></script>
     </header>
 
     <!-- DotMap -->
@@ -100,9 +131,11 @@
     <div class="playButton">
         <h4>*Play button here*</h4>
     </div>
+    <button class='button play'></button>
+
 
     <!-- Scoller -->
-    <div class="right">
+    <div class="scroller">
         <label for="points">Points (between 0 and 10):</label>
         <input type="range" id="points" name="points" min="0" max="10">
     </div>
