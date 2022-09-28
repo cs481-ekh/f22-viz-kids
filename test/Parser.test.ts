@@ -1,8 +1,8 @@
-import {parseMarkerFileData} from "../src/Parser";
+import {parseMarkerFileData,parseForceFileData} from "../src/Parser";
 import * as fs from 'fs';
 import * as path from 'path';
 
-import type {MarkerFileData,MarkerFrame,Marker,Point3D} from '../src/DataTypes';
+import type {MarkerFileData,MarkerFrame,Marker,Point3D,ForceFileData,ForceFrame,Force} from '../src/DataTypes';
 
 
 test('parse valid marker data',async () => {
@@ -63,4 +63,34 @@ test('parse invalid marker data file type', async () => {
     new DataView(fileContent).setUint32(0,bin,true);
     const file: File = new File([fileContent],"data.bin",{type: "application/octet-stream"});
     await expect(parseMarkerFileData(file)).rejects.toThrow("Unsupported file type application/octet-stream");
+});
+
+
+test('parse valid force data',async () => {
+    const fileContent: Buffer = fs.readFileSync(path.resolve(__dirname,"./fixtures/Trial001_Forces.tsv"));
+    const file: File = new File([fileContent],"Trial001_Forces.tsv",{type: "text/tab-separated-values"});
+    await expect(parseForceFileData(file)).resolves.toEqual<ForceFileData>(
+        {
+            frames: expect.arrayContaining<ForceFrame>([
+                {
+                    time: 0.091667,
+                    forces: expect.arrayContaining<Force>([
+                        {
+                            position: {
+                                x: -1.021202,
+                                y: 0.061155,
+                                z: 0.224887
+                            },
+                            components: {
+                                x: -2.664502,
+                                y: 27.719698,
+                                z: 0.682527
+                            },
+                            torque: 0.157576
+                        }
+                    ])
+                }
+            ])
+        }
+    );
 });
