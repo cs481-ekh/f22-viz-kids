@@ -1,7 +1,7 @@
 import * as React from "react";
-
 import { MarkerFileData } from "./DataTypes";
 import RenderView from "./RenderView";
+import { useFilePicker } from 'use-file-picker';
 
 const TMP_DATA: MarkerFileData = {
 	markers: [
@@ -133,9 +133,27 @@ const TMP_DATA: MarkerFileData = {
 	}]
 };
 
-export default function App() {
+    function App() {
+	const [openFileSelector, {filesContent, loading}] = useFilePicker({
+		accept: '.txt',
+	});
+
+	if (loading) {
+		return <div>Loading...</div>;
+	}
+
 	return <div>
 		<h1>Hello, world!</h1>
+		<button onClick={() => openFileSelector()}>Select files</button>
+		<br />
+		{filesContent.map((file, index) => (
+			<div>
+				<h2>{file.name}</h2>
+				<div  key={index}>{file.content}</div>
+				<br />
+			</div>
+		))}
+		
 		<RenderView frame={0} data={TMP_DATA} />
 	</div>;
 }
