@@ -10,14 +10,19 @@ interface Props {
 }
 
 export default function RenderView(props: Props) {
-	const width = 400;
-	const height = 400;
+	const width = 800;
+	const height = 450;
 
 	const [camera] = useState(() => {
 		const result = new THREE.PerspectiveCamera(70, width / height);
-		result.position.z = 1.5;
-		result.position.y = .5;
-		result.rotation.x = -(Math.PI / 4);
+		result.position.x = 1.35; //+subject's right, -subject's left
+		result.position.y = -0.4; //+subject's front, -subject's back
+		result.position.z = 0.9; //+subject's up, -subject's down
+
+		result.rotation.x = -1.5; //tilt (+down, -up)
+		result.rotation.y = 0.9; //yaw (+CW, -CCW)
+		result.rotation.z = Math.PI; //roll (+CCW, -CW) cam @ 0 is upside-down with respect to data
+
 		return result;
 	});
 
@@ -53,7 +58,7 @@ export default function RenderView(props: Props) {
 			pointRep.position.z = pos.z;
 		});
 	}, [pointsRep, props.data, props.frame]);
-
+		
 
 	const [renderer] = useState(() => {
 		const result = new THREE.WebGLRenderer({antialias: true});

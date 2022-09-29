@@ -1,11 +1,29 @@
-import {parseMarkerFileData} from "../src/Parser";
+import {parseMarkerFileData,parseForceFileData} from "../src/Parser";
 import * as fs from 'fs';
 import * as path from 'path';
 
-import type {MarkerFileData,MarkerFrame,Marker,Point3D} from '../src/DataTypes';
+import type {MarkerFileData,MarkerFrame,Marker,Point3D,ForceFileData,ForceFrame,Force} from '../src/DataTypes';
 
 
-test('parse valid marker data',async () => {
+test('parse invalid marker data file type', async () => {
+    const fileContent = new ArrayBuffer(4);
+    const bin = 0b01110101001010110111010111010001;
+    new DataView(fileContent).setUint32(0,bin,true);
+    const file: File = new File([fileContent],"data.bin",{type: "application/octet-stream"});
+    await expect(parseMarkerFileData(file)).rejects.toThrow("Unsupported file type application/octet-stream");
+});
+
+
+test('parse invalid marker data',async () => {
+    const fileContent = new ArrayBuffer(4);
+    const bin = 0b01110101001010110111010111010001;
+    new DataView(fileContent).setUint32(0,bin,true);
+    const file: File = new File([fileContent],"data.csv",{type: "text/csv"});
+    await expect(parseMarkerFileData(file)).rejects.toThrow("Could not read file as TSV");
+});
+
+
+test('parse valid marker data (frame 2)',async () => {
     const fileContent: Buffer = fs.readFileSync(path.resolve(__dirname,"./fixtures/Trial001_Markers.tsv"));
     const file: File = new File([fileContent],"Trial001_Markers.tsv",{type: "text/tab-separated-values"});
     await expect(parseMarkerFileData(file)).resolves.toEqual<MarkerFileData>(
@@ -48,19 +66,203 @@ test('parse valid marker data',async () => {
 });
 
 
-test('parse invalid marker data',async () => {
-    const fileContent = new ArrayBuffer(4);
-    const bin = 0b01110101001010110111010111010001;
-    new DataView(fileContent).setUint32(0,bin,true);
-    const file: File = new File([fileContent],"data.csv",{type: "text/csv"});
-    await expect(parseMarkerFileData(file)).rejects.toThrow("Could not read file as TSV");
+test('parse valid marker data (frame 3)',async () => {
+    const fileContent: Buffer = fs.readFileSync(path.resolve(__dirname,"./fixtures/Trial001_Markers.tsv"));
+    const file: File = new File([fileContent],"Trial001_Markers.tsv",{type: "text/tab-separated-values"});
+    await expect(parseMarkerFileData(file)).resolves.toEqual<MarkerFileData>(
+        {
+            markers: expect.arrayContaining<Marker>([
+                {
+                    label: "LACR" //first label
+                },
+                {
+                    label: "LLSK" //middle label with empty X Y Z R fields
+                },
+                {
+                    label: "RILCR" //last label
+                }
+            ]),
+            frames: expect.arrayContaining<MarkerFrame>([
+                {
+                    time: 0.00833,
+                    positions: expect.arrayContaining<Point3D|null>([
+                        { //LACR
+                            x: 0.04463,
+                            y: -1.35998,
+                            z: 1.35677
+                        },
+                        { //LLSK, which has empty X Y Z R fields
+                            x: NaN,
+                            y: NaN,
+                            z: NaN
+                        },
+                        { //RILCR
+                            x: 0.32196,
+                            y: -1.3884,
+                            z: 0.99661
+                        }
+                    ])
+                }
+            ])
+        }
+    );
 });
 
 
-test('parse invalid marker data file type', async () => {
-    const fileContent = new ArrayBuffer(4);
-    const bin = 0b01110101001010110111010111010001;
-    new DataView(fileContent).setUint32(0,bin,true);
-    const file: File = new File([fileContent],"data.bin",{type: "application/octet-stream"});
-    await expect(parseMarkerFileData(file)).rejects.toThrow("Unsupported file type application/octet-stream");
+test('parse valid marker data (frame 4)',async () => {
+    const fileContent: Buffer = fs.readFileSync(path.resolve(__dirname,"./fixtures/Trial001_Markers.tsv"));
+    const file: File = new File([fileContent],"Trial001_Markers.tsv",{type: "text/tab-separated-values"});
+    await expect(parseMarkerFileData(file)).resolves.toEqual<MarkerFileData>(
+        {
+            markers: expect.arrayContaining<Marker>([
+                {
+                    label: "LACR" //first label
+                },
+                {
+                    label: "LLSK" //middle label with empty X Y Z R fields
+                },
+                {
+                    label: "RILCR" //last label
+                }
+            ]),
+            frames: expect.arrayContaining<MarkerFrame>([
+                {
+                    time: 0.0125,
+                    positions: expect.arrayContaining<Point3D|null>([
+                        { //LACR
+                            x: 0.04519,
+                            y: -1.35523,
+                            z: 1.35585
+                        },
+                        { //LLSK, which has empty X Y Z R fields
+                            x: NaN,
+                            y: NaN,
+                            z: NaN
+                        },
+                        { //RILCR
+                            x: 0.32234,
+                            y: -1.3838,
+                            z: 0.99568
+                        }
+                    ])
+                }
+            ])
+        }
+    );
+});
+
+
+test('parse valid marker data bottom up (frame 494)',async () => {
+    const fileContent: Buffer = fs.readFileSync(path.resolve(__dirname,"./fixtures/Trial001_Markers.tsv"));
+    const file: File = new File([fileContent],"Trial001_Markers.tsv",{type: "text/tab-separated-values"});
+    await expect(parseMarkerFileData(file)).resolves.toEqual<MarkerFileData>(
+        {
+            markers: expect.arrayContaining<Marker>([
+                {
+                    label: "LACR" //first label
+                },
+                {
+                    label: "LLSK" //middle label with empty X Y Z R fields
+                },
+                {
+                    label: "RILCR" //last label
+                }
+            ]),
+            frames: expect.arrayContaining<MarkerFrame>([
+                {
+                    time: 2.05417,
+                    positions: expect.arrayContaining<Point3D|null>([
+                        { //LACR
+                            x: 0.09354,
+                            y: 0.62127,
+                            z: 1.37952
+                        },
+                        { //LLSK, which has empty X Y Z R fields
+                            x: NaN,
+                            y: NaN,
+                            z: NaN
+                        },
+                        { //RILCR
+                            x: 0.37687,
+                            y: 0.63324,
+                            z: 1.01455
+                        }
+                    ])
+                }
+            ])
+        }
+    );
+});
+
+
+test('parse valid marker data bottom up (frame 493)',async () => {
+    const fileContent: Buffer = fs.readFileSync(path.resolve(__dirname,"./fixtures/Trial001_Markers.tsv"));
+    const file: File = new File([fileContent],"Trial001_Markers.tsv",{type: "text/tab-separated-values"});
+    await expect(parseMarkerFileData(file)).resolves.toEqual<MarkerFileData>(
+        {
+            markers: expect.arrayContaining<Marker>([
+                {
+                    label: "LACR" //first label
+                },
+                {
+                    label: "LLSK" //middle label with empty X Y Z R fields
+                },
+                {
+                    label: "RILCR" //last label
+                }
+            ]),
+            frames: expect.arrayContaining<MarkerFrame>([
+                {
+                    time: 2.05,
+                    positions: expect.arrayContaining<Point3D|null>([
+                        { //LACR
+                            x: 0.09372,
+                            y: 0.61867,
+                            z: 1.37884
+                        },
+                        { //LLSK, which has empty X Y Z R fields
+                            x: NaN,
+                            y: NaN,
+                            z: NaN
+                        },
+                        { //RILCR
+                            x: 0.37728,
+                            y: 0.63108,
+                            z: 1.01382
+                        }
+                    ])
+                }
+            ])
+        }
+    );
+});
+
+
+test('parse valid force data',async () => {
+    const fileContent: Buffer = fs.readFileSync(path.resolve(__dirname,"./fixtures/Trial001_Forces.tsv"));
+    const file: File = new File([fileContent],"Trial001_Forces.tsv",{type: "text/tab-separated-values"});
+    await expect(parseForceFileData(file)).resolves.toEqual<ForceFileData>(
+        {
+            frames: expect.arrayContaining<ForceFrame>([
+                {
+                    time: 0.091667,
+                    forces: expect.arrayContaining<Force>([
+                        {
+                            position: {
+                                x: -1.021202,
+                                y: 0.061155,
+                                z: 0.224887
+                            },
+                            components: {
+                                x: -2.664502,
+                                y: 27.719698,
+                                z: 0.682527
+                            },
+                            torque: 0.157576
+                        }
+                    ])
+                }
+            ])
+        }
+    );
 });
