@@ -8,7 +8,7 @@ echo
 echo "###############"
 echo "Running webpack"
 echo "###############"
-npm run build || ( echo "Webpack failed"; exit 1; )
+npm run build || { echo "Webpack failed"; exit 1; }
 
 echo
 echo "###########################"
