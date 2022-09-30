@@ -133,7 +133,7 @@ const TMP_DATA: MarkerFileData = {
 	}]
 };
 
-    function App() {
+    export default function App() {
 	const [openFileSelector, {filesContent, loading}] = useFilePicker({
 		accept: '.txt',
 	});
