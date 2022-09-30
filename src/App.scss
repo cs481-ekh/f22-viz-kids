@@ -1,16 +1,4 @@
-/* goldman-regular - latin */
-@font-face {
-   font-family: 'Goldman';
-   font-style: normal;
-   font-weight: 400;
-   src: url('../assets/fonts/goldman/goldman-v15-latin-regular.eot'); /* IE9 Compat Modes */
-   src: local('Goldman'),
-   url('../assets/fonts/goldman/goldman-v15-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-   url('../assets/fonts/goldman/goldman-v15-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
-   url('../assets/fonts/goldman/goldman-v15-latin-regular.woff') format('woff'), /* Modern Browsers */
-   url('../assets/fonts/goldman/goldman-v15-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
-   url('../assets/fonts/goldman/goldman-v15-latin-regular.svg') format('svg'); /* Legacy iOS */
-}
+@import "@fontsource/goldman/latin.css";
 
 * {
    font-family: 'Goldman', sans-serif;
