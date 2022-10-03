@@ -1,41 +1,23 @@
 import * as React from "react";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { useFilePicker } from 'use-file-picker';
 
-import {ForceFileData, MarkerFileData} from "./DataTypes";
-import {parseForceFileData, parseMarkerFileData} from "./Parser";
+import { ForceFileData, MarkerFileData } from "./DataTypes";
+import { parseForceFileData, parseMarkerFileData } from "./Parser";
 import RenderView from "./RenderView";
 
 import "./App.scss";
 
 
-const emptyMarkerFileData: MarkerFileData = {
-	markers: [],
-	frames: []
-};
-
-const emptyForceFileData: ForceFileData = {
-	frames: []
-}
-
-
 export default function App() {
 
-	const [openMarkerFileSelector, {plainFiles: [markerFile], loading: markersLoading}] = useFilePicker({
-		accept: ['.txt','.tsv','.csv','.mot']
-	});
-
-	const [openForceFileSelector, {plainFiles: [forceFile], loading: forcesLoading}] = useFilePicker({
-		accept: ['.txt','.tsv','.csv','.mot']
-	});
-
-	// eslint-disable-next-line prefer-const
-	let [markerFileData, setMarkerFileData] = useState<MarkerFileData>();
+	/* Load and parse provided marker file into markerFileData */
+	const [openMarkerFileSelector, {plainFiles: [markerFile], loading: markersLoading}] = useFilePicker({accept: ['.txt','.tsv','.csv']});
+	const [markerFileData, setMarkerFileData] = useState<MarkerFileData>({markers: [], frames: []});
 	useEffect(()=>{
 		let active = true;
 		startAsyncMarkerParse();
 		return () => {active = false;};
-
 		async function startAsyncMarkerParse() {
 			const data = await parseMarkerFileData(markerFile);
 			if (!active) return;
@@ -43,13 +25,13 @@ export default function App() {
 		}
 	}, [markerFile]);
 
-	// eslint-disable-next-line prefer-const
-	let [forceFileData, setForceFileData] = useState<ForceFileData>();
+	/* Load and parse provided force plate file into forceFileData */
+	const [openForceFileSelector, {plainFiles: [forceFile], loading: forcesLoading}] = useFilePicker({accept: ['.txt','.tsv','.csv','.mot']});
+	const [forceFileData, setForceFileData] = useState<ForceFileData>({frames: []});
 	useEffect(()=>{
 		let active = true;
 		startAsyncForceParse();
 		return () => {active = false;};
-
 		async function startAsyncForceParse() {
 			const data = await parseForceFileData(forceFile);
 			if (!active) return;
@@ -57,31 +39,22 @@ export default function App() {
 		}
 	}, [forceFile]);
 
-	if (!markerFileData) {
-		markerFileData = emptyMarkerFileData;
-	}
-	if (!forceFileData) {
-		forceFileData = emptyForceFileData;
-	}
-	if (markersLoading || forcesLoading) {
-		return <div style={{fontSize: 24}}>Loading file...</div>;
-	}
-
-	return <div id={"app-grid"}>
+	/* Elements/components in the grid are organized top->bottom, left->right */
+	return <div id={"app-grid"} style={(markersLoading||forcesLoading) ? {cursor: "progress"} : {cursor: "default"}}>
+		{/* ---------------------------------------------- Grid Row 1 ---------------------------------------------- */}
 		<div id={"file-area-flex"}>
 			<div id={"marker-file-div"}>
-				<input type={"button"} id={"marker-file-button"} className={"file-upload-button"} value={"Choose Marker Data File"} onClick={()=>openMarkerFileSelector()} />
-				<input type={"file"} id={"marker-file-upload"} hidden />
-				<span id={"marker-file-name"}>Trial001_Markers.tsv</span>
+				<input id={"marker-file-button"} className={"file-upload-button"} type={"button"} value={"Choose Marker Data File"} onClick={()=>openMarkerFileSelector()} />
+				<span id={"marker-file-name"} className={"file-chosen-name"}>{markerFile ? markerFile.name : "No file chosen"}</span>
 			</div>
 			<div id={"force-file-div"}>
-				<input type={"button"} id={"force-file-button"} className={"file-upload-button"} value={"Choose Force Plate Data File"} onClick={()=>openForceFileSelector()} />
-				<input type={"file"} id={"force-file-upload"} hidden />
-				<span id={"force-file-name"}>Trial001_Forces.tsv</span>
+				<input id={"force-file-button"} className={"file-upload-button"} type={"button"} value={"Choose Force Plate Data File"} onClick={()=>openForceFileSelector()} />
+				<span id={"force-file-name"} className={"file-chosen-name"}>{forceFile ? forceFile.name : "No file chosen"}</span>
 			</div>
 		</div>
 		<div id={"logo"}>Movilo</div>
-		<div id={"selection-info"}>Selection Info</div>
+		<div id={"output-area-title"}>Selection Info</div>
+		{/* ---------------------------------------------- Grid Row 2 ---------------------------------------------- */}
 		<div id={"viz-area"}><RenderView frame={0} data={markerFileData} /></div>
 		<div id={"output-area"}>
 			{`Label: LASIS
@@ -101,29 +74,30 @@ export default function App() {
 
 			LKJC Angle: 178.6°`}
 		</div>
+		{/* ---------------------------------------------- Grid Row 3 ---------------------------------------------- */}
 		<div id={"timeline-track-area"}>
-			<input type={"button"} id={"play-button"} />
-			<input type={"range"} id={"timeline"} min={"0"} max={"494"} value={"0"} />
+			<input id={"play-button"} type={"button"} />
+			<input id={"timeline-track"} type={"range"} min={"0"} max={"494"} value={"0"} />
 		</div>
 		<div id={"timeline-manual-area"}>
 			<table>
 				<tr>
-					<td><span className={"timeline-cell"}>Frame</span></td>
-					<td><input type={"text"} className={"timeline-cell"} value={"0"} /></td>
-					<td><input type={"text"} className={"timeline-cell"} value={"0"} /></td>
-					<td><input type={"text"} className={"timeline-cell"} value={"494"} /></td>
+					<td><span className={"timeline-cell label"}>Frame</span></td>
+					<td><input className={"timeline-cell"} type={"text"} value={"0"} /></td>
+					<td><input className={"timeline-cell"} type={"text"} value={"0"} /></td>
+					<td><input className={"timeline-cell"} type={"text"} value={"494"} /></td>
 				</tr>
 				<tr>
-					<td><span className={"timeline-cell"}>Time</span></td>
-					<td><input type={"text"} className={"timeline-cell"} value={"0.0"} disabled /></td>
-					<td><input type={"text"} className={"timeline-cell"} value={"0.0"} disabled /></td>
-					<td><input type={"text"} className={"timeline-cell"} value={"2.05417"} disabled /></td>
+					<td><span className={"timeline-cell label"}>Time</span></td>
+					<td><input className={"timeline-cell"} type={"text"} value={"0.0"} disabled /></td>
+					<td><input className={"timeline-cell"} type={"text"} value={"0.0"} disabled /></td>
+					<td><input className={"timeline-cell"} type={"text"} value={"2.05417"} disabled /></td>
 				</tr>
 				<tr>
-					<td><span className={"timeline-cell"}></span></td>
-					<td><span className={"timeline-cell"}>Start</span></td>
-					<td><span className={"timeline-cell"}>Current</span></td>
-					<td><span className={"timeline-cell"}>End</span></td>
+					<td><span className={"timeline-cell label"}></span></td>
+					<td><span className={"timeline-cell label"}>Start</span></td>
+					<td><span className={"timeline-cell label"}>Current</span></td>
+					<td><span className={"timeline-cell label"}>End</span></td>
 				</tr>
 			</table>
 		</div>
