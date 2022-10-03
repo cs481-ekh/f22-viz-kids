@@ -13,7 +13,7 @@ export default function App() {
 
 	/* Load and parse provided marker file into markerFileData */
 	const [openMarkerFileSelector, {plainFiles: [markerFile], loading: markersLoading}] = useFilePicker({accept: ['.txt','.tsv','.csv']});
-	const [markerFileData = {markers: [], frames: []}, setMarkerFileData] = useState<MarkerFileData>();
+	const [markerFileData, setMarkerFileData] = useState<MarkerFileData>({markers: [], frames: []});
 	useEffect(()=>{
 		let active = true;
 		startAsyncMarkerParse();
@@ -27,7 +27,7 @@ export default function App() {
 
 	/* Load and parse provided force plate file into forceFileData */
 	const [openForceFileSelector, {plainFiles: [forceFile], loading: forcesLoading}] = useFilePicker({accept: ['.txt','.tsv','.csv','.mot']});
-	const [forceFileData = {frames: []}, setForceFileData] = useState<ForceFileData>();
+	const [forceFileData, setForceFileData] = useState<ForceFileData>({frames: []});
 	useEffect(()=>{
 		let active = true;
 		startAsyncForceParse();
