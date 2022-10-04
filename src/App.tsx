@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useFilePicker } from 'use-file-picker';
 
 import { ForceFileData, MarkerFileData } from "./DataTypes";
@@ -8,8 +8,10 @@ import RenderView from "./RenderView";
 
 import "./App.scss";
 
+const MILLI_PER = 1000;
 
 export default function App() {
+	const [frame, setFrame] = useState(0);
 
 	/* Load and parse provided marker file into markerFileData */
 	const [openMarkerFileSelector, {plainFiles: [markerFile], loading: markersLoading}] = useFilePicker({accept: ['.txt','.tsv','.csv']});
@@ -25,6 +27,11 @@ export default function App() {
 		}
 	}, [markerFile]);
 
+	const timeStep = useMemo(() => {
+		if(markerFileData.frames.length < 2) return null;
+		return markerFileData.frames[1].time * MILLI_PER;
+	}, [markerFileData]);
+
 	/* Load and parse provided force plate file into forceFileData */
 	const [openForceFileSelector, {plainFiles: [forceFile], loading: forcesLoading}] = useFilePicker({accept: ['.txt','.tsv','.csv','.mot']});
 	const [forceFileData, setForceFileData] = useState<ForceFileData>({frames: []});
@@ -38,6 +45,37 @@ export default function App() {
 			setForceFileData(data);
 		}
 	}, [forceFile]);
+
+	const interFrameTimeRef = useRef(0);
+	const lastTimeRef = useRef<null | DOMHighResTimeStamp>(null);
+
+	const animationRef = useRef<number>();
+	const animationLoop = useCallback(() => {
+		if(timeStep !== null) {
+			const currentTime = performance.now();
+			if(lastTimeRef.current !== null) {
+				const elapsedTime = currentTime - lastTimeRef.current;
+
+				interFrameTimeRef.current += elapsedTime;
+				while(interFrameTimeRef.current > timeStep) {
+					interFrameTimeRef.current -= timeStep;
+					setFrame(current => {
+						if(current + 1 < markerFileData.frames.length) return current + 1;
+						return current;
+					});
+				}
+			}
+
+			lastTimeRef.current = currentTime;
+		}
+
+		animationRef.current = requestAnimationFrame(animationLoop);
+	}, [markerFileData, timeStep]);
+
+	useEffect(() => {
+		animationRef.current = requestAnimationFrame(animationLoop);
+		return () => cancelAnimationFrame(animationRef.current!);
+	}, [animationLoop]);
 
 	/* Elements/components in the grid are organized top->bottom, left->right */
 	return <div id={"app-grid"} style={(markersLoading||forcesLoading) ? {cursor: "progress"} : {cursor: "default"}}>
@@ -55,7 +93,7 @@ export default function App() {
 		<div id={"logo"}>Movilo</div>
 		<div id={"output-area-title"}>Selection Info</div>
 		{/* ---------------------------------------------- Grid Row 2 ---------------------------------------------- */}
-		<div id={"viz-area"}><RenderView frame={0} data={markerFileData} /></div>
+		<div id={"viz-area"}><RenderView frame={frame} data={markerFileData} /></div>
 		<div id={"output-area"}>
 			{`Label: LASIS
 			x: 0.07062
