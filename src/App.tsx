@@ -135,10 +135,12 @@ export default function App() {
 		</div>
 		{/* ---------------------------------------------- Grid Row 3 ---------------------------------------------- */}
 		<div id={"timeline-track-area"}>
-			<button id={"play-button"} onClick={togglePlaying}>
-				{playing ? <PauseIcon /> : <PlayIcon />}
-			</button>
-			<input id={"timeline-track"} type={"range"} min={"0"} max={"494"} value={"0"} />
+			<div id="timeline-track-main-area">
+				<button id={"play-button"} onClick={togglePlaying}>
+					{playing ? <PauseIcon /> : <PlayIcon />}
+				</button>
+				<input id={"timeline-track"} type={"range"} min={"0"} max={"494"} value={"0"} />
+			</div>
 		</div>
 		<div id={"timeline-manual-area"}>
 			<table>
