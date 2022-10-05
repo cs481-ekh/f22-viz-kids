@@ -88,30 +88,36 @@ export default function RenderView(props: Props) {
 				/* Fly left */
 				case "KeyA": //for right-handed mouse use
 				case "Digit4": //for left-handed mouse use
+				case "Numpad4":
 				case "Left": //IE/Edge specific value
 				case "ArrowLeft": cameraControls.moveRight(-moveMeters); break; //ambi/intuitive control
 				/* Fly right */
 				case "KeyD": //for right-handed mouse use
 				case "Digit6": //for left-handed mouse use
+				case "Numpad6":
 				case "Right": //IE/Edge specific value
 				case "ArrowRight": cameraControls.moveRight(moveMeters); break; //ambi/intuitive control
 				/* Fly forward */
 				case "KeyW": //for right-handed mouse use
 				case "Digit8": //for left-handed mouse use
+				case "Numpad8":
 				case "Up": //IE/Edge specific value
 				case "ArrowUp": cameraControls.moveForward(moveMeters); break; //ambi/intuitive control
 				/* Fly backward */
 				case "KeyS": //for right-handed mouse use
 				case "Digit5": //for left-handed mouse use
+				case "Numpad5":
 				case "Down": //IE/Edge specific value
 				case "ArrowDown": cameraControls.moveForward(-moveMeters); break; //ambi/intuitive control
 				/* Fly down */
 				case "KeyQ": //for right-handed mouse use
 				case "Digit7": //for left-handed mouse use
+				case "Numpad7":
 				case "PageDown": camera.position.y -= moveMeters; break; //ambi/intuitive control
 				/* Fly up */
 				case "KeyE": //for right-handed mouse use
 				case "Digit9": //for left-handed mouse use
+				case "Numpad9":
 				case "PageUp": camera.position.y += moveMeters; break; //ambi/intuitive control
 			}
 		};
