@@ -84,34 +84,34 @@ export default function RenderView(props: Props) {
 		const mouseLeaveVizAreaHandler = () => document.removeEventListener('keydown', keyPressHandler, false);
 		/* Flight controls (keys) */
 		const keyPressHandler = (e: KeyboardEvent) => {
-			switch (e.key) {
+			switch (e.code) {
 				/* Fly left */
-				case "a": //for right-handed mouse use
-				case "4": //for left-handed mouse use
+				case "KeyA": //for right-handed mouse use
+				case "Digit4": //for left-handed mouse use
 				case "Left": //IE/Edge specific value
 				case "ArrowLeft": cameraControls.moveRight(-moveMeters); break; //ambi/intuitive control
 				/* Fly right */
-				case "d": //for right-handed mouse use
-				case "6": //for left-handed mouse use
+				case "KeyD": //for right-handed mouse use
+				case "Digit6": //for left-handed mouse use
 				case "Right": //IE/Edge specific value
 				case "ArrowRight": cameraControls.moveRight(moveMeters); break; //ambi/intuitive control
 				/* Fly forward */
-				case "w": //for right-handed mouse use
-				case "8": //for left-handed mouse use
+				case "KeyW": //for right-handed mouse use
+				case "Digit8": //for left-handed mouse use
 				case "Up": //IE/Edge specific value
 				case "ArrowUp": cameraControls.moveForward(moveMeters); break; //ambi/intuitive control
 				/* Fly backward */
-				case "s": //for right-handed mouse use
-				case "5": //for left-handed mouse use
+				case "KeyS": //for right-handed mouse use
+				case "Digit5": //for left-handed mouse use
 				case "Down": //IE/Edge specific value
 				case "ArrowDown": cameraControls.moveForward(-moveMeters); break; //ambi/intuitive control
 				/* Fly down */
-				case "q": //for right-handed mouse use
-				case "7": //for left-handed mouse use
+				case "KeyQ": //for right-handed mouse use
+				case "Digit7": //for left-handed mouse use
 				case "PageDown": camera.position.y -= moveMeters; break; //ambi/intuitive control
 				/* Fly up */
-				case "e": //for right-handed mouse use
-				case "9": //for left-handed mouse use
+				case "KeyE": //for right-handed mouse use
+				case "Digit9": //for left-handed mouse use
 				case "PageUp": camera.position.y += moveMeters; break; //ambi/intuitive control
 			}
 		};
