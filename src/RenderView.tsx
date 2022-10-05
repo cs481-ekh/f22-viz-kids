@@ -130,8 +130,8 @@ export default function RenderView(props: Props) {
 				cameraControls.moveForward(moveMeters * scaleFactor);
 		}
 		/* Look controls */
-		const mouseDownHandler = () => cameraControls.lock(); //capture mouse movement (to rotate view) while holding left click
-		const mouseUpHandler = () => cameraControls.unlock(); //release mouse after left click is over
+		const mouseDownHandler = (e: MouseEvent) => {if (e.button===1) cameraControls.lock();}; //capture mouse movement (to rotate view) while holding middle click
+		const mouseUpHandler = (e: MouseEvent) => {if (e.button===1) cameraControls.unlock();}; //release mouse after middle click is over
 		/* Add listeners */
 		renderer.domElement.addEventListener('mouseenter', mouseEnterVizAreaHandler, false);
 		renderer.domElement.addEventListener('mouseleave', mouseLeaveVizAreaHandler, false);
