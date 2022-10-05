@@ -10,6 +10,12 @@ export async function parseMarkerFileData(file: File): Promise<MarkerFileData> {
     const marker1Col = 2;
 
     const tsvTable = await tsvToTable(file);
+    if (tsvTable[5][0]==="time") {
+        return Promise.reject(new Error(
+            `you selected a force file with the marker file button\n`+
+            `File: ${file.name}`
+        ));
+    }
     const fileData: MarkerFileData = { //the return val to populate
         markers: [],
         frames: []
@@ -59,6 +65,12 @@ export async function parseForceFileData(file: File): Promise<ForceFileData> {
     const force2TrqCol = 17;
 
     const tsvTable = await tsvToTable(file);
+    if (tsvTable[4][0]==="ITEM") {
+        return Promise.reject(new Error(
+            `you selected a marker file with the force file button\n`+
+            `File: ${file.name}`
+        ));
+    }
     const fileData: ForceFileData = { //the return val to populate
         frames: []
     };
@@ -107,15 +119,50 @@ export async function parseForceFileData(file: File): Promise<ForceFileData> {
 
 async function tsvToTable(file: File): Promise<string[]> {
 
-    if (!file || !(file.type==="text/plain" || file.type==="text/csv" || file.type==="text/tab-separated-values")) {
-        return Promise.reject(new Error("Unsupported file type "+file.type));
+    if (!file?.name) {
+        return Promise.reject(new Error("no file was selected"));
     }
 
-    const parseResult: TSV.ParseResult<string>|null = await new Promise((resolve, reject) => {
-        TSV.parse(file, {delimiter: "\t", complete: resolve, error: reject});
-    });
-    if (!parseResult || !parseResult.data || parseResult.data.length<6 || !(parseResult.data[4][0]==="ITEM" || parseResult.data[5][0]==="time")) {
-        return Promise.reject(new Error("Could not read file as TSV"));
+    const motFile: boolean = file.name.endsWith(".mot");
+
+    if (  !file.type && !motFile
+        || !(file.type==="text/plain" || file.type==="text/csv" || file.type==="text/tab-separated-values" || motFile)
+    ) {
+        return Promise.reject(new Error(
+            `unsupported file type\n`+
+            `File: ${file.name}\n\n`+
+
+            `Provided type ${!file.type ? "unknown" : file.type}, but Movilo requires .tsv, .csv, .txt, or .mot`
+        ));
+    }
+
+    const parseResult: TSV.ParseResult<string> = await new Promise((resolve, reject) => {
+        TSV.parse(file, {complete: resolve, error: reject});
+    }); //auto-detects delimiter; never throws error, result always contains errors property which details problems, like undetectable delimiter
+
+    if (parseResult.errors.length!==0) {
+        return Promise.reject(new Error(
+            `data does not conform to official CSV/TSV standard (see IETF RFC 4180)\n`+
+            `File: ${file.name}\n\n`+
+
+            `Identified the following errors and their locations in the file:\n`+
+            `${JSON.stringify(parseResult.errors,null,2)}` //gives column and index of error, such as an unmatched quote
+        ));
+    }
+
+    if (parseResult.data.length<6 || !(parseResult.data[4][0]==="ITEM" || parseResult.data[5][0]==="time")) {
+        return Promise.reject(new Error(
+            `data does not match expected format\n`+
+            `File: ${file.name}\n\n`+
+
+            `File contents are misaligned with respect to the output format of Vicon Nexus or OpenSim.\n\n`+
+
+            `Expected marker data format example:\n`+
+            `https://docs.google.com/spreadsheets/d/14K0VqbQBQEx_8pWsol8vbl4y-JbVtbO4hzpDPxofYtI/edit?usp=sharing\n\n`+
+
+            `Expected force data format example:\n`+
+            `https://docs.google.com/spreadsheets/d/1hCI3JGnILWrYeuYISfwEFBdMzEsuuWzSdFfUbpwdxsk/edit?usp=sharing`
+        ));
     }
 
     return parseResult.data;
