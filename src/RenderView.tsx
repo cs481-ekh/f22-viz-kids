@@ -130,17 +130,22 @@ export default function RenderView(props: Props) {
 				cameraControls.moveForward(moveMeters * scaleFactor);
 		}
 		/* Look controls */
-		// TBD
+		const mouseDownHandler = () => cameraControls.lock(); //capture mouse movement (to rotate view) while holding left click
+		const mouseUpHandler = () => cameraControls.unlock(); //release mouse after left click is over
 		/* Add listeners */
 		renderer.domElement.addEventListener('mouseenter', mouseEnterVizAreaHandler, false);
 		renderer.domElement.addEventListener('mouseleave', mouseLeaveVizAreaHandler, false);
 		renderer.domElement.addEventListener('wheel', mouseWheelHandler, false);
+		renderer.domElement.addEventListener('mousedown', mouseDownHandler, false);
+		renderer.domElement.addEventListener('mouseup', mouseUpHandler, false);
 		/* Clean up old listeners if re-rendering */
 		return () => {
 			document.removeEventListener('keydown', keyPressHandler, false);
 			renderer.domElement.removeEventListener('mouseenter', mouseEnterVizAreaHandler, false);
 			renderer.domElement.removeEventListener('mouseleave', mouseLeaveVizAreaHandler, false);
 			renderer.domElement.removeEventListener('wheel', mouseWheelHandler, false);
+			renderer.domElement.removeEventListener('mousedown', mouseDownHandler, false);
+			renderer.domElement.removeEventListener('mouseup', mouseUpHandler, false);
 		};
 	}, [cameraControls,camera,renderer]);
 
