@@ -93,6 +93,10 @@ $timelineCellLabelColor: yellow;
 		 display: grid;
 		 justify-content: center;
 		 align-items: center;
+
+		 > svg {
+			 width: 100%;
+		 }
       }
       #timeline-track {
          width: calc(100% - 45px);
