@@ -80,8 +80,8 @@ export default function RenderView(props: Props) {
 	useEffect(() => {
 		const moveMeters = 0.05;
 		/* Only allow flight while mouse is in visualization area */
-		renderer.domElement.addEventListener('mouseenter', () => document.addEventListener("keydown", keyPressHandler, false), false);
-		renderer.domElement.addEventListener('mouseleave', () => document.removeEventListener("keydown", keyPressHandler, false), false);
+		const mouseEnterVizAreaHandler = () => document.addEventListener('keydown', keyPressHandler, false);
+		const mouseLeaveVizAreaHandler = () => document.removeEventListener('keydown', keyPressHandler, false);
 		/* Flight controls (keys) */
 		const keyPressHandler = (e: KeyboardEvent) => {
 			switch (e.key) {
@@ -116,15 +116,26 @@ export default function RenderView(props: Props) {
 			}
 		};
 		/* Flight controls (mouse) */
-		renderer.domElement.addEventListener('wheel', e => {
+		const mouseWheelHandler = (e: WheelEvent) => {
 			const scaleFactor = 4;
 			if (e.deltaY > 0)
 				cameraControls.moveForward(-moveMeters * scaleFactor);
 			else
 				cameraControls.moveForward(moveMeters * scaleFactor);
-		}, false);
+		}
 		/* Look controls */
 		// TBD
+		/* Add listeners */
+		renderer.domElement.addEventListener('mouseenter', mouseEnterVizAreaHandler, false);
+		renderer.domElement.addEventListener('mouseleave', mouseLeaveVizAreaHandler, false);
+		renderer.domElement.addEventListener('wheel', mouseWheelHandler, false);
+		/* Clean up old listeners if re-rendering */
+		return () => {
+			document.removeEventListener('keydown', keyPressHandler, false);
+			renderer.domElement.removeEventListener('mouseenter', mouseEnterVizAreaHandler, false);
+			renderer.domElement.removeEventListener('mouseleave', mouseLeaveVizAreaHandler, false);
+			renderer.domElement.removeEventListener('wheel', mouseWheelHandler, false);
+		};
 	}, [cameraControls,camera,renderer]);
 
 	const animationLoop = useCallback(() => {
