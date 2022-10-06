@@ -6,6 +6,7 @@ import { ForceFileData, MarkerFileData } from "./DataTypes";
 import { PlayIcon, PauseIcon } from "./icons";
 import { parseForceFileData, parseMarkerFileData } from "./Parser";
 import RenderView from "./RenderView";
+import ErrorPopup from "./ErrorPopup";
 import useStateRef from "./useStateRef";
 
 import "./App.scss";
@@ -21,6 +22,7 @@ export default function App() {
 	/* Flags for clearing file name if parsing error is encountered */
 	const [markerParsingError, setMarkerParsingError] = useState<boolean>(false);
 	const [forceParsingError, setForceParsingError] = useState<boolean>(false);
+	const [error, setError] = useState<Error|null>(null);
 
 	/* Load and parse provided marker file into markerFileData */
 	const [openMarkerFileSelector, {plainFiles: [markerFile], loading: markersLoading}] = useFilePicker({accept: ['.txt','.tsv','.csv']});
@@ -33,10 +35,11 @@ export default function App() {
 			let data: MarkerFileData = {markers: [], frames: []}; //empty data to clear viz area for invalid files
 			try {
 				data = await parseMarkerFileData(markerFile);
+				setError(null);
 				setMarkerParsingError(false);
 			}
 			catch (err) {
-				alert(err); //all parseMarkerFileData errors are neatly formatted for alerts
+				if (err instanceof Error) setError(err);
 				setMarkerParsingError(true);
 			}
 			if (staleRequest) return; //ignore stale data if newer render is triggered and clean-up function was called
@@ -60,10 +63,11 @@ export default function App() {
 			let data: ForceFileData = {frames: []}; //empty data to clear viz area for invalid files
 			try {
 				data = await parseForceFileData(forceFile);
+				setError(null);
 				setForceParsingError(false);
 			}
 			catch (err) {
-				alert(err); //all parseForceFileData errors are neatly formatted for alerts
+				if (err instanceof Error) setError(err);
 				setForceParsingError(true);
 			}
 			if (staleRequest) return; //ignore stale data if newer render is triggered and clean-up function was called
@@ -135,6 +139,7 @@ export default function App() {
 		<div id={"output-area-title"}>Selection Info</div>
 		{/* ---------------------------------------------- Grid Row 2 ---------------------------------------------- */}
 		<div id={"viz-area"}><RenderView frame={frame} data={markerFileData} /></div>
+		<div id={"popup-area"}><ErrorPopup error={error} /></div>
 		<div id={"output-area"}>
 			{`Label: LASIS
 			x: 0.07062
