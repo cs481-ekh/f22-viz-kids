@@ -187,9 +187,20 @@ export default function RenderView(props: Props) {
 			setCamPosZ(camera.position.z);
 		}
 		/* Look controls */
-		const mouseDownHandler = (e: MouseEvent) => {if (e.button===1) cameraControls.lock();}; //capture mouse movement (to rotate view) while holding middle click
+		const mouseDownHandler = (e: MouseEvent) => { //capture mouse movement (to rotate view) while holding middle click
+			if (e.button===1) {
+				cameraControls.lock();
+				document.addEventListener('mousemove', mouseMoveHandler, false);
+			}
+		};
+		const mouseMoveHandler = () => {
+			setCamRotX(camera.rotation.x);
+			setCamRotY(camera.rotation.y);
+			setCamRotZ(camera.rotation.z);
+		};
 		const mouseUpHandler = (e: MouseEvent) => { //release mouse after middle click is over
 			if (e.button===1) {
+				document.removeEventListener('mousemove', mouseMoveHandler, false);
 				cameraControls.unlock();
 				setCamRotX(camera.rotation.x);
 				setCamRotY(camera.rotation.y);
@@ -210,6 +221,7 @@ export default function RenderView(props: Props) {
 			renderer.domElement.removeEventListener('wheel', mouseWheelHandler, false);
 			renderer.domElement.removeEventListener('mousedown', mouseDownHandler, false);
 			renderer.domElement.removeEventListener('mouseup', mouseUpHandler, false);
+			document.removeEventListener('mousemove', mouseMoveHandler, false);
 		};
 	}, [cameraControls,camera,renderer]);
 
