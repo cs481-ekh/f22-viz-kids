@@ -35,12 +35,16 @@ export default function App() {
 			let data: MarkerFileData = {markers: [], frames: []}; //empty data to clear viz area for invalid files
 			try {
 				data = await parseMarkerFileData(markerFile);
-				setError(null);
-				setMarkerParsingError(false);
+				if (!staleRequest) {
+					setError(null);
+					setMarkerParsingError(false);
+				}
 			}
 			catch (err) {
-				if (err instanceof Error) setError(err);
-				setMarkerParsingError(true);
+				if (!staleRequest) {
+					if (err instanceof Error) setError(err);
+					setMarkerParsingError(true);
+				}
 			}
 			if (staleRequest) return; //ignore stale data if newer render is triggered and clean-up function was called
 			else setMarkerFileData(data);
@@ -63,12 +67,16 @@ export default function App() {
 			let data: ForceFileData = {frames: []}; //empty data to clear viz area for invalid files
 			try {
 				data = await parseForceFileData(forceFile);
-				setError(null);
-				setForceParsingError(false);
+				if (!staleRequest) {
+					setError(null);
+					setForceParsingError(false);
+				}
 			}
 			catch (err) {
-				if (err instanceof Error) setError(err);
-				setForceParsingError(true);
+				if (!staleRequest) {
+					if (err instanceof Error) setError(err);
+					setForceParsingError(true);
+				}
 			}
 			if (staleRequest) return; //ignore stale data if newer render is triggered and clean-up function was called
 			else setForceFileData(data);
