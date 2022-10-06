@@ -18,17 +18,29 @@ export default function App() {
 
 	const [playing, setPlaying] = useState(false);
 
+	/* Flags for clearing file name if parsing error is encountered */
+	const [markerParsingError, setMarkerParsingError] = useState<boolean>(false);
+	const [forceParsingError, setForceParsingError] = useState<boolean>(false);
+
 	/* Load and parse provided marker file into markerFileData */
 	const [openMarkerFileSelector, {plainFiles: [markerFile], loading: markersLoading}] = useFilePicker({accept: ['.txt','.tsv','.csv']});
 	const [markerFileData, setMarkerFileData] = useState<MarkerFileData>({markers: [], frames: []});
 	useEffect(()=>{
-		let active = true;
-		startAsyncMarkerParse();
-		return () => {active = false;};
+		let staleRequest = false; //only async parse call from current render should set markerFileData
+		if (markerFile) startAsyncMarkerParse();
+		return () => {staleRequest = true;}; //clean-up function if new render is triggered while this is still processing
 		async function startAsyncMarkerParse() {
-			const data = await parseMarkerFileData(markerFile);
-			if (!active) return;
-			setMarkerFileData(data);
+			let data: MarkerFileData = {markers: [], frames: []}; //empty data to clear viz area for invalid files
+			try {
+				data = await parseMarkerFileData(markerFile);
+				setMarkerParsingError(false);
+			}
+			catch (err) {
+				alert(err); //all parseMarkerFileData errors are neatly formatted for alerts
+				setMarkerParsingError(true);
+			}
+			if (staleRequest) return; //ignore stale data if newer render is triggered and clean-up function was called
+			else setMarkerFileData(data);
 		}
 	}, [markerFile]);
 
@@ -41,13 +53,21 @@ export default function App() {
 	const [openForceFileSelector, {plainFiles: [forceFile], loading: forcesLoading}] = useFilePicker({accept: ['.txt','.tsv','.csv','.mot']});
 	const [forceFileData, setForceFileData] = useState<ForceFileData>({frames: []});
 	useEffect(()=>{
-		let active = true;
-		startAsyncForceParse();
-		return () => {active = false;};
+		let staleRequest = false; //only async parse call from current render should set forceFileData
+		if (forceFile) startAsyncForceParse();
+		return () => {staleRequest = true;}; //clean-up function if new render is triggered while this is still processing
 		async function startAsyncForceParse() {
-			const data = await parseForceFileData(forceFile);
-			if (!active) return;
-			setForceFileData(data);
+			let data: ForceFileData = {frames: []}; //empty data to clear viz area for invalid files
+			try {
+				data = await parseForceFileData(forceFile);
+				setForceParsingError(false);
+			}
+			catch (err) {
+				alert(err); //all parseForceFileData errors are neatly formatted for alerts
+				setForceParsingError(true);
+			}
+			if (staleRequest) return; //ignore stale data if newer render is triggered and clean-up function was called
+			else setForceFileData(data);
 		}
 	}, [forceFile]);
 
@@ -104,11 +124,11 @@ export default function App() {
 		<div id={"file-area-flex"}>
 			<div id={"marker-file-div"}>
 				<input id={"marker-file-button"} className={"file-upload-button"} type={"button"} value={"Choose Marker Data File"} onClick={()=>openMarkerFileSelector()} />
-				<span id={"marker-file-name"} className={"file-chosen-name"}>{markerFile ? markerFile.name : "No file chosen"}</span>
+				<span id={"marker-file-name"} className={"file-chosen-name"}>{markerFile && !markerParsingError ? markerFile.name : "No file chosen"}</span>
 			</div>
 			<div id={"force-file-div"}>
 				<input id={"force-file-button"} className={"file-upload-button"} type={"button"} value={"Choose Force Plate Data File"} onClick={()=>openForceFileSelector()} />
-				<span id={"force-file-name"} className={"file-chosen-name"}>{forceFile ? forceFile.name : "No file chosen"}</span>
+				<span id={"force-file-name"} className={"file-chosen-name"}>{forceFile && !forceParsingError ? forceFile.name : "No file chosen"}</span>
 			</div>
 		</div>
 		<div id={"logo"}>Movilo</div>
