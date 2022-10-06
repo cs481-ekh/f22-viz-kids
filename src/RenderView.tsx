@@ -38,6 +38,19 @@ export default function RenderView(props: Props) {
 		return new THREE.Scene();
 	});
 
+	const [groundGrid] = useState(() => {
+		const totalWidthMeters = 30;
+		const cellsAcross = 30;
+		const centerLineColor = 0x220044; //dark indigo
+		const gridLineColor = 0x222222; //dark gray
+		return new THREE.GridHelper(totalWidthMeters,cellsAcross,centerLineColor,gridLineColor);
+	});
+
+	useEffect(() => {
+		scene.add(groundGrid);
+		return () => {scene.remove(groundGrid);};
+	}, [scene, groundGrid]);
+
 	const pointsRep = useMemo(() => {
 		return props.data.markers.map(() => {
 			const geometry = new THREE.SphereGeometry(0.01, 16, 16);
