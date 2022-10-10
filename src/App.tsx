@@ -114,7 +114,7 @@ export default function App() {
 		<div id={"logo"}>Movilo</div>
 		<div id={"output-area-title"}>Selection Info</div>
 		{/* ---------------------------------------------- Grid Row 2 ---------------------------------------------- */}
-		<div id={"viz-area"}><RenderView frame={frame} data={markerFileData} /></div>
+		<div id={"viz-area"}><RenderView frame={frame} data={markerFileData} forceData={forceFileData}/></div>
 		<div id={"output-area"}>
 			{`Label: LASIS
 			x: 0.07062
