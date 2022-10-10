@@ -22,6 +22,40 @@ interface Props {
 export default function RenderView(props: Props) {
 	const width = 800;
 	const height = 450;
+	
+	const forceMeshesComp = useMemo(() => {
+		const mesh1 = new THREE.Mesh(new THREE.ConeGeometry(.02,.2,8),new THREE.MeshBasicMaterial());
+		const mesh2 = new THREE.Mesh(new THREE.ConeGeometry(.02,.2,8),new THREE.MeshBasicMaterial());
+		mesh1.visible = false;
+		mesh2.visible = false;
+		return [mesh1,mesh2];
+	 }, []);
+	
+	/* Position force velocity for the given frame (in props) */
+	 useEffect(() => {
+		const frameData = props.forceData.frames[props.frame]; //select a single frame
+		if (!frameData) return; //animation doesn't depend on forceFileData, so this might be empty from initialization in App.tsx
+		forceMeshesComp.forEach((mesh2,idx) => { //for each un-positioned 3D mesh
+		   const pos1 = frameData.forces[idx].components;
+		   const pos = frameData.forces[idx].position;
+		   if (!pos||isNaN(pos.x)||isNaN(pos.y)||isNaN(pos.z)||(pos.x===0&&pos.y===0&&pos.z===0)) {
+			  mesh2.visible = false; //hide forces with no data
+			  return;
+		   }
+		   var i = 0;
+		   while(i < 600) {
+		   
+		   const compp = pos1.y;
+		   var j = i*.001;
+		   if (i < compp && i+10 > compp) {
+		   mesh2.position.x = -pos.z; //OpenSim's z-axis is THREE's -x-axis
+		   mesh2.position.y = pos.y+j; //y-axis (up direction) is the same
+		   mesh2.position.z = pos.x; //OpenSim's x-axis is THREE's z-axis (forward direction)
+		   mesh2.visible = true; //show forces with valid data
+		   }
+		   i++;
+		}})
+	}, [forceMeshesComp, props.forceData, props.frame]);
 
 	const [camera] = useState(() => {
 		const cam = new THREE.PerspectiveCamera(70, width / height);
@@ -50,6 +84,12 @@ export default function RenderView(props: Props) {
 		scene.add(groundGrid);
 		return () => {scene.remove(groundGrid);};
 	}, [scene, groundGrid]);
+	
+	/* Add force meshes to scene */
+	useEffect(() => {
+		forceMeshesComp.forEach(mesh => scene.add(mesh));
+		return () => forceMeshesComp.forEach(mesh => scene.remove(mesh)); //function for clearing the scene
+	 }, [scene, forceMeshesComp]);
 
 	const pointsRep = useMemo(() => {
 		return props.data.markers.map(() => {
