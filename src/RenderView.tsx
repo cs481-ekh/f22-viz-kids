@@ -3,7 +3,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 
-import { MarkerFileData } from "./DataTypes";
+import { MarkerFileData, ForceFileData } from "./DataTypes";
 
 /* Axis reference */     /* THREE's relation to trial subject */
 //THREE X == COBR -X     (+left/-right)
@@ -16,10 +16,39 @@ const THREEzAxis = new THREE.Vector3(0, 0, 1);
 
 interface Props {
 	data: MarkerFileData;
+	forceData: ForceFileData;
 	frame: number;
 }
 
 export default function RenderView(props: Props) {
+	// force data code **************************************
+	/* Get an array of two un-positioned force vector meshes */
+const forceMeshes = useMemo(() => {
+	const mesh1 = new THREE.Mesh(new THREE.BoxGeometry(0.05,0.05,0.05),new THREE.MeshBasicMaterial());
+	const mesh2 = new THREE.Mesh(new THREE.BoxGeometry(0.05,0.05,0.05),new THREE.MeshBasicMaterial());
+	mesh1.visible = false;
+	mesh2.visible = false;
+	return [mesh1,mesh2];
+ }, []);
+ 
+ /* Position force meshes for the given frame (in props) */
+ useEffect(() => {
+	const frameData = props.forceData.frames[props.frame]; //select a single frame
+	if (!frameData) return; //animation doesn't depend on forceFileData, so this might be empty from initialization in App.tsx
+	forceMeshes.forEach((mesh,idx) => { //for each un-positioned 3D mesh
+	   const pos = frameData.forces[idx].position;
+	   if (!pos||isNaN(pos.x)||isNaN(pos.y)||isNaN(pos.z)||(pos.x===0&&pos.y===0&&pos.z===0)) {
+		  mesh.visible = false; //hide forces with no data
+		  return;
+	   }
+	   mesh.position.x = -pos.z; //OpenSim's z-axis is THREE's -x-axis
+	   mesh.position.y = pos.y; //y-axis (up direction) is the same
+	   mesh.position.z = pos.x; //OpenSim's x-axis is THREE's z-axis (forward direction)
+	   mesh.visible = true; //show forces with valid data
+	})
+ }, [forceMeshes, props.forceData, props.frame]);
+
+ // *******************************************
 	const width = 800;
 	const height = 450;
 
@@ -50,6 +79,13 @@ export default function RenderView(props: Props) {
 		scene.add(groundGrid);
 		return () => {scene.remove(groundGrid);};
 	}, [scene, groundGrid]);
+	
+	/* Add force meshes to scene */
+	useEffect(() => {
+		forceMeshes.forEach(mesh => scene.add(mesh));
+		return () => forceMeshes.forEach(mesh => scene.remove(mesh)); //function for clearing the scene
+	 }, [scene, forceMeshes]);
+
 
 	const pointsRep = useMemo(() => {
 		return props.data.markers.map(() => {
