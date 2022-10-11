@@ -16,12 +16,8 @@ export default function App() {
 	const [frameStart, setStart] = useState(0);
 	const [frame, setFrame] = useState(0);
 	const frameRef = useStateRef(frame);
-
 	const [playing, setPlaying] = useState(false);
-	
 	const [frameEnd, setEnd] = useState(493);
-	
- 	
 
 	/* Load and parse provided marker file into markerFileData */
 	const [openMarkerFileSelector, {plainFiles: [markerFile], loading: markersLoading}] = useFilePicker({accept: ['.txt','.tsv','.csv']});
@@ -74,19 +70,18 @@ export default function App() {
 				while(interFrameTimeRef.current > timeStep) {
 					interFrameTimeRef.current -= timeStep;
 					setFrame(current => {
-						if(current + 1 < markerFileData.frames.length && current + 1 < frameEnd) {return current + 1;
-						} else return frameStart;
+						if(current + 1 < markerFileData.frames.length && current + 1 < frameEnd) return current + 1;
+						else return frameStart;
 						//setPlaying(false);
 						//return current;
 					});
 				}
 			}
-
 			lastTimeRef.current = currentTime;
 		}
-
 		animationRef.current = requestAnimationFrame(animationLoop);
 	}, [markerFileData, timeStep, frameEnd, frameStart]);
+
 
 	useEffect(() => {
 		if(playing) {
@@ -103,7 +98,6 @@ export default function App() {
 			return true;
 		});
 	}, [markerFileData.frames.length, frameRef, frameStart]);
-
 	
 
 	/* Elements/components in the grid are organized top->bottom, left->right */
@@ -162,7 +156,6 @@ export default function App() {
 						{setFrame(parseInt(e.target.value));}}} /></td>
 					<td><input className={"timeline-cell"} type={"number"} value={frameEnd} min={"0"} max={"493"} onChange={(e) => 
 						{if (parseInt(e.target.value) >= 0) setEnd(parseInt(e.target.value)); }} /></td>
-					
 				</tr>
 				<tr>
 					<td><span className={"timeline-cell label"}>Time</span></td>
