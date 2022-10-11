@@ -51,6 +51,44 @@ export default function RenderView(props: Props) {
 		return () => {scene.remove(groundGrid);};
 	}, [scene, groundGrid]);
 
+	const [axisHelper] = useState(() => {
+		const sizeMeters = 0.1;
+		const helper = new THREE.AxesHelper(sizeMeters);
+		const COBRxAxisColor = new THREE.Color('red');
+		const COBRyAxisColor = new THREE.Color('green');
+		const COBRzAxisColor = new THREE.Color('blue');
+		helper.setColors(COBRxAxisColor,COBRzAxisColor,COBRyAxisColor); //swaps standard THREE y and z colors to emulate COBR coordinate system
+		helper.scale.x *= -1; //invert x-axis to match COBR coordinate system
+		return helper;
+	});
+
+	/* For axis helper positioning. camera.position.x|y|z changes are not detected in dependency array */
+	const [camPosX,setCamPosX] = useState(camera.position.x);
+	const [camPosY,setCamPosY] = useState(camera.position.y);
+	const [camPosZ,setCamPosZ] = useState(camera.position.z);
+	const [camRotX,setCamRotX] = useState(camera.rotation.x);
+	const [camRotY,setCamRotY] = useState(camera.rotation.y);
+	const [camRotZ,setCamRotZ] = useState(camera.rotation.z);
+
+	/* Position axis helper relative to current camera position/rotation */
+	useEffect(() => {
+		const camDirVec = new THREE.Vector3();
+		const camDirPerpVec = THREEyAxis.clone(); //will be reassigned by cross product of yAxis and camDirVec
+		const dist = 1.1;
+		camera.getWorldDirection(camDirVec);
+		camDirPerpVec.cross(camDirVec).normalize(); //gets axis perpendicular to camera's current direction
+		camDirVec.applyAxisAngle(camDirPerpVec,0.5); //put axis helper to the bottom of current camera view
+		camDirVec.multiplyScalar(dist);
+		camDirVec.add(camera.position);
+		camDirVec.add(camDirPerpVec); //put axis helper to the left of current camera view
+		axisHelper.position.set(camDirVec.x, camDirVec.y, camDirVec.z);
+	}, [camPosX, camPosY, camPosZ, camRotX, camRotY, camRotZ, camera, axisHelper]);
+
+	useEffect(() => {
+		scene.add(axisHelper);
+		return () => {scene.remove(axisHelper);};
+	}, [scene, axisHelper]);
+
 	const pointsRep = useMemo(() => {
 		return props.data.markers.map(() => {
 			const geometry = new THREE.SphereGeometry(0.01, 16, 16);
@@ -133,6 +171,9 @@ export default function RenderView(props: Props) {
 				case "Numpad9":
 				case "PageUp": camera.position.y += moveMeters; break; //ambi/intuitive control
 			}
+			setCamPosX(camera.position.x);
+			setCamPosY(camera.position.y);
+			setCamPosZ(camera.position.z);
 		};
 		/* Flight controls (mouse) */
 		const mouseWheelHandler = (e: WheelEvent) => {
@@ -141,10 +182,31 @@ export default function RenderView(props: Props) {
 				cameraControls.moveForward(-moveMeters * scaleFactor);
 			else
 				cameraControls.moveForward(moveMeters * scaleFactor);
+			setCamPosX(camera.position.x);
+			setCamPosY(camera.position.y);
+			setCamPosZ(camera.position.z);
 		}
 		/* Look controls */
-		const mouseDownHandler = (e: MouseEvent) => {if (e.button===1) cameraControls.lock();}; //capture mouse movement (to rotate view) while holding middle click
-		const mouseUpHandler = (e: MouseEvent) => {if (e.button===1) cameraControls.unlock();}; //release mouse after middle click is over
+		const mouseDownHandler = (e: MouseEvent) => { //capture mouse movement (to rotate view) while holding middle click
+			if (e.button===1) {
+				cameraControls.lock();
+				document.addEventListener('mousemove', mouseMoveHandler, false);
+			}
+		};
+		const mouseMoveHandler = () => {
+			setCamRotX(camera.rotation.x);
+			setCamRotY(camera.rotation.y);
+			setCamRotZ(camera.rotation.z);
+		};
+		const mouseUpHandler = (e: MouseEvent) => { //release mouse after middle click is over
+			if (e.button===1) {
+				document.removeEventListener('mousemove', mouseMoveHandler, false);
+				cameraControls.unlock();
+				setCamRotX(camera.rotation.x);
+				setCamRotY(camera.rotation.y);
+				setCamRotZ(camera.rotation.z);
+			}
+		};
 		/* Add listeners */
 		renderer.domElement.addEventListener('mouseenter', mouseEnterVizAreaHandler, false);
 		renderer.domElement.addEventListener('mouseleave', mouseLeaveVizAreaHandler, false);
@@ -159,6 +221,7 @@ export default function RenderView(props: Props) {
 			renderer.domElement.removeEventListener('wheel', mouseWheelHandler, false);
 			renderer.domElement.removeEventListener('mousedown', mouseDownHandler, false);
 			renderer.domElement.removeEventListener('mouseup', mouseUpHandler, false);
+			document.removeEventListener('mousemove', mouseMoveHandler, false);
 		};
 	}, [cameraControls,camera,renderer]);
 
