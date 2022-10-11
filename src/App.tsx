@@ -6,6 +6,7 @@ import { ForceFileData, MarkerFileData } from "./DataTypes";
 import { PlayIcon, PauseIcon } from "./icons";
 import { parseForceFileData, parseMarkerFileData } from "./Parser";
 import RenderView from "./RenderView";
+import ErrorPopup from "./ErrorPopup";
 import useStateRef from "./useStateRef";
 
 import "./App.scss";
@@ -17,18 +18,40 @@ export default function App() {
 	const frameRef = useStateRef(frame);
 
 	const [playing, setPlaying] = useState(false);
+	const [frameStart] = useState();
+	const [frameEnd, setEnd] = useState(500);
+	
+ 	
+
+	/* Flags for clearing file name if parsing error is encountered */
+	const [markerParsingError, setMarkerParsingError] = useState<boolean>(false);
+	const [forceParsingError, setForceParsingError] = useState<boolean>(false);
+	const [error, setError] = useState<Error|null>(null);
 
 	/* Load and parse provided marker file into markerFileData */
 	const [openMarkerFileSelector, {plainFiles: [markerFile], loading: markersLoading}] = useFilePicker({accept: ['.txt','.tsv','.csv']});
 	const [markerFileData, setMarkerFileData] = useState<MarkerFileData>({markers: [], frames: []});
 	useEffect(()=>{
-		let active = true;
-		startAsyncMarkerParse();
-		return () => {active = false;};
+		let staleRequest = false; //only async parse call from current render should set markerFileData
+		if (markerFile) startAsyncMarkerParse();
+		return () => {staleRequest = true;}; //clean-up function if new render is triggered while this is still processing
 		async function startAsyncMarkerParse() {
-			const data = await parseMarkerFileData(markerFile);
-			if (!active) return;
-			setMarkerFileData(data);
+			let data: MarkerFileData = {markers: [], frames: []}; //empty data to clear viz area for invalid files
+			try {
+				data = await parseMarkerFileData(markerFile);
+				if (!staleRequest) {
+					setError(null);
+					setMarkerParsingError(false);
+				}
+			}
+			catch (err) {
+				if (!staleRequest) {
+					if (err instanceof Error) setError(err);
+					setMarkerParsingError(true);
+				}
+			}
+			if (staleRequest) return; //ignore stale data if newer render is triggered and clean-up function was called
+			else setMarkerFileData(data);
 		}
 	}, [markerFile]);
 
@@ -41,13 +64,26 @@ export default function App() {
 	const [openForceFileSelector, {plainFiles: [forceFile], loading: forcesLoading}] = useFilePicker({accept: ['.txt','.tsv','.csv','.mot']});
 	const [forceFileData, setForceFileData] = useState<ForceFileData>({frames: []});
 	useEffect(()=>{
-		let active = true;
-		startAsyncForceParse();
-		return () => {active = false;};
+		let staleRequest = false; //only async parse call from current render should set forceFileData
+		if (forceFile) startAsyncForceParse();
+		return () => {staleRequest = true;}; //clean-up function if new render is triggered while this is still processing
 		async function startAsyncForceParse() {
-			const data = await parseForceFileData(forceFile);
-			if (!active) return;
-			setForceFileData(data);
+			let data: ForceFileData = {frames: []}; //empty data to clear viz area for invalid files
+			try {
+				data = await parseForceFileData(forceFile);
+				if (!staleRequest) {
+					setError(null);
+					setForceParsingError(false);
+				}
+			}
+			catch (err) {
+				if (!staleRequest) {
+					if (err instanceof Error) setError(err);
+					setForceParsingError(true);
+				}
+			}
+			if (staleRequest) return; //ignore stale data if newer render is triggered and clean-up function was called
+			else setForceFileData(data);
 		}
 	}, [forceFile]);
 
@@ -69,9 +105,10 @@ export default function App() {
 				while(interFrameTimeRef.current > timeStep) {
 					interFrameTimeRef.current -= timeStep;
 					setFrame(current => {
-						if(current + 1 < markerFileData.frames.length) return current + 1;
-						setPlaying(false);
-						return current;
+						if(current + 1 < markerFileData.frames.length && current + 1 < frameEnd) {return current + 1;
+						} else return 0;
+						//setPlaying(false);
+						//return current;
 					});
 				}
 			}
@@ -80,7 +117,7 @@ export default function App() {
 		}
 
 		animationRef.current = requestAnimationFrame(animationLoop);
-	}, [markerFileData, timeStep]);
+	}, [markerFileData, timeStep, frameEnd]);
 
 	useEffect(() => {
 		if(playing) {
@@ -98,23 +135,26 @@ export default function App() {
 		});
 	}, [markerFileData.frames.length, frameRef]);
 
+	
+
 	/* Elements/components in the grid are organized top->bottom, left->right */
 	return <div id={"app-grid"} style={(markersLoading||forcesLoading) ? {cursor: "progress"} : {cursor: "default"}}>
 		{/* ---------------------------------------------- Grid Row 1 ---------------------------------------------- */}
 		<div id={"file-area-flex"}>
 			<div id={"marker-file-div"}>
 				<input id={"marker-file-button"} className={"file-upload-button"} type={"button"} value={"Choose Marker Data File"} onClick={()=>openMarkerFileSelector()} />
-				<span id={"marker-file-name"} className={"file-chosen-name"}>{markerFile ? markerFile.name : "No file chosen"}</span>
+				<span id={"marker-file-name"} className={"file-chosen-name"}>{markerFile && !markerParsingError ? markerFile.name : "No file chosen"}</span>
 			</div>
 			<div id={"force-file-div"}>
 				<input id={"force-file-button"} className={"file-upload-button"} type={"button"} value={"Choose Force Plate Data File"} onClick={()=>openForceFileSelector()} />
-				<span id={"force-file-name"} className={"file-chosen-name"}>{forceFile ? forceFile.name : "No file chosen"}</span>
+				<span id={"force-file-name"} className={"file-chosen-name"}>{forceFile && !forceParsingError ? forceFile.name : "No file chosen"}</span>
 			</div>
 		</div>
 		<div id={"logo"}>Movilo</div>
 		<div id={"output-area-title"}>Selection Info</div>
 		{/* ---------------------------------------------- Grid Row 2 ---------------------------------------------- */}
 		<div id={"viz-area"}><RenderView frame={frame} data={markerFileData} forceData={forceFileData} /></div>
+		<div id={"popup-area"}><ErrorPopup error={error} /></div>
 		<div id={"output-area"}>
 			{`Label: LASIS
 			x: 0.07062
@@ -147,8 +187,11 @@ export default function App() {
 				<tr>
 					<td><span className={"timeline-cell label"}>Frame</span></td>
 					<td><input className={"timeline-cell"} type={"text"} value={"0"} /></td>
-					<td><input className={"timeline-cell"} type={"text"} value={"0"} /></td>
-					<td><input className={"timeline-cell"} type={"text"} value={"494"} /></td>
+					<td><input className={"timeline-cell"} type={"number"} value={frame} min={"0"} onChange={(e) => 
+						{if (parseInt(e.target.value) < markerFileData.frames.length && parseInt(e.target.value) >= 0) {setFrame(parseInt(e.target.value)); togglePlaying;}}} /></td>
+					<td><input className={"timeline-cell"} type={"number"} value={frameEnd} onChange={(e) => 
+						{if (parseInt(e.target.value) >= 0) setEnd(parseInt(e.target.value)); }} /></td>
+					
 				</tr>
 				<tr>
 					<td><span className={"timeline-cell label"}>Time</span></td>
