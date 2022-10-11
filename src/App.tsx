@@ -13,12 +13,13 @@ import "./App.scss";
 const MILLI_PER = 1000;
 
 export default function App() {
+	const [frameStart, setStart] = useState(0);
 	const [frame, setFrame] = useState(0);
 	const frameRef = useStateRef(frame);
 
 	const [playing, setPlaying] = useState(false);
-	const [frameStart] = useState();
-	const [frameEnd, setEnd] = useState(500);
+	
+	const [frameEnd, setEnd] = useState(493);
 	
  	
 
@@ -74,7 +75,7 @@ export default function App() {
 					interFrameTimeRef.current -= timeStep;
 					setFrame(current => {
 						if(current + 1 < markerFileData.frames.length && current + 1 < frameEnd) {return current + 1;
-						} else return 0;
+						} else return frameStart;
 						//setPlaying(false);
 						//return current;
 					});
@@ -85,7 +86,7 @@ export default function App() {
 		}
 
 		animationRef.current = requestAnimationFrame(animationLoop);
-	}, [markerFileData, timeStep, frameEnd]);
+	}, [markerFileData, timeStep, frameEnd, frameStart]);
 
 	useEffect(() => {
 		if(playing) {
@@ -98,10 +99,10 @@ export default function App() {
 		setPlaying(current => {
 			if(current) return false;
 
-			if(frameRef.current >= markerFileData.frames.length - 1) setFrame(0); // restart if at end
+			if(frameRef.current >= markerFileData.frames.length - 1) setFrame(frameStart); // restart if at end
 			return true;
 		});
-	}, [markerFileData.frames.length, frameRef]);
+	}, [markerFileData.frames.length, frameRef, frameStart]);
 
 	
 
@@ -153,10 +154,13 @@ export default function App() {
 			<table>
 				<tr>
 					<td><span className={"timeline-cell label"}>Frame</span></td>
-					<td><input className={"timeline-cell"} type={"text"} value={"0"} /></td>
+					<td><input className={"timeline-cell"} type={"number"} value={frameStart} min={"0"} onChange={(e) => 
+						{if (parseInt(e.target.value) < markerFileData.frames.length && parseInt(e.target.value) >= 0) 
+						{setStart(parseInt(e.target.value));}}} /></td>
 					<td><input className={"timeline-cell"} type={"number"} value={frame} min={"0"} onChange={(e) => 
-						{if (parseInt(e.target.value) < markerFileData.frames.length && parseInt(e.target.value) >= 0) {setFrame(parseInt(e.target.value)); togglePlaying;}}} /></td>
-					<td><input className={"timeline-cell"} type={"number"} value={frameEnd} onChange={(e) => 
+						{if (parseInt(e.target.value) < markerFileData.frames.length && parseInt(e.target.value) >= 0) 
+						{setFrame(parseInt(e.target.value));}}} /></td>
+					<td><input className={"timeline-cell"} type={"number"} value={frameEnd} min={"0"} max={"493"} onChange={(e) => 
 						{if (parseInt(e.target.value) >= 0) setEnd(parseInt(e.target.value)); }} /></td>
 					
 				</tr>
