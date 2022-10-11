@@ -17,6 +17,10 @@ export default function App() {
 	const frameRef = useStateRef(frame);
 
 	const [playing, setPlaying] = useState(false);
+	const [frameStart] = useState();
+	const [frameEnd, setEnd] = useState(500);
+	
+ 	
 
 	/* Load and parse provided marker file into markerFileData */
 	const [openMarkerFileSelector, {plainFiles: [markerFile], loading: markersLoading}] = useFilePicker({accept: ['.txt','.tsv','.csv']});
@@ -69,9 +73,10 @@ export default function App() {
 				while(interFrameTimeRef.current > timeStep) {
 					interFrameTimeRef.current -= timeStep;
 					setFrame(current => {
-						if(current + 1 < markerFileData.frames.length) return current + 1;
-						setPlaying(false);
-						return current;
+						if(current + 1 < markerFileData.frames.length && current + 1 < frameEnd) {return current + 1;
+						} else return 0;
+						//setPlaying(false);
+						//return current;
 					});
 				}
 			}
@@ -80,7 +85,7 @@ export default function App() {
 		}
 
 		animationRef.current = requestAnimationFrame(animationLoop);
-	}, [markerFileData, timeStep]);
+	}, [markerFileData, timeStep, frameEnd]);
 
 	useEffect(() => {
 		if(playing) {
@@ -97,6 +102,8 @@ export default function App() {
 			return true;
 		});
 	}, [markerFileData.frames.length, frameRef]);
+
+	
 
 	/* Elements/components in the grid are organized top->bottom, left->right */
 	return <div id={"app-grid"} style={(markersLoading||forcesLoading) ? {cursor: "progress"} : {cursor: "default"}}>
@@ -147,8 +154,11 @@ export default function App() {
 				<tr>
 					<td><span className={"timeline-cell label"}>Frame</span></td>
 					<td><input className={"timeline-cell"} type={"text"} value={"0"} /></td>
-					<td><input className={"timeline-cell"} type={"text"} value={"0"} /></td>
-					<td><input className={"timeline-cell"} type={"text"} value={"494"} /></td>
+					<td><input className={"timeline-cell"} type={"number"} value={frame} min={"0"} onChange={(e) => 
+						{if (parseInt(e.target.value) < markerFileData.frames.length && parseInt(e.target.value) >= 0) {setFrame(parseInt(e.target.value)); togglePlaying;}}} /></td>
+					<td><input className={"timeline-cell"} type={"number"} value={frameEnd} onChange={(e) => 
+						{if (parseInt(e.target.value) >= 0) setEnd(parseInt(e.target.value)); }} /></td>
+					
 				</tr>
 				<tr>
 					<td><span className={"timeline-cell label"}>Time</span></td>
