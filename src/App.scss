@@ -119,6 +119,18 @@ $timelineCellLabelColor: yellow;
             cursor: pointer;
             -webkit-appearance: none;
          }
+         &::-moz-range-track {
+            height: 36px;
+            cursor: pointer;
+            background: $timelineTrackBGColor;
+         }
+         &::-moz-range-thumb {
+            height: 35px;
+            width: 1px;
+            background: $timelineTrackThumbColor;
+            cursor: pointer;
+            -webkit-appearance: none;
+         }
       }
    }
    #timeline-manual-area {
