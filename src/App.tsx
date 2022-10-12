@@ -188,19 +188,19 @@ export default function App() {
 			<table>
 				<tr>
 					<td><span className={"timeline-cell label"}>Frame</span></td>
-					<td><input className={"timeline-cell"} type={"number"} value={frameStart} min={"0"} onChange={(e) => 
+					<td><input className={"timeline-cell"} type={"number"} value={frameStart} min={"0"} max={markerFileData.frames.length} onChange={(e) => 
 							{const inputInt = parseInt(e.target.value);
 							if (inputInt < markerFileData.frames.length && inputInt >= 0)
 							{setStart(inputInt)}}
 						}/></td> 
-					<td><input className={"timeline-cell"} type={"number"} value={frame} min={"0"} onChange={(e) => 
+					<td><input className={"timeline-cell"} type={"number"} value={frame} min={"0"} max={markerFileData.frames.length} onChange={(e) => 
 							{const inputInt = parseInt(e.target.value);
 							if (inputInt < markerFileData.frames.length && inputInt >= 0) 
-							{setFrame(parseInt(e.target.value)); togglePlaying;}}
+							{setFrame(inputInt); togglePlaying;}}
 						} /></td>
-					<td><input className={"timeline-cell"} type={"number"} value={frameEnd} onChange={(e) => 
+					<td><input className={"timeline-cell"} type={"number"} value={frameEnd} max={markerFileData.frames.length} onChange={(e) => 
 						{const inputInt = parseInt(e.target.value);
-						if (inputInt >= 0) setEnd(parseInt(e.target.value)); }
+						if (inputInt >= 0) setEnd(inputInt); }
 						} /></td>
 					
 				</tr>
