@@ -49,12 +49,18 @@ export default function App() {
 					setMarkerParsingError(true);
 				}
 			}
+			
 			if (staleRequest) return; //ignore stale data if newer render is triggered and clean-up function was called
 			else setMarkerFileData(data);
-		}
+		} 
 	}, [markerFile]);
 
-	
+	useEffect(() => {
+		const end = markerFileData.frames.length-1;
+		if (end > 0) setEnd(end);
+
+	}, [markerFileData]);
+
 
 	const timeStep = useMemo(() => {
 		if(markerFileData.frames.length < 2) return null;
@@ -84,10 +90,11 @@ export default function App() {
 				}
 			}
 			if (staleRequest) return; //ignore stale data if newer render is triggered and clean-up function was called
-			else setForceFileData(data);
+			else setForceFileData(data);			
 		}
 	}, [forceFile]);
-
+	
+	
 	const interFrameTimeRef = useRef(0);
 	const lastTimeRef = useRef<null | DOMHighResTimeStamp>(null);
 
@@ -116,7 +123,7 @@ export default function App() {
 
 			lastTimeRef.current = currentTime;
 		}
-
+		
 		animationRef.current = requestAnimationFrame(animationLoop);
 	}, [markerFileData, timeStep, frameEnd, frameStart]);
 
