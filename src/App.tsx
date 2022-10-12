@@ -179,7 +179,8 @@ export default function App() {
 				<button id={"play-button"} onClick={togglePlaying}>
 					{playing ? <PauseIcon /> : <PlayIcon />}
 				</button>
-				<input id={"timeline-track"} type={"range"} min={"0"} max={"494"} value={"0"} />
+				<input id={"timeline-track"} type={"range"} min={"0"} max={markerFileData.frames.length - 1}
+					onChange={(e) => setFrame(parseInt(e.target.value))} value={frame} />
 			</div>
 		</div>
 		<div id={"timeline-manual-area"}>
