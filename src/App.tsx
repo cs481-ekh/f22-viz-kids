@@ -16,12 +16,10 @@ const MILLI_PER = 1000;
 export default function App() {
 	const [frame, setFrame] = useState(0);
 	const frameRef = useStateRef(frame);
-
 	const [playing, setPlaying] = useState(false);
-	const [frameStart] = useState();
-	const [frameEnd, setEnd] = useState(500);
+	const [frameStart, setStart] = useState(0);
+	const [frameEnd, setEnd] = useState(0);
 	
- 	
 
 	/* Flags for clearing file name if parsing error is encountered */
 	const [markerParsingError, setMarkerParsingError] = useState<boolean>(false);
@@ -50,10 +48,17 @@ export default function App() {
 					setMarkerParsingError(true);
 				}
 			}
+			
 			if (staleRequest) return; //ignore stale data if newer render is triggered and clean-up function was called
 			else setMarkerFileData(data);
 		}
 	}, [markerFile]);
+
+	useEffect(() => {
+		const end = markerFileData.frames.length-1;
+		if (end > 0) setEnd(end);
+
+	}, [markerFileData]);
 
 	const timeStep = useMemo(() => {
 		if(markerFileData.frames.length < 2) return null;
@@ -86,7 +91,8 @@ export default function App() {
 			else setForceFileData(data);
 		}
 	}, [forceFile]);
-
+	
+	
 	const interFrameTimeRef = useRef(0);
 	const lastTimeRef = useRef<null | DOMHighResTimeStamp>(null);
 
@@ -106,7 +112,7 @@ export default function App() {
 					interFrameTimeRef.current -= timeStep;
 					setFrame(current => {
 						if(current + 1 < markerFileData.frames.length && current + 1 < frameEnd) {return current + 1;
-						} else return 0;
+						} else return frameStart;
 						//setPlaying(false);
 						//return current;
 					});
@@ -115,9 +121,9 @@ export default function App() {
 
 			lastTimeRef.current = currentTime;
 		}
-
+		
 		animationRef.current = requestAnimationFrame(animationLoop);
-	}, [markerFileData, timeStep, frameEnd]);
+	}, [markerFileData, timeStep, frameEnd, frameStart]);
 
 	useEffect(() => {
 		if(playing) {
@@ -130,10 +136,10 @@ export default function App() {
 		setPlaying(current => {
 			if(current) return false;
 
-			if(frameRef.current >= markerFileData.frames.length - 1) setFrame(0); // restart if at end
+			if(frameRef.current >= markerFileData.frames.length - 1) setFrame(frameStart); // restart if at end
 			return true;
 		});
-	}, [markerFileData.frames.length, frameRef]);
+	}, [markerFileData.frames.length, frameRef, frameStart]);
 
 	
 
@@ -187,11 +193,27 @@ export default function App() {
 			<table>
 				<tr>
 					<td><span className={"timeline-cell label"}>Frame</span></td>
-					<td><input className={"timeline-cell"} type={"text"} value={"0"} /></td>
-					<td><input className={"timeline-cell"} type={"number"} value={frame} min={"0"} onChange={(e) => 
-						{if (parseInt(e.target.value) < markerFileData.frames.length && parseInt(e.target.value) >= 0) {setFrame(parseInt(e.target.value)); togglePlaying;}}} /></td>
-					<td><input className={"timeline-cell"} type={"number"} value={frameEnd} onChange={(e) => 
-						{if (parseInt(e.target.value) >= 0) setEnd(parseInt(e.target.value)); }} /></td>
+					<td><input className={"timeline-cell"} type={"number"} value={frameStart} min={"0"} max={markerFileData.frames.length} onChange={(e) => {
+							const inputInt = parseInt(e.target.value);
+							if (inputInt < markerFileData.frames.length && inputInt >= 0)
+							{
+								setStart(inputInt)
+							}
+						}
+						}/></td> 
+					<td><input className={"timeline-cell"} type={"number"} value={frame} min={"0"} max={markerFileData.frames.length} onChange={(e) => {
+							const inputInt = parseInt(e.target.value);
+							if (inputInt < markerFileData.frames.length && inputInt >= 0) 
+							{
+								setFrame(inputInt);
+							}
+						}
+						} /></td>
+					<td><input className={"timeline-cell"} type={"number"} value={frameEnd} min={"0"} max={markerFileData.frames.length} onChange={(e) => {
+							const inputInt = parseInt(e.target.value);
+							if (inputInt < markerFileData.frames.length && inputInt >= 0) setEnd(inputInt); 
+						}
+						} /></td>
 					
 				</tr>
 				<tr>
