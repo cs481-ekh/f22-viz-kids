@@ -20,7 +20,6 @@ export default function App() {
 	const [frameStart, setStart] = useState(0);
 	const [frameEnd, setEnd] = useState(0);
 	
- 	
 
 	/* Flags for clearing file name if parsing error is encountered */
 	const [markerParsingError, setMarkerParsingError] = useState<boolean>(false);
@@ -52,7 +51,7 @@ export default function App() {
 			
 			if (staleRequest) return; //ignore stale data if newer render is triggered and clean-up function was called
 			else setMarkerFileData(data);
-		} 
+		}
 	}, [markerFile]);
 
 	useEffect(() => {
@@ -60,7 +59,6 @@ export default function App() {
 		if (end > 0) setEnd(end);
 
 	}, [markerFileData]);
-
 
 	const timeStep = useMemo(() => {
 		if(markerFileData.frames.length < 2) return null;
@@ -90,7 +88,7 @@ export default function App() {
 				}
 			}
 			if (staleRequest) return; //ignore stale data if newer render is triggered and clean-up function was called
-			else setForceFileData(data);			
+			else setForceFileData(data);
 		}
 	}, [forceFile]);
 	
