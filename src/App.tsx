@@ -18,8 +18,8 @@ export default function App() {
 	const frameRef = useStateRef(frame);
 
 	const [playing, setPlaying] = useState(false);
-	const [frameStart] = useState();
-	const [frameEnd, setEnd] = useState(500);
+	const [frameStart, setStart] = useState(0);
+	
 	
  	
 
@@ -54,6 +54,8 @@ export default function App() {
 			else setMarkerFileData(data);
 		}
 	}, [markerFile]);
+
+	const [frameEnd, setEnd] = useState(markerFileData.frames.length);
 
 	const timeStep = useMemo(() => {
 		if(markerFileData.frames.length < 2) return null;
@@ -186,11 +188,20 @@ export default function App() {
 			<table>
 				<tr>
 					<td><span className={"timeline-cell label"}>Frame</span></td>
-					<td><input className={"timeline-cell"} type={"text"} value={"0"} /></td>
+					<td><input className={"timeline-cell"} type={"number"} value={frameStart} min={"0"} onChange={(e) => 
+							{const inputInt = parseInt(e.target.value);
+							if (inputInt < markerFileData.frames.length && inputInt >= 0)
+							{setStart(inputInt)}}
+						}/></td> 
 					<td><input className={"timeline-cell"} type={"number"} value={frame} min={"0"} onChange={(e) => 
-						{if (parseInt(e.target.value) < markerFileData.frames.length && parseInt(e.target.value) >= 0) {setFrame(parseInt(e.target.value)); togglePlaying;}}} /></td>
+							{const inputInt = parseInt(e.target.value);
+							if (inputInt < markerFileData.frames.length && inputInt >= 0) 
+							{setFrame(parseInt(e.target.value)); togglePlaying;}}
+						} /></td>
 					<td><input className={"timeline-cell"} type={"number"} value={frameEnd} onChange={(e) => 
-						{if (parseInt(e.target.value) >= 0) setEnd(parseInt(e.target.value)); }} /></td>
+						{const inputInt = parseInt(e.target.value);
+						if (inputInt >= 0) setEnd(parseInt(e.target.value)); }
+						} /></td>
 					
 				</tr>
 				<tr>
