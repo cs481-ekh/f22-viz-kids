@@ -16,10 +16,9 @@ const MILLI_PER = 1000;
 export default function App() {
 	const [frame, setFrame] = useState(0);
 	const frameRef = useStateRef(frame);
-
 	const [playing, setPlaying] = useState(false);
 	const [frameStart, setStart] = useState(0);
-	
+	const [frameEnd, setEnd] = useState(0);
 	
  	
 
@@ -55,7 +54,7 @@ export default function App() {
 		}
 	}, [markerFile]);
 
-	const [frameEnd, setEnd] = useState(markerFileData.frames.length);
+	
 
 	const timeStep = useMemo(() => {
 		if(markerFileData.frames.length < 2) return null;
@@ -188,19 +187,26 @@ export default function App() {
 			<table>
 				<tr>
 					<td><span className={"timeline-cell label"}>Frame</span></td>
-					<td><input className={"timeline-cell"} type={"number"} value={frameStart} min={"0"} max={markerFileData.frames.length} onChange={(e) => 
-							{const inputInt = parseInt(e.target.value);
+					<td><input className={"timeline-cell"} type={"number"} value={frameStart} min={"0"} max={markerFileData.frames.length} onChange={(e) => {
+							const inputInt = parseInt(e.target.value);
 							if (inputInt < markerFileData.frames.length && inputInt >= 0)
-							{setStart(inputInt)}}
+							{
+								setStart(inputInt)
+							}
+						}
 						}/></td> 
-					<td><input className={"timeline-cell"} type={"number"} value={frame} min={"0"} max={markerFileData.frames.length} onChange={(e) => 
-							{const inputInt = parseInt(e.target.value);
+					<td><input className={"timeline-cell"} type={"number"} value={frame} min={"0"} max={markerFileData.frames.length} onChange={(e) => {
+							const inputInt = parseInt(e.target.value);
 							if (inputInt < markerFileData.frames.length && inputInt >= 0) 
-							{setFrame(inputInt); togglePlaying;}}
+							{
+								setFrame(inputInt);
+							}
+						}
 						} /></td>
-					<td><input className={"timeline-cell"} type={"number"} value={frameEnd} max={markerFileData.frames.length} onChange={(e) => 
-						{const inputInt = parseInt(e.target.value);
-						if (inputInt >= 0) setEnd(inputInt); }
+					<td><input className={"timeline-cell"} type={"number"} value={frameEnd} min={"0"} max={markerFileData.frames.length} onChange={(e) => {
+							const inputInt = parseInt(e.target.value);
+							if (inputInt < markerFileData.frames.length && inputInt >= 0) setEnd(inputInt); 
+						}
 						} /></td>
 					
 				</tr>
