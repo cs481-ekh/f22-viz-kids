@@ -157,11 +157,15 @@ export default function RenderView(props: Props) {
 		forceMeshesComp.forEach(mesh => scene.add(mesh));
 		return () => forceMeshesComp.forEach(mesh => scene.remove(mesh)); //function for clearing the scene
 	 }, [scene, forceMeshesComp]);
+	
+	/* ************ End of Force Data code ************ */
 
 	const pointsRep = useMemo(() => {
 		return props.data.markers.map(() => {
 			const geometry = new THREE.SphereGeometry(0.01, 16, 16);
 			const material = new THREE.MeshBasicMaterial();
+			
+			const mesh = new THREE.Mesh(geometry, material);
 
 			return mesh;
 		});
