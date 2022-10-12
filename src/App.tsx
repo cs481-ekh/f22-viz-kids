@@ -19,8 +19,6 @@ export default function App() {
 	const [playing, setPlaying] = useState(false);
 	const [frameStart] = useState();
 	const [frameEnd, setEnd] = useState(500);
-
-	const [value, setValue] = useState(0);
 	
  	
 
@@ -148,7 +146,8 @@ export default function App() {
 				<button id={"play-button"} onClick={togglePlaying}>
 					{playing ? <PauseIcon /> : <PlayIcon />}
 				</button>
-				<input id={"timeline-track"} type={"range"} min={"0"} max={"494"} onChange={(e) => setFrame(parseInt(e.target.value))} value={frame} />
+				<input id={"timeline-track"} type={"range"} min={"0"} max={markerFileData.frames.length - 1}
+				 onChange={(e) => setFrame(parseInt(e.target.value))} value={frame} />
 			</div>
 		</div>
 		<div id={"timeline-manual-area"}>
