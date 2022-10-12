@@ -107,7 +107,7 @@ export default function App() {
 					interFrameTimeRef.current -= timeStep;
 					setFrame(current => {
 						if(current + 1 < markerFileData.frames.length && current + 1 < frameEnd) {return current + 1;
-						} else return 0;
+						} else return frameStart;
 						//setPlaying(false);
 						//return current;
 					});
@@ -118,7 +118,7 @@ export default function App() {
 		}
 
 		animationRef.current = requestAnimationFrame(animationLoop);
-	}, [markerFileData, timeStep, frameEnd]);
+	}, [markerFileData, timeStep, frameEnd, frameStart]);
 
 	useEffect(() => {
 		if(playing) {
@@ -131,10 +131,10 @@ export default function App() {
 		setPlaying(current => {
 			if(current) return false;
 
-			if(frameRef.current >= markerFileData.frames.length - 1) setFrame(0); // restart if at end
+			if(frameRef.current >= markerFileData.frames.length - 1) setFrame(frameStart); // restart if at end
 			return true;
 		});
-	}, [markerFileData.frames.length, frameRef]);
+	}, [markerFileData.frames.length, frameRef, frameStart]);
 
 	
 
