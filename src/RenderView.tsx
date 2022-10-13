@@ -264,6 +264,8 @@ export default function RenderView(props: Props) {
 	}, [renderer]);
 
 	const onClick = useCallback((evt: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+		// raycaster requires coordinates to be transformed like this
+		// (in range -1 to 1, and y is reversed)
 		const coords = {
 			x: ((evt.clientX - evt.currentTarget.offsetLeft) / evt.currentTarget.offsetWidth) * 2 - 1,
 			y: -(((evt.clientY - evt.currentTarget.offsetTop) / evt.currentTarget.offsetHeight) * 2 - 1),
