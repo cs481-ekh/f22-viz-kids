@@ -1,4 +1,5 @@
 {
+	"name": "movilo",
 	"dependencies": {
 		"@fontsource/goldman": "^4.5.9",
 		"html-webpack-plugin": "^5.5.0",
