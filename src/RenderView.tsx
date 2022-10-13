@@ -132,10 +132,6 @@ export default function RenderView(props: Props) {
 			pointRep.position.x = -pos.x; //COBR x-axis is inverted with respect to THREE's
 			pointRep.position.y = pos.z; //COBR z-axis is THREE's y-axis (up direction)
 			pointRep.position.z = pos.y; //COBR y-axis is THREE's z-axis (forward direction)
-
-			pointRep.updateMatrixWorld();
-			pointRep.geometry.computeBoundingBox();
-			pointRep.geometry.computeBoundingSphere();
 		});
 	}, [pointsRep, props.data, props.frame]);
 		
