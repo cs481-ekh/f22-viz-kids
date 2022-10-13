@@ -20,6 +20,7 @@ export default function App() {
 	const [frameStart, setStart] = useState(0);
 	const [frameEnd, setEnd] = useState(0);
 	
+	const [selectedMarkers, setSelectedMarkers] = useState<number[]>([]);
 
 	/* Flags for clearing file name if parsing error is encountered */
 	const [markerParsingError, setMarkerParsingError] = useState<boolean>(false);
@@ -159,7 +160,14 @@ export default function App() {
 		<div id={"logo"}>Movilo</div>
 		<div id={"output-area-title"}>Selection Info</div>
 		{/* ---------------------------------------------- Grid Row 2 ---------------------------------------------- */}
-		<div id={"viz-area"}><RenderView frame={frame} data={markerFileData} /></div>
+		<div id={"viz-area"}>
+			<RenderView
+				frame={frame}
+				data={markerFileData}
+				selectedMarkers={selectedMarkers}
+				updateSelectedMarkers={setSelectedMarkers}
+			/>
+		</div>
 		<div id={"popup-area"}><ErrorPopup error={error} /></div>
 		<div id={"output-area"}>
 			{`Label: LASIS

@@ -14,9 +14,15 @@ const THREExAxis = new THREE.Vector3(1, 0, 0);
 const THREEyAxis = new THREE.Vector3(0, 1, 0);
 const THREEzAxis = new THREE.Vector3(0, 0, 1);
 
+const MARKER_COLOR_DEFAULT = new THREE.Color("white");
+const MARKER_COLOR_SELECTED = new THREE.Color("yellow");
+
 interface Props {
 	data: MarkerFileData;
 	frame: number;
+
+	selectedMarkers: number[];
+	updateSelectedMarkers(param: number[] | ((current: number[]) => number[])): void;
 }
 
 export default function RenderView(props: Props) {
@@ -33,6 +39,8 @@ export default function RenderView(props: Props) {
 		cam.rotateOnWorldAxis(THREEzAxis, 0.0);
 		return cam;
 	});
+
+	const [raycaster] = useState(() => new THREE.Raycaster());
 
 	const [scene] = useState(() => {
 		return new THREE.Scene();
@@ -90,11 +98,12 @@ export default function RenderView(props: Props) {
 	}, [scene, axisHelper]);
 
 	const pointsRep = useMemo(() => {
-		return props.data.markers.map(() => {
+		return props.data.markers.map((_, index) => {
 			const geometry = new THREE.SphereGeometry(0.01, 16, 16);
 			const material = new THREE.MeshBasicMaterial();
 
 			const mesh = new THREE.Mesh(geometry, material);
+			mesh.userData.index = index;
 
 			return mesh;
 		});
@@ -107,6 +116,14 @@ export default function RenderView(props: Props) {
 	}, [scene, pointsRep]);
 
 	useEffect(() => {
+		pointsRep.forEach((pointRep, idx) => {
+			pointRep.material.color = props.selectedMarkers.indexOf(idx) < 0 ?
+				MARKER_COLOR_DEFAULT :
+				MARKER_COLOR_SELECTED;
+		});
+	}, [pointsRep, props.selectedMarkers]);
+
+	useEffect(() => {
 		const frameData = props.data.frames[props.frame];
 		pointsRep.forEach((pointRep, idx) => {
 			const pos = frameData.positions[idx];
@@ -115,6 +132,10 @@ export default function RenderView(props: Props) {
 			pointRep.position.x = -pos.x; //COBR x-axis is inverted with respect to THREE's
 			pointRep.position.y = pos.z; //COBR z-axis is THREE's y-axis (up direction)
 			pointRep.position.z = pos.y; //COBR y-axis is THREE's z-axis (forward direction)
+
+			pointRep.updateMatrixWorld();
+			pointRep.geometry.computeBoundingBox();
+			pointRep.geometry.computeBoundingSphere();
 		});
 	}, [pointsRep, props.data, props.frame]);
 		
@@ -242,5 +263,29 @@ export default function RenderView(props: Props) {
 		};
 	}, [renderer]);
 
-	return <div ref={root} />;
+	const onClick = useCallback((evt: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+		const coords = {
+			x: ((evt.clientX - evt.currentTarget.offsetLeft) / evt.currentTarget.offsetWidth) * 2 - 1,
+			y: -(((evt.clientY - evt.currentTarget.offsetTop) / evt.currentTarget.offsetHeight) * 2 - 1),
+		};
+		raycaster.setFromCamera(coords, camera);
+		const hitList = raycaster.intersectObjects(pointsRep, true);
+		if(hitList.length === 0) {
+			props.updateSelectedMarkers.call(undefined, []);
+		}
+		else {
+			const hit = hitList[0].object.userData.index as number;
+			if(evt.shiftKey) {
+				props.updateSelectedMarkers.call(undefined, current => {
+					if(current.indexOf(hit) < 0) return [...current, hit];
+					return current.filter(x => x !== hit);
+				});
+			}
+			else {
+				props.updateSelectedMarkers.call(undefined, [hit]);
+			}
+		}
+	}, [camera, raycaster, props.updateSelectedMarkers, pointsRep]);
+
+	return <div ref={root} onClick={onClick} />;
 }
