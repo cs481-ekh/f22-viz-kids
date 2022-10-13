@@ -117,9 +117,9 @@ export default function RenderView(props: Props) {
 
 	useEffect(() => {
 		pointsRep.forEach((pointRep, idx) => {
-			pointRep.material.color = props.selectedMarkers.indexOf(idx) < 0 ?
-				MARKER_COLOR_DEFAULT :
-				MARKER_COLOR_SELECTED;
+			pointRep.material.color = props.selectedMarkers.includes(idx) ?
+				MARKER_COLOR_SELECTED :
+				MARKER_COLOR_DEFAULT;
 		});
 	}, [pointsRep, props.selectedMarkers]);
 
@@ -273,10 +273,11 @@ export default function RenderView(props: Props) {
 		}
 		else {
 			const hit = hitList[0].object.userData.index as number;
-			if(evt.shiftKey) {
+			if(evt.shiftKey || evt.ctrlKey) {
+				// multiselect - add or remove from selection
 				props.updateSelectedMarkers.call(undefined, current => {
-					if(current.indexOf(hit) < 0) return [...current, hit];
-					return current.filter(x => x !== hit);
+					if(current.includes(hit)) return current.filter(x => x !== hit); // already selected, deselect
+					return [...current, hit];
 				});
 			}
 			else {
