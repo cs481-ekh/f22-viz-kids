@@ -126,7 +126,7 @@ async function tsvToTable(file: File): Promise<string[]> {
     const motFile: boolean = file.name.endsWith(".mot");
 
     if (  !file.type && !motFile
-        || !(file.type==="text/plain" || file.type==="text/csv" || file.type==="text/tab-separated-values" || motFile)
+       || !(file.type==="text/plain" || file.type==="text/csv" || file.type==="text/tab-separated-values" || motFile)
     ) {
         return Promise.reject(new Error(
             `unsupported file type\n`+
@@ -156,7 +156,7 @@ async function tsvToTable(file: File): Promise<string[]> {
             `File: ${file.name}\n\n`+
 
             `File contents are misaligned with respect to the output format of Vicon Nexus or OpenSim.\n\n`+
-
+            
             `Expected marker data format example:\n`+
             `https://docs.google.com/spreadsheets/d/14K0VqbQBQEx_8pWsol8vbl4y-JbVtbO4hzpDPxofYtI/edit?usp=sharing\n\n`+
 
