@@ -20,11 +20,8 @@ interface Props {
 }
 
 export default function RenderView(props: Props) {
-	const width = 800;
-	const height = 450;
-
 	const [camera] = useState(() => {
-		const cam = new THREE.PerspectiveCamera(70, width / height);
+		const cam = new THREE.PerspectiveCamera(70, 1); // aspect ratio will be updated later
 		cam.position.x = -2.0;
 		cam.position.y = 1.5;
 		cam.position.z = 0.0;
@@ -121,9 +118,23 @@ export default function RenderView(props: Props) {
 
 	const [renderer] = useState(() => {
 		const result = new THREE.WebGLRenderer({antialias: true});
-		result.setSize(width, height);
 		return result;
 	});
+
+	const updateSize = useCallback(() => {
+		const width = root.current!.offsetWidth;
+		const height = root.current!.offsetHeight;
+		renderer.setSize(width, height);
+		camera.aspect = width / height;
+		camera.updateProjectionMatrix();
+	}, [renderer]);
+
+	useEffect(() => {
+		window.addEventListener("resize", updateSize);
+		updateSize();
+
+		return () => window.removeEventListener("resize", updateSize);
+	}, [updateSize]);
 
 	const [cameraControls] = useState(() => new PointerLockControls(camera, renderer.domElement));
 
