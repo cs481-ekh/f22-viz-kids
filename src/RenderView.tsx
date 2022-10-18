@@ -48,6 +48,13 @@ export default function RenderView(props: Props) {
 		return () => {scene.remove(groundGrid);};
 	}, [scene, groundGrid]);
 
+	const [aspectRatio, setAspectRatio] = useState(1); // will be updated by the size handler
+
+	useEffect(() => {
+		camera.aspect = aspectRatio;
+		camera.updateProjectionMatrix();
+	}, [aspectRatio, camera]);
+
 	const [axisHelper] = useState(() => {
 		const sizeMeters = 0.1;
 		const helper = new THREE.AxesHelper(sizeMeters);
@@ -71,7 +78,7 @@ export default function RenderView(props: Props) {
 	useEffect(() => {
 		const camDirVec = new THREE.Vector3();
 		const camDirPerpVec = THREEyAxis.clone(); //will be reassigned by cross product of yAxis and camDirVec
-		const dist = 1.1;
+		const dist = 2 / aspectRatio;
 		camera.getWorldDirection(camDirVec);
 		camDirPerpVec.cross(camDirVec).normalize(); //gets axis perpendicular to camera's current direction
 		camDirVec.applyAxisAngle(camDirPerpVec,0.5); //put axis helper to the bottom of current camera view
@@ -79,7 +86,7 @@ export default function RenderView(props: Props) {
 		camDirVec.add(camera.position);
 		camDirVec.add(camDirPerpVec); //put axis helper to the left of current camera view
 		axisHelper.position.set(camDirVec.x, camDirVec.y, camDirVec.z);
-	}, [camPosX, camPosY, camPosZ, camRotX, camRotY, camRotZ, camera, axisHelper]);
+	}, [camPosX, camPosY, camPosZ, camRotX, camRotY, camRotZ, camera, axisHelper, aspectRatio]);
 
 	useEffect(() => {
 		scene.add(axisHelper);
@@ -125,8 +132,7 @@ export default function RenderView(props: Props) {
 		const width = root.current!.offsetWidth;
 		const height = root.current!.offsetHeight;
 		renderer.setSize(width, height);
-		camera.aspect = width / height;
-		camera.updateProjectionMatrix();
+		setAspectRatio(width / height);
 	}, [renderer]);
 
 	useEffect(() => {
