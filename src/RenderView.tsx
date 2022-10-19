@@ -3,12 +3,12 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 
-import { MarkerFileData } from "./DataTypes";
+import { ForceFileData, MarkerFileData } from "./DataTypes";
 
-/* Axis reference */     /* THREE's relation to trial subject */
-//THREE X == COBR -X     (+left/-right)
-//THREE Y == COBR Z      (+up/-down)
-//THREE Z == COBR Y      (+front/-back)
+/* Axis reference */                    /* THREE's relation to trial subject */
+//THREE X == Vicon -X == OpenSim -Z     (+left/-right)
+//THREE Y == Vicon Z  == OpenSim Y      (+up/-down)
+//THREE Z == Vicon Y  == OpenSim X      (+front/-back)
 
 const THREExAxis = new THREE.Vector3(1, 0, 0);
 const THREEyAxis = new THREE.Vector3(0, 1, 0);
@@ -17,8 +17,13 @@ const THREEzAxis = new THREE.Vector3(0, 0, 1);
 const MARKER_COLOR_DEFAULT = new THREE.Color("white");
 const MARKER_COLOR_SELECTED = new THREE.Color("yellow");
 
+const FORCE_VEC_SCALE_FACTOR = 0.0005;
+const FORCE_VEC_HEAD_LENGTH = 0.05;
+const FORCE_VEC_HEAD_WIDTH = 0.025;
+
 interface Props {
-	data: MarkerFileData;
+	markerData: MarkerFileData;
+	forceData: ForceFileData;
 	frame: number;
 
 	selectedMarkers: number[];
@@ -102,7 +107,7 @@ export default function RenderView(props: Props) {
 	}, [scene, axisHelper]);
 
 	const pointsRep = useMemo(() => {
-		return props.data.markers.map((_, index) => {
+		return props.markerData.markers.map((_, index) => {
 			const geometry = new THREE.SphereGeometry(0.01, 16, 16);
 			const material = new THREE.MeshBasicMaterial();
 
@@ -111,7 +116,7 @@ export default function RenderView(props: Props) {
 
 			return mesh;
 		});
-	}, [props.data.markers]);
+	}, [props.markerData.markers]);
 
 	useEffect(() => {
 		pointsRep.forEach(pointRep => scene.add(pointRep));
@@ -128,17 +133,54 @@ export default function RenderView(props: Props) {
 	}, [pointsRep, props.selectedMarkers]);
 
 	useEffect(() => {
-		const frameData = props.data.frames[props.frame];
+		const frameData = props.markerData.frames[props.frame];
 		pointsRep.forEach((pointRep, idx) => {
 			const pos = frameData.positions[idx];
 			if(pos === null) return;
 
-			pointRep.position.x = -pos.x; //COBR x-axis is inverted with respect to THREE's
-			pointRep.position.y = pos.z; //COBR z-axis is THREE's y-axis (up direction)
-			pointRep.position.z = pos.y; //COBR y-axis is THREE's z-axis (forward direction)
+			pointRep.position.x = -pos.x; //Vicon x-axis is inverted with respect to THREE's
+			pointRep.position.y = pos.z; //Vicon z-axis is THREE's y-axis
+			pointRep.position.z = pos.y; //Vicon y-axis is THREE's z-axis
 		});
-	}, [pointsRep, props.data, props.frame]);
-		
+	}, [pointsRep, props.markerData, props.frame]);
+
+	/* Force vectors: init */
+	const [forceVectors] = useState(() => {
+		const vec1 = new THREE.ArrowHelper();
+		const vec2 = new THREE.ArrowHelper();
+		vec1.setColor(0xFF0000);
+		vec2.setColor(0xFF0000);
+		vec1.visible = false;
+		vec2.visible = false;
+		return [vec1, vec2];
+	});
+
+	/* Force vectors: position and rotate for the current frame */
+	useEffect(() => {
+		const frameData = props.forceData.frames[props.frame];
+		if (!frameData) return; //animation doesn't depend on forceFileData, so this might be empty from initialization in App.tsx
+		forceVectors.forEach((vec,idx) => {
+			const pos = frameData.forces[idx].position;
+			const comps = frameData.forces[idx].components;
+			if (!pos||isNaN(pos.x)||isNaN(pos.y)||isNaN(pos.z)||(pos.x===0&&pos.y===0&&pos.z===0)) { //will refactor to only check null once Parser is refactored
+				vec.visible = false; //hide forces with no data
+				return;
+			}
+			vec.position.x = -pos.z; //OpenSim's z-axis is THREE's -x-axis
+			vec.position.y = pos.y; //y-axis is the same
+			vec.position.z = pos.x; //OpenSim's x-axis is THREE's z-axis
+			const magnitude = FORCE_VEC_SCALE_FACTOR * Math.sqrt((comps.x**2) + (comps.y**2) + (comps.z**2));
+			vec.setLength(magnitude, FORCE_VEC_HEAD_LENGTH, FORCE_VEC_HEAD_WIDTH);
+			vec.setDirection(new THREE.Vector3(-comps.z, comps.y, comps.x).normalize());
+			vec.visible = true; //show forces with valid data
+		})
+	}, [forceVectors, props.forceData, props.frame]);
+
+	/* Force vectors: add to scene */
+	useEffect(() => {
+		forceVectors.forEach(vec => scene.add(vec));
+		return () => forceVectors.forEach(vec => scene.remove(vec));
+	}, [scene, forceVectors]);
 
 	const [renderer] = useState(() => {
 		const result = new THREE.WebGLRenderer({antialias: true});

@@ -163,7 +163,8 @@ export default function App() {
 		<div id={"viz-area"}>
 			<RenderView
 				frame={frame}
-				data={markerFileData}
+				markerData={markerFileData}
+				forceData={forceFileData}
 				selectedMarkers={selectedMarkers}
 				updateSelectedMarkers={setSelectedMarkers}
 			/>
