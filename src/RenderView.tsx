@@ -14,9 +14,15 @@ const THREExAxis = new THREE.Vector3(1, 0, 0);
 const THREEyAxis = new THREE.Vector3(0, 1, 0);
 const THREEzAxis = new THREE.Vector3(0, 0, 1);
 
+const MARKER_COLOR_DEFAULT = new THREE.Color("white");
+const MARKER_COLOR_SELECTED = new THREE.Color("yellow");
+
 interface Props {
 	data: MarkerFileData;
 	frame: number;
+
+	selectedMarkers: number[];
+	updateSelectedMarkers(param: number[] | ((current: number[]) => number[])): void;
 }
 
 export default function RenderView(props: Props) {
@@ -30,6 +36,8 @@ export default function RenderView(props: Props) {
 		cam.rotateOnWorldAxis(THREEzAxis, 0.0);
 		return cam;
 	});
+
+	const [raycaster] = useState(() => new THREE.Raycaster());
 
 	const [scene] = useState(() => {
 		return new THREE.Scene();
@@ -94,11 +102,12 @@ export default function RenderView(props: Props) {
 	}, [scene, axisHelper]);
 
 	const pointsRep = useMemo(() => {
-		return props.data.markers.map(() => {
+		return props.data.markers.map((_, index) => {
 			const geometry = new THREE.SphereGeometry(0.01, 16, 16);
 			const material = new THREE.MeshBasicMaterial();
 
 			const mesh = new THREE.Mesh(geometry, material);
+			mesh.userData.index = index;
 
 			return mesh;
 		});
@@ -109,6 +118,14 @@ export default function RenderView(props: Props) {
 
 		return () => pointsRep.forEach(pointRep => scene.remove(pointRep));
 	}, [scene, pointsRep]);
+
+	useEffect(() => {
+		pointsRep.forEach((pointRep, idx) => {
+			pointRep.material.color = props.selectedMarkers.includes(idx) ?
+				MARKER_COLOR_SELECTED :
+				MARKER_COLOR_DEFAULT;
+		});
+	}, [pointsRep, props.selectedMarkers]);
 
 	useEffect(() => {
 		const frameData = props.data.frames[props.frame];
@@ -259,5 +276,32 @@ export default function RenderView(props: Props) {
 		};
 	}, [renderer]);
 
-	return <div ref={root} />;
+	const onClick = useCallback((evt: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+		// raycaster requires coordinates to be transformed like this
+		// (in range -1 to 1, and y is reversed)
+		const coords = {
+			x: ((evt.clientX - evt.currentTarget.offsetLeft) / evt.currentTarget.offsetWidth) * 2 - 1,
+			y: -(((evt.clientY - evt.currentTarget.offsetTop) / evt.currentTarget.offsetHeight) * 2 - 1),
+		};
+		raycaster.setFromCamera(coords, camera);
+		const hitList = raycaster.intersectObjects(pointsRep, true);
+		if(hitList.length === 0) {
+			props.updateSelectedMarkers.call(undefined, []);
+		}
+		else {
+			const hit = hitList[0].object.userData.index as number;
+			if(evt.shiftKey || evt.ctrlKey) {
+				// multiselect - add or remove from selection
+				props.updateSelectedMarkers.call(undefined, current => {
+					if(current.includes(hit)) return current.filter(x => x !== hit); // already selected, deselect
+					return [...current, hit];
+				});
+			}
+			else {
+				props.updateSelectedMarkers.call(undefined, [hit]);
+			}
+		}
+	}, [camera, raycaster, props.updateSelectedMarkers, pointsRep]);
+
+	return <div ref={root} onClick={onClick} />;
 }
