@@ -5,6 +5,7 @@ import { useFilePicker } from "use-file-picker";
 import { ForceFileData, MarkerFileData } from "./DataTypes";
 import { parseForceFileData, parseMarkerFileData } from "./Parser";
 import RenderView from "./RenderView";
+import SelectionInfoView from "./SelectionInfoView";
 import ErrorPopup from "./ErrorPopup";
 import { PlayIcon, PauseIcon } from "./icons";
 import useStateRef from "./useStateRef";
@@ -248,25 +249,7 @@ export default function App() {
 				/>
 			</div>
 			<div id={"popup-area"}><ErrorPopup error={error} /></div>
-			<div id={"output-area"}>
-				{`Label: LASIS
-				x: 0.07062
-				y: -1.31965
-				z: 0.92865
-	
-				Label: LKJC
-				x: 0.10328
-				y: -1.47403
-				z: 0.48009
-	
-				Label: LAJC
-				x: 0.12071
-				y: -1.59442
-				z: 0.12018
-	
-				LKJC Angle: 178.6°
-				`}
-			</div>
+			<div id={"output-area"}><SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame} /></div>
 			{/* ---------------------------------------------- Grid Row 3 ---------------------------------------------- */}
 			<div id={"timeline-track-area"}>
 				<div id="timeline-track-flex">

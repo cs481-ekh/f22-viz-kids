@@ -3,19 +3,16 @@ import { Point3D } from './DataTypes';
 
 /* Compute the angle between the first three Point3Ds in the provided Array
  * in degrees, with index 0 as theta. */
-export function computeAngle(points: Array<Point3D|null>): number {
+export function computeAngle(points: Array<Point3D|null>): number|null {
 
     if (points.length < 3)
-        return NaN;
+        return null;
 
     const first3HasNullOrNaN = points.slice(0,3)
-        //map each element to a boolean (true indicates bad data)
-        .map(point => point===null||isNaN(point.x)||isNaN(point.y)||isNaN(point.z))
-        //logical OR all elements together with a starting value of false (will reduce to true if any bad data)
-        .reduce((acc,next) => acc||next, false);
+        .some(point => point===null||isNaN(point.x)||isNaN(point.y)||isNaN(point.z));
 
     if (first3HasNullOrNaN)
-        return NaN;
+        return null;
 
     /* Convert 3 points to 2 vectors that share the same relative origin */
     const origin = points[0];

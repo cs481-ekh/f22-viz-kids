@@ -6,7 +6,6 @@ import { PointerLockControls } from "three/examples/jsm/controls/PointerLockCont
 
 import {ForceFileData, MarkerFileData} from "./DataTypes";
 
-
 /* Axis reference */                    /* THREE's relation to trial subject */
 //THREE X == Vicon -X == OpenSim -Z     (+left/-right)
 //THREE Y == Vicon Z  == OpenSim Y      (+up/-down)
@@ -23,9 +22,6 @@ const FORCE_VEC_SCALE_FACTOR = 0.0005;
 const FORCE_VEC_HEAD_LENGTH = 0.05;
 const FORCE_VEC_HEAD_WIDTH = 0.025;
 
-const RENDER_WIDTH = 800;
-const RENDER_HEIGHT = 450;
-
 interface Props {
 	frame: number;
 	markerData: MarkerFileData;
@@ -39,57 +35,62 @@ export default function RenderView(props: Props) {
 
 	const root = useRef<HTMLDivElement|null>(null);
 
-	const renderer = useMemo(() => {
-		const rend = new THREE.WebGLRenderer({antialias: true});
-		rend.setSize(RENDER_WIDTH,RENDER_HEIGHT);
-		return rend;
-	}, []);
+	const [renderer] = useState(() => new THREE.WebGLRenderer({antialias: true}));
 
-	const scene = useMemo(() => {
+	const [aspectRatio,setAspectRatio] = useState(1); //updated by the size handler
+
+	const updateRenderSizeAndAspectRatio = useCallback(() => {
+		const width = root.current!.offsetWidth;
+		const height = root.current!.offsetHeight;
+		renderer.setSize(width, height);
+		setAspectRatio(width / height);
+	}, [renderer]);
+
+	const [scene] = useState(() => {
 		const scn = new THREE.Scene();
 		scn.background = new THREE.Color(0x040900);
 		return scn
-	}, []);
+	});
 
-	const camera = useMemo(() => {
-		const cam = new THREE.PerspectiveCamera(70,RENDER_WIDTH/RENDER_HEIGHT);
-		cam.position.x = -2.0;
+	const [camera] = useState(() => {
+		const cam = new THREE.PerspectiveCamera(70,1); //aspect ratio will be updated later
+		cam.position.x = -4.0;
 		cam.position.y = 1.5;
 		cam.position.z = 0.0;
 		cam.rotateOnWorldAxis(THREE_X_AXIS, -Math.PI/8);
 		cam.rotateOnWorldAxis(THREE_Y_AXIS, -Math.PI/2);
 		cam.rotateOnWorldAxis(THREE_Z_AXIS, 0.0);
 		return cam;
-	}, []);
+	});
 
-	const cameraControls = useMemo(() => new PointerLockControls(camera,renderer.domElement), [camera,renderer]);
+	const [cameraControls] = useState(() => new PointerLockControls(camera,renderer.domElement));
 
+	/* For axis helper positioning. camera.position.x|y|z changes are not detected in dependency array */
 	const [camPosX,setCamPosX] = useState(camera.position.x);
 	const [camPosY,setCamPosY] = useState(camera.position.y);
 	const [camPosZ,setCamPosZ] = useState(camera.position.z);
-
 	const [camRotX,setCamRotX] = useState(camera.rotation.x);
 	const [camRotY,setCamRotY] = useState(camera.rotation.y);
 	const [camRotZ,setCamRotZ] = useState(camera.rotation.z);
 
-	const groundGrid = useMemo(() => {
+	const [groundGrid] = useState(() => {
 		const totalWidthMeters = 30;
 		const cellsAcross = 30;
-		const centerLineColor = 0x220044; //dark purple
-		const gridLineColor = 0x222222; //dark gray
+		const centerLineColor = 0x220044;
+		const gridLineColor = 0x222222;
 		return new THREE.GridHelper(totalWidthMeters,cellsAcross,centerLineColor,gridLineColor);
-	}, []);
+	});
 
-	const axisHelper = useMemo(() => {
+	const [axisHelper] = useState(() => {
 		const sizeMeters = 0.1;
 		const helper = new THREE.AxesHelper(sizeMeters);
-		const COBRxAxisColor = new THREE.Color('red');
-		const COBRyAxisColor = new THREE.Color('green');
-		const COBRzAxisColor = new THREE.Color('blue');
-		helper.setColors(COBRxAxisColor,COBRzAxisColor,COBRyAxisColor); //swaps standard THREE y and z colors to emulate COBR coordinate system
-		helper.scale.x *= -1; //invert x-axis to match COBR coordinate system
+		const ViconXAxisColor = new THREE.Color('red');
+		const ViconYAxisColor = new THREE.Color('green');
+		const ViconZAxisColor = new THREE.Color('blue');
+		helper.setColors(ViconXAxisColor,ViconZAxisColor,ViconYAxisColor); //swaps standard THREE y and z colors to emulate Vicon coordinate system
+		helper.scale.x *= -1; //invert x-axis to match Vicon coordinate system
 		return helper;
-	}, []);
+	});
 
 	/* Get an array of un-positioned marker meshes (mapped from the array of marker labels) */
 	const markerMeshes = useMemo(() => {
@@ -99,7 +100,7 @@ export default function RenderView(props: Props) {
 			mesh.userData.index = idx; //make all meshes independently aware of their index within markerMeshes array (for raycast id)
 			return mesh;
 		});
-	}, [props.markerData.markers]); //only remap if marker labels array changes
+	}, [props.markerData.markers]);
 
 	/* Get an array of two un-positioned force vector meshes */
 	const [forceVectors] = useState(() => {
@@ -115,8 +116,8 @@ export default function RenderView(props: Props) {
 	const [raycaster] = useState(() => new THREE.Raycaster());
 
 	const handleRaycast = useCallback(({
-		clientX, clientY, ctrlKey, shiftKey, currentTarget: {offsetLeft, offsetTop, offsetWidth, offsetHeight}
-	}: React.MouseEvent<HTMLDivElement,MouseEvent>) => {
+										   clientX, clientY, ctrlKey, shiftKey, currentTarget: {offsetLeft, offsetTop, offsetWidth, offsetHeight}
+									   }: React.MouseEvent<HTMLDivElement,MouseEvent>) => {
 		/* Determine type of selection */
 		const multiSelect = ctrlKey || shiftKey;
 		/* Raycaster requires coordinates to be transformed to range [-1,1], with positive y toward top of page (inverted from CSS) */
@@ -144,6 +145,21 @@ export default function RenderView(props: Props) {
 					:[]
 		);
 	}, [raycaster, markerMeshes, props.setSelectedMarkers, camera]);
+
+	// ------------------------------------------------- side effects --------------------------------------------------
+
+	/* Set render size to viz area div dimensions */
+	useEffect(() => {
+		window.addEventListener("resize", updateRenderSizeAndAspectRatio);
+		updateRenderSizeAndAspectRatio();
+		return () => window.removeEventListener("resize", updateRenderSizeAndAspectRatio);
+	}, [updateRenderSizeAndAspectRatio]);
+
+	/* Update camera aspect ratio according to render size (which updates aspect ratio variable) */
+	useEffect(() => {
+		camera.aspect = aspectRatio;
+		camera.updateProjectionMatrix();
+	}, [aspectRatio, camera]);
 
 	/* Color marker meshes according to selection status */
 	useEffect(() => {
@@ -189,6 +205,44 @@ export default function RenderView(props: Props) {
 			vec.visible = true; //show forces with valid data
 		})
 	}, [forceVectors, props.forceData, props.frame]);
+
+	/* Position axis helper relative to current camera position/rotation */
+	useEffect(() => {
+		const camDirVec = new THREE.Vector3();
+		const camDirPerpVec = THREE_Y_AXIS.clone(); //will be reassigned by cross product of yAxis and camDirVec
+		const dist = 2/aspectRatio;
+		camera.getWorldDirection(camDirVec);
+		camDirPerpVec.cross(camDirVec).normalize(); //gets axis perpendicular to camera's current direction
+		camDirVec.applyAxisAngle(camDirPerpVec,0.5); //put axis helper to the bottom of current camera view
+		camDirVec.multiplyScalar(dist);
+		camDirVec.add(camera.position);
+		camDirVec.add(camDirPerpVec); //put axis helper to the left of current camera view
+		axisHelper.position.set(camDirVec.x, camDirVec.y, camDirVec.z);
+	}, [camPosX,camPosY,camPosZ,camRotX,camRotY,camRotZ,camera,axisHelper,aspectRatio]);
+
+	/* Add marker meshes to scene */
+	useEffect(() => {
+		markerMeshes.forEach(mesh => scene.add(mesh));
+		return () => markerMeshes.forEach(mesh => scene.remove(mesh)); //function for clearing the scene
+	}, [scene, markerMeshes]);
+
+	/* Add force meshes to scene */
+	useEffect(() => {
+		forceVectors.forEach(mesh => scene.add(mesh));
+		return () => forceVectors.forEach(mesh => scene.remove(mesh)); //function for clearing the scene
+	}, [scene, forceVectors]);
+
+	/* Add ground grid to scene */
+	useEffect(() => {
+		scene.add(groundGrid);
+		return () => {scene.remove(groundGrid);}; //function for clearing the scene
+	}, [scene, groundGrid]);
+
+	/* Add axis helper to scene */
+	useEffect(() => {
+		scene.add(axisHelper);
+		return () => {scene.remove(axisHelper);}; //function for clearing the scene
+	}, [scene, axisHelper]);
 
 	/* Use camera controls */
 	useEffect(() => {
@@ -241,6 +295,7 @@ export default function RenderView(props: Props) {
 		/* Flight controls (mouse) */
 		const mouseWheelHandler = (e: WheelEvent) => {
 			const scaleFactor = 4;
+			e.preventDefault(); //don't scroll page wile mouse is in viz area
 			if (e.deltaY > 0)
 				cameraControls.moveForward(-moveMeters * scaleFactor);
 			else
@@ -287,44 +342,6 @@ export default function RenderView(props: Props) {
 			document.removeEventListener('mousemove', mouseMoveHandler, false);
 		};
 	}, [cameraControls, camera, renderer]);
-
-	/* Position axis helper relative to current camera position/rotation */
-	useEffect(() => {
-		const camDirVec = new THREE.Vector3();
-		const camDirPerpVec = THREE_Y_AXIS.clone(); //will be reassigned by cross product of yAxis and camDirVec
-		const dist = 1.1;
-		camera.getWorldDirection(camDirVec);
-		camDirPerpVec.cross(camDirVec).normalize(); //gets axis perpendicular to camera's current direction
-		camDirVec.applyAxisAngle(camDirPerpVec,0.5); //put axis helper to the bottom of current camera view
-		camDirVec.multiplyScalar(dist);
-		camDirVec.add(camera.position);
-		camDirVec.add(camDirPerpVec); //put axis helper to the left of current camera view
-		axisHelper.position.set(camDirVec.x, camDirVec.y, camDirVec.z);
-	}, [camPosX,camPosY,camPosZ,camRotX,camRotY,camRotZ,camera,axisHelper]);
-
-	/* Add marker meshes to scene */
-	useEffect(() => {
-		markerMeshes.forEach(mesh => scene.add(mesh));
-		return () => markerMeshes.forEach(mesh => scene.remove(mesh)); //function for clearing the scene
-	}, [scene, markerMeshes]);
-
-	/* Add force meshes to scene */
-	useEffect(() => {
-		forceVectors.forEach(mesh => scene.add(mesh));
-		return () => forceVectors.forEach(mesh => scene.remove(mesh)); //function for clearing the scene
-	}, [scene, forceVectors]);
-
-	/* Add ground grid to scene */
-	useEffect(() => {
-		scene.add(groundGrid);
-		return () => {scene.remove(groundGrid);}; //function for clearing the scene
-	}, [scene, groundGrid]);
-
-	/* Add axis helper to scene */
-	useEffect(() => {
-		scene.add(axisHelper);
-		return () => {scene.remove(axisHelper);}; //function for clearing the scene
-	}, [scene, axisHelper]);
 
 	/* Only re-render the scene when its visual arrangement changes (new frame, file, camera orientation, or selections) */
 	useEffect(() => {
