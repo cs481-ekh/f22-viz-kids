@@ -116,8 +116,8 @@ export default function RenderView(props: Props) {
 	const [raycaster] = useState(() => new THREE.Raycaster());
 
 	const handleRaycast = useCallback(({
-										   clientX, clientY, ctrlKey, shiftKey, currentTarget: {offsetLeft, offsetTop, offsetWidth, offsetHeight}
-									   }: React.MouseEvent<HTMLDivElement,MouseEvent>) => {
+		clientX, clientY, ctrlKey, shiftKey, currentTarget: {offsetLeft, offsetTop, offsetWidth, offsetHeight}
+	}: React.MouseEvent<HTMLDivElement,MouseEvent>) => {
 		/* Determine type of selection */
 		const multiSelect = ctrlKey || shiftKey;
 		/* Raycaster requires coordinates to be transformed to range [-1,1], with positive y toward top of page (inverted from CSS) */
