@@ -123,11 +123,9 @@ async function tsvToTable(file: File): Promise<string[]> {
         return Promise.reject(new Error("no file was selected"));
     }
 
-    const motFile: boolean = file.name.endsWith(".mot");
+    const supportedFile = file.name.endsWith(".tsv") || file.name.endsWith(".csv") || file.name.endsWith(".txt") || file.name.endsWith(".mot");
 
-    if (  !file.type && !motFile
-        || !(file.type==="text/plain" || file.type==="text/csv" || file.type==="text/tab-separated-values" || motFile)
-    ) {
+    if (!supportedFile) {
         return Promise.reject(new Error(
             `unsupported file type\n`+
             `File: ${file.name}\n\n`+
