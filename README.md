@@ -12,8 +12,8 @@ From a cloned copy of this repository, sample data can be loaded into Movilo fro
 
 #### Controls:
 <div style="display: flex">
-  <img style="width: 49%" src="https://drive.google.com/uc?export=view&id=1h1bgs5jKba9IBEjUsuRP8fawe85NnLAz">
-  <img style="width: 49%" src="https://drive.google.com/uc?export=view&id=198VEj933cJlHqmbUIlN_-xgKd1E_tTV6">
+  <img style="width: 49%" src="https://drive.google.com/uc?export=view&id=135LMeLqVZnSw4XF3rZUNIKb8eYWk_JEH">
+  <img style="width: 49%" src="https://drive.google.com/uc?export=view&id=1ni-JPzob-sEZ13NW87M2_qgh4ondY16M">
 </div>
 
 #### Wireframe:
