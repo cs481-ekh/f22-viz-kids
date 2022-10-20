@@ -113,6 +113,7 @@ export default function RenderView(props: Props) {
 
 			const mesh = new THREE.Mesh(geometry, material);
 			mesh.userData.index = index;
+			mesh.visible = false;
 
 			return mesh;
 		});
@@ -136,11 +137,14 @@ export default function RenderView(props: Props) {
 		const frameData = props.markerData.frames[props.frame];
 		pointsRep.forEach((pointRep, idx) => {
 			const pos = frameData.positions[idx];
-			if(pos === null) return;
-
+			if(pos === null) {
+				pointRep.visible = false; //hide missing marker
+				return;
+			}
 			pointRep.position.x = -pos.x; //Vicon x-axis is inverted with respect to THREE's
 			pointRep.position.y = pos.z; //Vicon z-axis is THREE's y-axis
 			pointRep.position.z = pos.y; //Vicon y-axis is THREE's z-axis
+			pointRep.visible = true; //show valid marker
 		});
 	}, [pointsRep, props.markerData, props.frame]);
 
