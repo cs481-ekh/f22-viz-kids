@@ -190,9 +190,9 @@ export default function RenderView(props: Props) {
 		const frameData = props.forceData.frames[props.frame];
 		if (!frameData) return; //animation doesn't depend on forceFileData, so this might be empty from initialization in App.tsx
 		forceVectors.forEach((vec,idx) => {
-			const pos = frameData.forces[idx].position;
-			const comps = frameData.forces[idx].components;
-			if (!pos||isNaN(pos.x)||isNaN(pos.y)||isNaN(pos.z)||(pos.x===0&&pos.y===0&&pos.z===0)) {
+			const pos = frameData.forces[idx]?.position;
+			const comps = frameData.forces[idx]?.components;
+			if (!pos||!comps) {
 				vec.visible = false; //hide forces with no data
 				return;
 			}

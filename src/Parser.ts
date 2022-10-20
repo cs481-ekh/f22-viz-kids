@@ -1,5 +1,5 @@
 import * as TSV from 'papaparse';
-import type {MarkerFileData, ForceFileData, Point3D} from './DataTypes';
+import type {MarkerFileData, ForceFileData, Point3D, Force} from './DataTypes';
 
 
 export async function parseMarkerFileData(file: File): Promise<MarkerFileData> {
@@ -86,34 +86,43 @@ export async function parseForceFileData(file: File): Promise<ForceFileData> {
             forces: []
         });
         /* Populate the Frame's forces */
-        fileData.frames[row-frame1Row].forces.push(
-            { //Force 1
-                position: {
-                    x: parseFloat(tsvTable[row][force1PosCol]),
-                    y: parseFloat(tsvTable[row][force1PosCol+1]),
-                    z: parseFloat(tsvTable[row][force1PosCol+2])
-                },
-                components: {
-                    x: parseFloat(tsvTable[row][force1CompCol]),
-                    y: parseFloat(tsvTable[row][force1CompCol+1]),
-                    z: parseFloat(tsvTable[row][force1CompCol+2])
-                },
-                torque: parseFloat(tsvTable[row][force1TrqCol])
+        let force1: Force|null = {
+            position: {
+                x: parseFloat(tsvTable[row][force1PosCol]),
+                y: parseFloat(tsvTable[row][force1PosCol+1]),
+                z: parseFloat(tsvTable[row][force1PosCol+2])
             },
-            { //Force 2
-                position: {
-                    x: parseFloat(tsvTable[row][force2PosCol]),
-                    y: parseFloat(tsvTable[row][force2PosCol+1]),
-                    z: parseFloat(tsvTable[row][force2PosCol+2])
-                },
-                components: {
-                    x: parseFloat(tsvTable[row][force2CompCol]),
-                    y: parseFloat(tsvTable[row][force2CompCol+1]),
-                    z: parseFloat(tsvTable[row][force2CompCol+2])
-                },
-                torque: parseFloat(tsvTable[row][force2TrqCol])
-            }
-        );
+            components: {
+                x: parseFloat(tsvTable[row][force1CompCol]),
+                y: parseFloat(tsvTable[row][force1CompCol+1]),
+                z: parseFloat(tsvTable[row][force1CompCol+2])
+            },
+            torque: parseFloat(tsvTable[row][force1TrqCol])
+        };
+        if (isNaN(force1.position.x) || isNaN(force1.position.y) || isNaN(force1.position.z)
+           || (force1.position.x===0 && force1.position.y===0 && force1.position.z===0)
+        ) {
+            force1 = null;
+        }
+        let force2: Force|null = {
+            position: {
+                x: parseFloat(tsvTable[row][force2PosCol]),
+                y: parseFloat(tsvTable[row][force2PosCol+1]),
+                z: parseFloat(tsvTable[row][force2PosCol+2])
+            },
+            components: {
+                x: parseFloat(tsvTable[row][force2CompCol]),
+                y: parseFloat(tsvTable[row][force2CompCol+1]),
+                z: parseFloat(tsvTable[row][force2CompCol+2])
+            },
+            torque: parseFloat(tsvTable[row][force2TrqCol])
+        };
+        if (isNaN(force2.position.x) || isNaN(force2.position.y) || isNaN(force2.position.z)
+            || (force2.position.x===0 && force2.position.y===0 && force2.position.z===0)
+        ) {
+            force2 = null;
+        }
+        fileData.frames[row-frame1Row].forces.push(force1,force2);
     }
 
     return fileData;

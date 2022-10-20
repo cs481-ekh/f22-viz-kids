@@ -304,7 +304,7 @@ test('parse valid force data (frame 151, .mot format)', async () => {
             frames: expect.arrayContaining<ForceFrame>([
                 {
                     time: 0.625,
-                    forces: expect.arrayContaining<Force>([
+                    forces: expect.arrayContaining<Force|null>([
                         {
                             position: {
                                 x: -0.857289,
@@ -347,7 +347,7 @@ test('parse valid force data (frame 23)', async () => {
             frames: expect.arrayContaining<ForceFrame>([
                 {
                     time: 0.091667,
-                    forces: expect.arrayContaining<Force>([
+                    forces: expect.arrayContaining<Force|null>([
                         {
                             position: {
                                 x: -1.021202,
@@ -360,7 +360,8 @@ test('parse valid force data (frame 23)', async () => {
                                 z: 0.682527
                             },
                             torque: 0.157576
-                        }
+                        },
+                        null
                     ])
                 }
             ])
