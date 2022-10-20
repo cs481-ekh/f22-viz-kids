@@ -5,13 +5,10 @@ BSU CS481 Capstone project
 #### Deployment:
 https://ptlux1517.github.io/Movilo/
 
-#### Sample Data:
+#### Sample Input Data:
 From a cloned copy of this repository, sample data can be loaded into Movilo from the following paths:
-* `f22-viz-kids/`
-  * `test/`
-    * `fixtures/`
-      * `Trial001_Markers.tsv`
-      * `Trial001_Forces.tsv`
+* `f22-viz-kids/test/fixtures/Trial001_Markers.tsv`
+* `f22-viz-kids/test/fixtures/Trial001_Forces.tsv`
 
 #### Controls:
 <div style="display: flex">
