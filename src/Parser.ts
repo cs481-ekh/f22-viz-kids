@@ -1,5 +1,5 @@
 import * as TSV from 'papaparse';
-import type {MarkerFileData, ForceFileData} from './DataTypes';
+import {MarkerFileData, ForceFileData, Point3D, Force} from './DataTypes';
 
 
 export async function parseMarkerFileData(file: File): Promise<MarkerFileData> {
@@ -41,11 +41,14 @@ export async function parseMarkerFileData(file: File): Promise<MarkerFileData> {
         });
         /* Populate the Frame's positions */
         labelToIdxMap.forEach(labelIdx => { //iterates through labels in insertion order
-            fileData.frames[row-frame1Row].positions.push({
+            let pos: Point3D|null = {
                 x: parseFloat(tsvTable[row][labelIdx]),
                 y: parseFloat(tsvTable[row][labelIdx+1]),
                 z: parseFloat(tsvTable[row][labelIdx+2])
-            });
+            };
+            if (isNaN(pos.x)||isNaN(pos.y)||isNaN(pos.z))
+                pos = null;
+            fileData.frames[row-frame1Row].positions.push(pos);
         });
     }
 

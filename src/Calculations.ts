@@ -8,11 +8,10 @@ export function computeAngle(points: Array<Point3D|null>): number|null {
     if (points.length < 3)
         return null;
 
-    const first3HasNullOrNaN = points.slice(0,3)
-        .some(point => point===null||isNaN(point.x)||isNaN(point.y)||isNaN(point.z));
+    const first3HasNull = points.slice(0,3).some(point => point===null);
 
-    if (first3HasNullOrNaN)
-        return null;
+    if (first3HasNull) //null markers are hidden in RenderView (and aren't selectable),
+        return null;   //so this case shouldn't be true except for in testing
 
     /* Convert 3 points to 2 vectors that share the same relative origin */
     const origin = points[0];
