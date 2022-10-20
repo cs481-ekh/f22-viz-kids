@@ -14,8 +14,8 @@ From a cloned copy of this repository, sample data can be loaded into Movilo fro
       * `Trial001_Forces.tsv`
 
 #### Controls:
-<img style="width: 49%" src="https://drive.google.com/uc?export=view&id=1h1bgs5jKba9IBEjUsuRP8fawe85NnLAz">
-<img style="width: 49%" src="https://drive.google.com/uc?export=view&id=198VEj933cJlHqmbUIlN_-xgKd1E_tTV6">
+<img style="width: 45%" src="https://drive.google.com/uc?export=view&id=1h1bgs5jKba9IBEjUsuRP8fawe85NnLAz">
+<img style="width: 45%" src="https://drive.google.com/uc?export=view&id=198VEj933cJlHqmbUIlN_-xgKd1E_tTV6">
 
 #### Wireframe:
 <img src="https://drive.google.com/uc?export=view&id=17jPsTX7J_bDDp0DaTn-C0XWKU70Gkpin">
