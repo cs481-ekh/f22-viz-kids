@@ -38,13 +38,12 @@ html {
       z-index: 1;
    }
    z-index: 1;
-   //position: relative; //needed for background z-index, but breaks marker selection precision
    width: calc(100vw - 20px); //was 960px
    height: calc(100vh - 125px); //was 530px
    box-sizing: border-box;
    display: grid;
-   grid-template-rows: 22px auto 40.5px 14px; //viz-area, output-area may resize in height (once implemented)
-   grid-template-columns: auto 100px 155px; //file-area, viz-area, timeline-track-area may resize in width (once implemented)
+   grid-template-rows: 22px auto 40.5px 14px; //responsive height for: viz-area, output-area
+   grid-template-columns: auto 100px 155px; //responsive width for: file-area, viz-area, timeline-track-area
    gap: 5px;
    padding: 5px;
    margin: 10px;
@@ -109,8 +108,7 @@ html {
          overflow: scroll;
          color: $errorPopupTextColor;
          background-color: $errorPopupBGColor;
-         width: 770px;
-         height: 420px;
+         height: calc(100vh - 256px);
          font-family: 'monospace','sans-serif';
          font-size: 9pt;
          cursor: text;
