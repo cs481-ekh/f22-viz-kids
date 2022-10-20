@@ -33,7 +33,7 @@ export interface Force {
 
 export interface ForceFrame {
     time: number;
-    forces: Array<Force|null>; //usually 1, at most 2
+    forces: Array<Force>; //usually 1, at most 2
 }
 
 export interface ForceFileData {

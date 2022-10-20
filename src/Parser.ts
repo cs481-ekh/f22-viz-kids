@@ -86,43 +86,28 @@ export async function parseForceFileData(file: File): Promise<ForceFileData> {
             forces: []
         });
         /* Populate the Frame's forces */
-        let force1: Force|null = {
-            position: {
-                x: parseFloat(tsvTable[row][force1PosCol]),
-                y: parseFloat(tsvTable[row][force1PosCol+1]),
-                z: parseFloat(tsvTable[row][force1PosCol+2])
-            },
-            components: {
-                x: parseFloat(tsvTable[row][force1CompCol]),
-                y: parseFloat(tsvTable[row][force1CompCol+1]),
-                z: parseFloat(tsvTable[row][force1CompCol+2])
-            },
-            torque: parseFloat(tsvTable[row][force1TrqCol])
-        };
-        if (isNaN(force1.position.x) || isNaN(force1.position.y) || isNaN(force1.position.z)
-           || (force1.position.x===0 && force1.position.y===0 && force1.position.z===0)
+        for (let posCol=force1PosCol, compCol=force1CompCol, trqCol=force1TrqCol;
+             posCol<=force2PosCol && compCol<=force2CompCol && trqCol<=force2TrqCol;
+             posCol+=(force2PosCol-force1PosCol), compCol+=(force2CompCol-force1CompCol), trqCol+=(force2TrqCol-force1TrqCol)
         ) {
-            force1 = null;
+            const force: Force = {
+                position: {
+                    x: parseFloat(tsvTable[row][posCol]),
+                    y: parseFloat(tsvTable[row][posCol+1]),
+                    z: parseFloat(tsvTable[row][posCol+2])
+                },
+                components: {
+                    x: parseFloat(tsvTable[row][compCol]),
+                    y: parseFloat(tsvTable[row][compCol+1]),
+                    z: parseFloat(tsvTable[row][compCol+2])
+                },
+                torque: parseFloat(tsvTable[row][trqCol])
+            };
+            const invalid = isNaN(force.position.x) || isNaN(force.position.y) || isNaN(force.position.z)
+                            || (force.position.x===0 && force.position.y===0 && force.position.z===0);
+            if (!invalid)
+                fileData.frames[row-frame1Row].forces.push(force);
         }
-        let force2: Force|null = {
-            position: {
-                x: parseFloat(tsvTable[row][force2PosCol]),
-                y: parseFloat(tsvTable[row][force2PosCol+1]),
-                z: parseFloat(tsvTable[row][force2PosCol+2])
-            },
-            components: {
-                x: parseFloat(tsvTable[row][force2CompCol]),
-                y: parseFloat(tsvTable[row][force2CompCol+1]),
-                z: parseFloat(tsvTable[row][force2CompCol+2])
-            },
-            torque: parseFloat(tsvTable[row][force2TrqCol])
-        };
-        if (isNaN(force2.position.x) || isNaN(force2.position.y) || isNaN(force2.position.z)
-           || (force2.position.x===0 && force2.position.y===0 && force2.position.z===0)
-        ) {
-            force2 = null;
-        }
-        fileData.frames[row-frame1Row].forces.push(force1,force2);
     }
 
     return fileData;
