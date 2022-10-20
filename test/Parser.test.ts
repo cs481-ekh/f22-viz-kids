@@ -87,11 +87,7 @@ test('parse valid marker data (frame 1, CSV format)', async () => {
                             y: -1.36928,
                             z: 1.35853
                         },
-                        { //LLSK, which has empty X Y Z R fields
-                            x: NaN,
-                            y: NaN,
-                            z: NaN
-                        },
+                        null, //LLSK, which has empty X Y Z R fields
                         { //RILCR
                             x: 0.32123,
                             y: -1.3977,
@@ -130,11 +126,7 @@ test('parse valid marker data (frame 2)', async () => {
                             y: -1.36457,
                             z: 1.35774
                         },
-                        { //LLSK, which has empty X Y Z R fields
-                            x: NaN,
-                            y: NaN,
-                            z: NaN
-                        },
+                        null, //LLSK, which has empty X Y Z R fields
                         { //RILCR
                             x: 0.32163,
                             y: -1.3931,
@@ -173,11 +165,7 @@ test('parse valid marker data (frame 3)', async () => {
                             y: -1.35998,
                             z: 1.35677
                         },
-                        { //LLSK, which has empty X Y Z R fields
-                            x: NaN,
-                            y: NaN,
-                            z: NaN
-                        },
+                        null, //LLSK, which has empty X Y Z R fields
                         { //RILCR
                             x: 0.32196,
                             y: -1.3884,
@@ -216,11 +204,7 @@ test('parse valid marker data (frame 4)', async () => {
                             y: -1.35523,
                             z: 1.35585
                         },
-                        { //LLSK, which has empty X Y Z R fields
-                            x: NaN,
-                            y: NaN,
-                            z: NaN
-                        },
+                        null, //LLSK, which has empty X Y Z R fields
                         { //RILCR
                             x: 0.32234,
                             y: -1.3838,
@@ -259,11 +243,7 @@ test('parse valid marker data bottom up (frame 494)', async () => {
                             y: 0.62127,
                             z: 1.37952
                         },
-                        { //LLSK, which has empty X Y Z R fields
-                            x: NaN,
-                            y: NaN,
-                            z: NaN
-                        },
+                        null, //LLSK, which has empty X Y Z R fields
                         { //RILCR
                             x: 0.37687,
                             y: 0.63324,
@@ -302,11 +282,7 @@ test('parse valid marker data bottom up (frame 493)', async () => {
                             y: 0.61867,
                             z: 1.37884
                         },
-                        { //LLSK, which has empty X Y Z R fields
-                            x: NaN,
-                            y: NaN,
-                            z: NaN
-                        },
+                        null, //LLSK, which has empty X Y Z R fields
                         { //RILCR
                             x: 0.37728,
                             y: 0.63108,

@@ -173,7 +173,7 @@ export default function RenderView(props: Props) {
 		const frameData = props.markerData.frames[props.frame];
 		markerMeshes.forEach((mesh,idx) => {
 			const pos = frameData.positions[idx];
-			if (!pos||isNaN(pos.x)||isNaN(pos.y)||isNaN(pos.z)) {
+			if (pos===null) {
 				mesh.visible = false; //hide markers with invalid data
 				return;
 			}
