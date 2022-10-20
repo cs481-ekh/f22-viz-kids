@@ -317,8 +317,6 @@ export default function App() {
 		{/* --------------------------------------------- Beneath App grid --------------------------------------------- */}
 		<div id={"sdp-logo-area"}>
 			<div id={"sdp-flex"}>
-				{/* eslint-disable-next-line @typescript-eslint/no-var-requires */}
-				{/*<img id={"sdp-logo"} src={require('../assets/images/sdp-logo-3.png').default} alt="senior design project logo" />*/}
 				<img id={"sdp-logo"} src={"https://drive.google.com/uc?export=view&id=10VJZEoeTEN7JKled94_VoUMK4c_PEfZc"} alt={"senior design project logo"} />
 				<div id={"sdp-info"}>
 					{`This website was created for a Boise State University
