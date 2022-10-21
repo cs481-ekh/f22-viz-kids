@@ -6,7 +6,6 @@ import { ForceFileData, MarkerFileData } from "./DataTypes";
 import { parseForceFileData, parseMarkerFileData } from "./Parser";
 import RenderView from "./RenderView";
 import SelectionInfoView from "./SelectionInfoView";
-import ErrorPopup from "./ErrorPopup";
 import { PlayIcon, PauseIcon } from "./icons";
 import useStateRef from "./useStateRef";
 
@@ -251,8 +250,10 @@ export default function App() {
 				/>
 			</div>
 			<div id={"popup-area"}>
-				<ErrorPopup error={error} />
-				<div id={"sdp-info"} style={sdpInfo ? {visibility: 'visible'} : {visibility: 'hidden'}}>
+				<div id={"error-popup"} style={error ? {display: 'block'} : {display: 'none'}}>
+					{'Error: ' + error?.message}
+				</div>
+				<div id={"sdp-info-popup"} style={sdpInfo ? {display: 'flex'} : {display: 'none'}}>
 					{`This website was created for a Boise State University
 					Computer Science Senior Design Project by
 					

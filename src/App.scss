@@ -112,49 +112,46 @@ html {
       }
    }
    #popup-area {
-      $popupHeight: 100%;
-      $popupWidth: 100%;
       $popupPadding: 15px;
 
       z-index: 2;
-      position: relative;
       grid-row: 2/4;
       grid-column: 1/3;
-      visibility: hidden;
+      position: relative; //base for child popups' absolute positioning
+      font-size: 9pt;
       #error-popup {
          z-index: 3;
+         position: absolute;
          padding: $popupPadding;
-         white-space: pre;
-         overflow: auto;
-         color: $errorPopupTextColor;
-         background-color: $errorPopupBGColor;
          width: calc(100% - 2*$popupPadding);
          height: calc(100% - 2*$popupPadding);
+         overflow: auto;
+         background-color: $errorPopupBGColor;
+         color: $errorPopupTextColor;
          font-family: 'monospace','sans-serif';
-         font-size: 9pt;
+         font-size: inherit;
+         white-space: pre;
          cursor: text;
       }
-      #sdp-info {
+      #sdp-info-popup {
          z-index: 4;
-         position: relative;
-         top: calc(-1*$popupHeight);
+         position: absolute;
          padding: $popupPadding;
-         white-space: pre-line;
-         color: $sdpInfoTextColor;
-         background-color: $sdpInfoBGColor;
-         font-size: 9pt;
          width: calc(100% - 2*$popupPadding);
          height: calc(100% - 2*$popupPadding);
-         display: flex;
-         flex-direction: column;
+         background-color: $sdpInfoBGColor;
+         color: $sdpInfoTextColor;
+         font-size: inherit;
+         white-space: pre-line;
+         flex-direction: column; //display toggled between flex and none in App.tsx
          justify-content: center;
          align-items: center;
          text-align: center;
          a {
             text-decoration: none;
             color: $sdpLinkColor;
+            font-size: inherit;
             font-weight: bold;
-            font-size: 9pt;
          }
       }
    }
