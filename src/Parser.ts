@@ -1,5 +1,5 @@
 import * as TSV from 'papaparse';
-import type {MarkerFileData, ForceFileData} from './DataTypes';
+import {MarkerFileData, ForceFileData, Point3D, Force} from './DataTypes';
 
 
 export async function parseMarkerFileData(file: File): Promise<MarkerFileData> {
@@ -41,11 +41,14 @@ export async function parseMarkerFileData(file: File): Promise<MarkerFileData> {
         });
         /* Populate the Frame's positions */
         labelToIdxMap.forEach(labelIdx => { //iterates through labels in insertion order
-            fileData.frames[row-frame1Row].positions.push({
+            let pos: Point3D|null = {
                 x: parseFloat(tsvTable[row][labelIdx]),
                 y: parseFloat(tsvTable[row][labelIdx+1]),
                 z: parseFloat(tsvTable[row][labelIdx+2])
-            });
+            };
+            if (isNaN(pos.x)||isNaN(pos.y)||isNaN(pos.z))
+                pos = null;
+            fileData.frames[row-frame1Row].positions.push(pos);
         });
     }
 
@@ -83,34 +86,28 @@ export async function parseForceFileData(file: File): Promise<ForceFileData> {
             forces: []
         });
         /* Populate the Frame's forces */
-        fileData.frames[row-frame1Row].forces.push(
-            { //Force 1
+        for (let posCol=force1PosCol, compCol=force1CompCol, trqCol=force1TrqCol;
+             posCol<=force2PosCol && compCol<=force2CompCol && trqCol<=force2TrqCol;
+             posCol+=(force2PosCol-force1PosCol), compCol+=(force2CompCol-force1CompCol), trqCol+=(force2TrqCol-force1TrqCol)
+        ) {
+            const force: Force = {
                 position: {
-                    x: parseFloat(tsvTable[row][force1PosCol]),
-                    y: parseFloat(tsvTable[row][force1PosCol+1]),
-                    z: parseFloat(tsvTable[row][force1PosCol+2])
+                    x: parseFloat(tsvTable[row][posCol]),
+                    y: parseFloat(tsvTable[row][posCol+1]),
+                    z: parseFloat(tsvTable[row][posCol+2])
                 },
                 components: {
-                    x: parseFloat(tsvTable[row][force1CompCol]),
-                    y: parseFloat(tsvTable[row][force1CompCol+1]),
-                    z: parseFloat(tsvTable[row][force1CompCol+2])
+                    x: parseFloat(tsvTable[row][compCol]),
+                    y: parseFloat(tsvTable[row][compCol+1]),
+                    z: parseFloat(tsvTable[row][compCol+2])
                 },
-                torque: parseFloat(tsvTable[row][force1TrqCol])
-            },
-            { //Force 2
-                position: {
-                    x: parseFloat(tsvTable[row][force2PosCol]),
-                    y: parseFloat(tsvTable[row][force2PosCol+1]),
-                    z: parseFloat(tsvTable[row][force2PosCol+2])
-                },
-                components: {
-                    x: parseFloat(tsvTable[row][force2CompCol]),
-                    y: parseFloat(tsvTable[row][force2CompCol+1]),
-                    z: parseFloat(tsvTable[row][force2CompCol+2])
-                },
-                torque: parseFloat(tsvTable[row][force2TrqCol])
-            }
-        );
+                torque: parseFloat(tsvTable[row][trqCol])
+            };
+            const invalid = isNaN(force.position.x) || isNaN(force.position.y) || isNaN(force.position.z)
+                            || (force.position.x===0 && force.position.y===0 && force.position.z===0);
+            if (!invalid)
+                fileData.frames[row-frame1Row].forces.push(force);
+        }
     }
 
     return fileData;
@@ -123,11 +120,9 @@ async function tsvToTable(file: File): Promise<string[]> {
         return Promise.reject(new Error("no file was selected"));
     }
 
-    const motFile: boolean = file.name.endsWith(".mot");
+    const supportedFile = file.name.endsWith(".tsv") || file.name.endsWith(".csv") || file.name.endsWith(".txt") || file.name.endsWith(".mot");
 
-    if (  !file.type && !motFile
-        || !(file.type==="text/plain" || file.type==="text/csv" || file.type==="text/tab-separated-values" || motFile)
-    ) {
+    if (!supportedFile) {
         return Promise.reject(new Error(
             `unsupported file type\n`+
             `File: ${file.name}\n\n`+
