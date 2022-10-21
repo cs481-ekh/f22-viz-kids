@@ -160,7 +160,7 @@ export default function App() {
 		</div>
 		<div id={"logo"}>Movilo</div>
 		<div id={"output-area-title"}>Selection Info</div>
-		{/* ---------------------------------------------- Grid Row 2 ---------------------------------------------- */}
+		{/* --------------------------------------------- Grid Row 2-3 --------------------------------------------- */}
 		<div id={"viz-area"}>
 			<RenderView
 				frame={frame}
@@ -174,7 +174,8 @@ export default function App() {
 		<div id={"output-area"}>
 			<SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame} />
 		</div>
-		{/* ---------------------------------------------- Grid Row 3 ---------------------------------------------- */}
+		<img id={"sdp-logo"} src={"https://drive.google.com/uc?export=view&id=10VJZEoeTEN7JKled94_VoUMK4c_PEfZc"} alt={"senior design project logo"} />
+		{/* ---------------------------------------------- Grid Row 4 ---------------------------------------------- */}
 		<div id={"timeline-track-area"}>
 			<div id="timeline-track-main-area">
 				<button id={"play-button"} onClick={togglePlaying}>
