@@ -34,19 +34,33 @@ html {
 
 /* Styles in the grid are organized top->bottom, left->right */
 #app-grid {
+   $row1Height: 22px;
+   $row2Height: auto; //responsive height for: viz-area, output-area
+   $row3Height: 87px;
+   $row4Height: 40.5px;
+   $row5Height: 14px;
+
+   $col1Width: auto; //responsive width for: file-area, viz-area, timeline-track-area
+   $col2Width: 100px;
+   $col3Width: 155px;
+
+   $gridGap: 5px;
+   $gridPadding: 5px;
+   $gridMargin: 10px;
+
    & > * {
       z-index: 1;
    }
    z-index: 1;
-   width: calc(100vw - 20px); //was 960px
-   height: calc(100vh - 125px); //was 530px
+   width: calc(100vw - 2*$gridMargin);
+   height: calc(100vh - 2*$gridMargin);
    box-sizing: border-box;
    display: grid;
-   grid-template-rows: 22px auto 40.5px 14px; //responsive height for: viz-area, output-area
-   grid-template-columns: auto 100px 155px; //responsive width for: file-area, viz-area, timeline-track-area
-   gap: 5px;
-   padding: 5px;
-   margin: 10px;
+   grid-template-rows: $row1Height $row2Height $row3Height $row4Height $row5Height;
+   grid-template-columns: $col1Width $col2Width $col3Width;
+   gap: $gridGap;
+   padding: $gridPadding;
+   margin: $gridMargin;
    background-image: $BG_Gradient;
    border-radius: 8px;
    box-shadow: black 0 0 8px;
@@ -86,32 +100,62 @@ html {
       line-height: 30pt;
       color: $outputAreaTitleColor;
    }
-   // ----------------------------------------- Grid Row 2 -----------------------------------------
+   // ----------------------------------------- Grid Row 2/3 -----------------------------------------
    #viz-area {
-      grid-row: 2;
+      grid-row: 2/4;
       grid-column: 1/3;
       background-color: $vizAreaBGColor;
-      overflow-y: hidden;
+      overflow: hidden;
       > div {
          height: 100%;
+         width: 100%;
       }
    }
    #popup-area {
+      $popupHeight: 100%;
+      $popupWidth: 100%;
+      $popupPadding: 15px;
+
       z-index: 2;
-      grid-row: 2;
+      position: relative;
+      grid-row: 2/4;
       grid-column: 1/3;
       visibility: hidden;
       #error-popup {
          z-index: 3;
-         padding: 15px;
+         padding: $popupPadding;
          white-space: pre;
-         overflow: scroll;
+         overflow: auto;
          color: $errorPopupTextColor;
          background-color: $errorPopupBGColor;
-         height: calc(100vh - 256px);
+         width: calc(100% - 2*$popupPadding);
+         height: calc(100% - 2*$popupPadding);
          font-family: 'monospace','sans-serif';
          font-size: 9pt;
          cursor: text;
+      }
+      #sdp-info {
+         z-index: 4;
+         position: relative;
+         top: calc(-1*$popupHeight);
+         padding: $popupPadding;
+         white-space: pre-line;
+         color: $sdpInfoTextColor;
+         background-color: $sdpInfoBGColor;
+         font-size: 9pt;
+         width: calc(100% - 2*$popupPadding);
+         height: calc(100% - 2*$popupPadding);
+         display: flex;
+         flex-direction: column;
+         justify-content: center;
+         align-items: center;
+         text-align: center;
+         a {
+            text-decoration: none;
+            color: $sdpLinkColor;
+            font-weight: bold;
+            font-size: 9pt;
+         }
       }
    }
    #output-area {
@@ -119,6 +163,7 @@ html {
       grid-column: 3;
       background-color: $outputAreaBGColor;
       padding: 5px;
+      overflow-y: auto;
       #selection-info-view {
          & > * {
             font-size: 9pt;
@@ -128,9 +173,15 @@ html {
          }
       }
    }
-   // ----------------------------------------- Grid Row 3 -----------------------------------------
-   #timeline-track-area {
+   #sdp-logo {
       grid-row: 3;
+      grid-column: 3;
+      cursor: pointer;
+      width: 100%; //height: 87px;
+   }
+   // ----------------------------------------- Grid Row 4 -----------------------------------------
+   #timeline-track-area {
+      grid-row: 4;
       grid-column: 1/3;
       display: flex;
       flex-direction: column;
@@ -184,13 +235,13 @@ html {
       }
    }
    #timeline-manual-area {
-      grid-row: 3;
+      grid-row: 4;
       grid-column: 3;
       text-align: center;
    }
-   // ----------------------------------------- Grid Row 4 -----------------------------------------
+   // ----------------------------------------- Grid Row 5 -----------------------------------------
    #timeline-track-under-area {
-      grid-row: 4;
+      grid-row: 5;
       grid-column: 1/3;
       position: relative;
       top: -7px;
@@ -208,37 +259,6 @@ html {
    }
 }
 
-// -------------------------------------- Beneath App grid --------------------------------------
-#sdp-logo-area {
-   width: 100vw; //was 960px
-   #sdp-flex {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      #sdp-logo {
-         height: 91.5px; //width: 213.5px;
-         border-radius: 10px 0px 0px 10px;
-      }
-      #sdp-info {
-         padding: 10px;
-         display: flex;
-         flex-direction: column;
-         justify-content: center;
-         font-size: 4pt;
-         text-align: center;
-         background-color: $sdpInfoBGColor;
-         color: $sdpInfoTextColor;
-         white-space: pre-line;
-         border-radius: 0px 10px 10px 0px;
-         a {
-            text-decoration: none;
-            color: $sdpLinkColor;
-            font-weight: bold;
-            font-size: 4pt;
-         }
-      }
-   }
-}
 
 .file-upload-button {
    background-color: $fileUploadButtonBGColor;
@@ -258,7 +278,7 @@ html {
    width: 34px;
    height: 11px;
    margin: -2px;
-   padding: 0px 2px;
+   padding: 0 2px;
    text-align: left;
    &:focus {
       outline: none;

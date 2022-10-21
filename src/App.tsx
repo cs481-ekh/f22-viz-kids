@@ -167,6 +167,8 @@ export default function App() {
 
 	// ---------------------------------------------------- Controls ---------------------------------------------------
 
+	const [sdpInfo,setSdpInfo] = useState(false);
+
 	/* Play button (on click) */
 	const togglePlaying = useCallback(() => setPlaying(current => {
 		/* Handle start from pause on last frame, if encountered */
@@ -242,15 +244,36 @@ export default function App() {
 			</div>
 			<div id={"logo"}>Movilo</div>
 			<div id={"output-area-title"}>Selection Info</div>
-			{/* ---------------------------------------------- Grid Row 2 ---------------------------------------------- */}
+			{/* ---------------------------------------------- Grid Row 2/3 ---------------------------------------------- */}
 			<div id={"viz-area"}>
 				<RenderView frame={frame} markerData={markerFileData} forceData={forceFileData}
 					selectedMarkers={selectedMarkers} setSelectedMarkers={setSelectedMarkers}
 				/>
 			</div>
-			<div id={"popup-area"}><ErrorPopup error={error} /></div>
+			<div id={"popup-area"}>
+				<ErrorPopup error={error} />
+				<div id={"sdp-info"} style={sdpInfo ? {visibility: 'visible'} : {visibility: 'hidden'}}>
+					{`This website was created for a Boise State University
+					Computer Science Senior Design Project by
+					
+					Colin Reeder
+					Connor Jackson
+					Cory Tomlinson
+					Javier Trejo
+					William Kenny
+					
+					For information about sponsoring a project, go to
+					`}
+					<a href={"https://www.boisestate.edu/coen-cs/community/cs481-senior-design-project/"} target={'_blank'}>
+						https://www.boisestate.edu/coen-cs/community/cs481-senior-design-project/
+					</a>
+				</div>
+			</div>
 			<div id={"output-area"}><SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame} /></div>
-			{/* ---------------------------------------------- Grid Row 3 ---------------------------------------------- */}
+			<img id={"sdp-logo"} src={"https://drive.google.com/uc?export=view&id=10VJZEoeTEN7JKled94_VoUMK4c_PEfZc"} alt={"senior design project logo"}
+				 onClick={() => setSdpInfo(!sdpInfo)}
+			/>
+			{/* ---------------------------------------------- Grid Row 4 ---------------------------------------------- */}
 			<div id={"timeline-track-area"}>
 				<div id="timeline-track-flex">
 					<button id={"play-button"} onClick={togglePlaying}>{playing ? <PauseIcon /> : <PlayIcon />}</button>
@@ -304,7 +327,7 @@ export default function App() {
 					</tr>
 				</table>
 			</div>
-			{/* ---------------------------------------------- Grid Row 4 ---------------------------------------------- */}
+			{/* ---------------------------------------------- Grid Row 5 ---------------------------------------------- */}
 			<div id={"timeline-track-under-area"}>
 				<label id={"play-button-loop-checkbox-label"}>Loop:
 					<input id={"play-button-loop-checkbox"} type={"checkbox"}
@@ -315,26 +338,6 @@ export default function App() {
 			</div>
 		</div>
 		{/* --------------------------------------------- Beneath App grid --------------------------------------------- */}
-		<div id={"sdp-logo-area"}>
-			<div id={"sdp-flex"}>
-				<img id={"sdp-logo"} src={"https://drive.google.com/uc?export=view&id=10VJZEoeTEN7JKled94_VoUMK4c_PEfZc"} alt={"senior design project logo"} />
-				<div id={"sdp-info"}>
-					{`This website was created for a Boise State University
-					Computer Science Senior Design Project by
-					
-					Colin Reeder
-					Connor Jackson
-					Cory Tomlinson
-					Javier Trejo
-					William Kenny
-					
-					For information about sponsoring a project, go to
-					`}
-					<a href={"https://www.boisestate.edu/coen-cs/community/cs481-senior-design-project/"}>
-						https://www.boisestate.edu/coen-cs/community/cs481-senior-design-project/
-					</a>
-				</div>
-			</div>
-		</div>
+
 	</>;
 }
