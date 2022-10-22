@@ -26,7 +26,11 @@ module.exports = {
                     "css-loader",
                     "sass-loader"
                 ]
-            }
+            },
+			{
+				test: /\.(png|jpe?g)$/,
+				loader: "url-loader"
+			}
 		]
 	}
 };
