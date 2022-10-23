@@ -187,11 +187,9 @@ export default function App() {
 					onChange={(e) => setFrame(parseInt(e.target.value))} value={frame} />
 				<label><input type="checkbox" checked={checked} onChange={(e) => {
 					setChecked(e.target.checked);
-
-					if (checked == false) {
-						setPlaying(true);
-					}
-
+					/*if (!checked) {
+						setPlaying(true); //sets from pause to play if you check loop box again
+					}*/
 					}
 					}/>Loop</label>
 			</div>
