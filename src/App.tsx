@@ -20,6 +20,7 @@ export default function App() {
 	const [playing, setPlaying] = useState(false);
 	const [frameStart, setStart] = useState(0);
 	const [frameEnd, setEnd] = useState(0);
+	const [checked, setChecked] = useState(true);
 	
 	const [selectedMarkers, setSelectedMarkers] = useState<number[]>([]);
 
@@ -114,9 +115,12 @@ export default function App() {
 					interFrameTimeRef.current -= timeStep;
 					setFrame(current => {
 						if(current + 1 < markerFileData.frames.length && current + 1 < frameEnd) {return current + 1;
-						} else return frameStart;
-						//setPlaying(false);
-						//return current;
+						} else if(checked == false) { //if loop checkbox unchecked then don't loop
+								setPlaying(checked); //changed play to pause once reaches end if loop unchecked, for frame manipulation 
+								return current; //returns last frame - 1, based on calculation in first if statement
+						}
+							else return frameStart; //loop if loop checkbox is checked
+						
 					});
 				}
 			}
@@ -125,7 +129,7 @@ export default function App() {
 		}
 		
 		animationRef.current = requestAnimationFrame(animationLoop);
-	}, [markerFileData, timeStep, frameEnd, frameStart]);
+	}, [markerFileData, timeStep, frameEnd, frameStart, checked]);
 
 	useEffect(() => {
 		if(playing) {
@@ -137,14 +141,13 @@ export default function App() {
 	const togglePlaying = useCallback(() => {
 		setPlaying(current => {
 			if(current) return false;
-
-			if(frameRef.current >= markerFileData.frames.length - 1) setFrame(frameStart); // restart if at end
+			if(checked == true && frameRef.current >= markerFileData.frames.length - 1) setFrame(frameStart); // restart if at end
 			return true;
 		});
-	}, [markerFileData.frames.length, frameRef, frameStart]);
+	}, [markerFileData.frames.length, frameRef, frameStart, checked]);
 
 	
-
+	
 	/* Elements/components in the grid are organized top->bottom, left->right */
 	return <div id={"app-grid"} style={(markersLoading||forcesLoading) ? {cursor: "progress"} : {cursor: "default"}}>
 		{/* ---------------------------------------------- Grid Row 1 ---------------------------------------------- */}
@@ -182,6 +185,15 @@ export default function App() {
 				</button>
 				<input id={"timeline-track"} type={"range"} min={"0"} max={markerFileData.frames.length - 1}
 					onChange={(e) => setFrame(parseInt(e.target.value))} value={frame} />
+				<label><input type="checkbox" checked={checked} onChange={(e) => {
+					setChecked(e.target.checked);
+
+					if (checked == false) {
+						setPlaying(true);
+					}
+
+					}
+					}/>Loop</label>
 			</div>
 		</div>
 		<div id={"timeline-manual-area"}>
