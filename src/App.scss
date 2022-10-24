@@ -161,6 +161,7 @@ body {
          color: $sdpInfoPopupTextColor;
          font-size: inherit;
          white-space: pre-line;
+         display: flex;
          flex-direction: column; //display toggled between flex and none in App.tsx
          justify-content: center;
          align-items: center;
