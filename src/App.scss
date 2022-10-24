@@ -9,6 +9,9 @@ $outputAreaBGColor: #4d4d4d9d;
 $vizAreaBGColor: #222222;
 $errorPopupTextColor: #aa0000;
 $errorPopupBGColor: #202020cc;
+$sdpInfoPopupBGColor: #00329e;
+$sdpInfoPopupTextColor: #ffffff;
+$sdpLinkColor: #d74309;
 $playButtonBGColor: #6aa84f;
 $timelineTrackBGColor: #4d4d4d;
 $timelineTrackThumbColor: white;
@@ -85,22 +88,49 @@ body {
 	  }
    }
    #popup-area {
+      $popupPadding: 15px;
+      $popupZindex: 1;
+      z-index: $popupZindex;
       grid-row: 2/4;
       grid-column: 1/3;
-      z-index: 1;
+      position: relative; //base for child popups' absolute positioning
+      font-size: 9pt; //for child popups to inherit
       visibility: hidden;
       #error-popup {
-         z-index: 2;
-         padding: 15px;
-         white-space: pre;
-         overflow: scroll;
-         color: $errorPopupTextColor;
+         z-index: calc($popupZindex + 1);
+         position: absolute;
+         padding: $popupPadding;
+         width: calc(100% - 2*$popupPadding);
+         height: calc(100% - 2*$popupPadding);
+         overflow: auto;
          background-color: $errorPopupBGColor;
-         width: 770px;
-         height: 420px;
+         color: $errorPopupTextColor;
          font-family: 'monospace','sans-serif';
-         font-size: 9pt;
+         font-size: inherit;
+         white-space: pre;
          cursor: text;
+      }
+      #sdp-info-popup {
+         z-index: calc($popupZindex + 2);
+         position: absolute;
+         padding: $popupPadding;
+         width: calc(100% - 2*$popupPadding);
+         height: calc(100% - 2*$popupPadding);
+         background-color: $sdpInfoPopupBGColor;
+         color: $sdpInfoPopupTextColor;
+         font-size: inherit;
+         white-space: pre-line;
+         display: flex;
+         flex-direction: column;
+         justify-content: center;
+         align-items: center;
+         text-align: center;
+         a {
+            text-decoration: none;
+            color: $sdpLinkColor;
+            font-size: inherit;
+            font-weight: bold;
+         }
       }
    }
    #output-area {

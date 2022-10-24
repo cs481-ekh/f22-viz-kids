@@ -21,6 +21,7 @@ export default function App() {
 	const [playing, setPlaying] = useState(false);
 	const [frameStart, setStart] = useState(0);
 	const [frameEnd, setEnd] = useState(0);
+	const [sdpInfo, setSdpInfo] = useState(false); //to toggle displaying SDP info popup
 	
 	const [selectedMarkers, setSelectedMarkers] = useState<number[]>([]);
 
@@ -171,11 +172,29 @@ export default function App() {
 				updateSelectedMarkers={setSelectedMarkers}
 			/>
 		</div>
-		<div id={"popup-area"}><ErrorPopup error={error} /></div>
+		<div id={"popup-area"}>
+			<ErrorPopup error={error} />
+			<div id={"sdp-info-popup"} style={sdpInfo ? {visibility: 'visible'} : {visibility: 'hidden'}}>
+				{`This website was created for a Boise State University
+				Computer Science Senior Design Project by
+				
+				Colin Reeder
+				Connor Jackson
+				Cory Tomlinson
+				Javier Trejo
+				William Kenny
+				
+				For information about sponsoring a project, go to
+				`}
+				<a href={"https://www.boisestate.edu/coen-cs/community/cs481-senior-design-project/"} target={'_blank'}>
+					https://www.boisestate.edu/coen-cs/community/cs481-senior-design-project/
+				</a>
+			</div>
+		</div>
 		<div id={"output-area"}>
 			<SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame} />
 		</div>
-		<img id={"sdp-logo"} src={sdpLogo} alt={"senior design project logo"} />
+		<img id={"sdp-logo"} src={sdpLogo} alt={"senior design project logo"} onClick={()=>setSdpInfo(!sdpInfo)} />
 		{/* ---------------------------------------------- Grid Row 4 ---------------------------------------------- */}
 		<div id={"timeline-track-area"}>
 			<div id="timeline-track-main-area">
