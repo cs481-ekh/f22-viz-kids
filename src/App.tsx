@@ -9,6 +9,7 @@ import RenderView from "./RenderView";
 import ErrorPopup from "./ErrorPopup";
 import SelectionInfoView from "./SelectionInfoView";
 import useStateRef from "./useStateRef";
+import * as sdpLogo from "../assets/images/sdp-logo-3.png";
 
 import "./App.scss";
 
@@ -174,7 +175,7 @@ export default function App() {
 		<div id={"output-area"}>
 			<SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame} />
 		</div>
-		<img id={"sdp-logo"} src={require('../assets/images/sdp-logo-3.png').default} alt={"senior design project logo"} />
+		<img id={"sdp-logo"} src={sdpLogo} alt={"senior design project logo"} />
 		{/* ---------------------------------------------- Grid Row 4 ---------------------------------------------- */}
 		<div id={"timeline-track-area"}>
 			<div id="timeline-track-main-area">
