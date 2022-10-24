@@ -136,6 +136,7 @@ body {
       grid-column: 1/3;
       position: relative; //base for child popups' absolute positioning
       font-size: 9pt; //for child popups to inherit
+      visibility: hidden;
       #error-popup {
          z-index: calc($popupZindex + 1);
          position: absolute;

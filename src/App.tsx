@@ -250,10 +250,10 @@ export default function App() {
 				/>
 			</div>
 			<div id={"popup-area"}>
-				<div id={"error-popup"} style={error ? {display: 'block'} : {display: 'none'}}>
+				<div id={"error-popup"} style={error ? {visibility: 'visible'} : {visibility: 'hidden'}}>
 					{'Error: ' + error?.message}
 				</div>
-				<div id={"sdp-info-popup"} style={sdpInfo ? {display: 'flex'} : {display: 'none'}}>
+				<div id={"sdp-info-popup"} style={sdpInfo ? {visibility: 'visible'} : {visibility: 'hidden'}}>
 					{`This website was created for a Boise State University
 					Computer Science Senior Design Project by
 					
