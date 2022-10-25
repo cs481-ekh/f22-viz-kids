@@ -36,16 +36,14 @@ export default function SelectionInfoView(props: Props) {
         }
     </>;
 
-    const thetaLabel = props.markerData.markers[props.selectedMarkers[0]].label;
-    let angle: number|null = null;
     let angleOutput;
-
     if (props.selectedMarkers.length >= 3) {
+        const thetaLabel = props.markerData.markers[props.selectedMarkers[0]].label;
         const first3Pos = props.selectedMarkers.slice(0,3).map(idx => props.markerData.frames[props.frame].positions[idx]);
-        angle = computeAngle(first3Pos);
+        let angle = computeAngle(first3Pos);
         if (angle!==null) {
-            angle = Math.round(10*angle) / 10; //round to nearest tenth
-            angleOutput = <p>{thetaLabel} Angle: {angle} deg</p>;
+            angle = Math.round(10*angle) / 10; //round to the nearest tenth
+            angleOutput = <p>{thetaLabel} Angle: {angle}°</p>;
         }
         else angleOutput = <p>Unknown angle (missing marker)</p>;
     }
