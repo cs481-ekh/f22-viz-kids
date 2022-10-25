@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { MarkerFileData, MarkerFrame } from "./DataTypes";
+import { MarkerFileData } from "./DataTypes";
 import { computeAngle} from "./Calculations";
 
 interface Props {
