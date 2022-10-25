@@ -10,6 +10,8 @@ import ErrorPopup from "./ErrorPopup";
 import SelectionInfoView from "./SelectionInfoView";
 import useStateRef from "./useStateRef";
 import * as sdpLogo from "../assets/images/sdp-logo-3.png";
+import * as hamburger from "../assets/images/hamburger.png";
+import * as help1 from "../assets/images/helpimg1.png";
 
 import "./App.scss";
 
@@ -22,7 +24,7 @@ export default function App() {
 	const [frameStart, setStart] = useState(0);
 	const [frameEnd, setEnd] = useState(0);
 	const [sdpInfo, setSdpInfo] = useState(false); //to toggle displaying SDP info popup
-	
+	const [help, setHelp] = useState(false);
 	const [selectedMarkers, setSelectedMarkers] = useState<number[]>([]);
 
 	/* Flags for clearing file name if parsing error is encountered */
@@ -190,6 +192,10 @@ export default function App() {
 					https://www.boisestate.edu/coen-cs/community/cs481-senior-design-project/
 				</a>
 			</div>
+			<div id={"help-popup"} style={help ? {visibility: 'visible'} : {visibility: 'hidden'}}>
+				{ <img id={"helpimg1"} src={help1} alt={"help image 1"}/>}
+				
+			</div>
 		</div>
 		<div id={"output-area"}>
 			<SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame} />
@@ -245,6 +251,7 @@ export default function App() {
 					<td><span className={"timeline-cell label"}>End</span></td>
 				</tr>
 			</table>
+			<img id={"hamburger"} src={hamburger} alt={"help button"} onClick={()=>setHelp(!help)} />
 		</div>
 	</div>;
 }
