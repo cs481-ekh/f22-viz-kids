@@ -16,7 +16,7 @@ const THREE_Y_AXIS = new THREE.Vector3(0,1,0);
 const THREE_Z_AXIS = new THREE.Vector3(0,0,1);
 
 const MARKER_COLOR_DEFAULT = new THREE.Color("white");
-const MARKER_COLOR_SELECTED = new THREE.Color("yellow");
+const MARKER_COLOR_SELECTED = new THREE.Color(0x00FF00);
 
 const FORCE_VEC_SCALE_FACTOR = 0.0005;
 const FORCE_VEC_HEAD_LENGTH = 0.05;
