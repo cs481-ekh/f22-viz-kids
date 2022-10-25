@@ -87,12 +87,17 @@ body {
          }
       }
       .file-upload-button {
-         background-color: $fileUploadButtonBGColor;
+         background-color: $playButtonBGColor;
          width: 124px;
-         height: 14px;
+         height: 12px;
          font-weight: bold;
-         border-radius: 5px;
-         cursor: pointer;
+         border: none;
+         border-radius: 4px;
+         margin-bottom: 2px;
+         &:hover {
+            cursor: pointer;
+            filter: brightness(85%);
+         }
       }
       .file-chosen-name {
          color: $fileChosenNameColor;
@@ -123,6 +128,10 @@ body {
          padding: 6px;
          &:hover {
             filter: brightness(85%);
+            cursor: pointer;
+         }
+         &:focus {
+            outline: none;
          }
       }
    }
@@ -130,7 +139,7 @@ body {
       grid-row: 1;
       grid-column: 3;
       text-align: center;
-      font-size: 8pt;
+      font-size: 10pt;
       font-weight: bold;
       line-height: 30pt;
       color: $outputAreaTitleColor;
@@ -243,6 +252,7 @@ body {
       background-color: $outputAreaBGColor;
       padding: 5px;
       overflow-y: auto;
+      border-radius: 4px;
       #selection-info-view {
          & > * {
             font-size: 9pt;
@@ -255,8 +265,12 @@ body {
    #sdp-logo {
       grid-row: 3;
       grid-column: 3;
-      cursor: pointer;
       width: 100%; //height: 87px;
+      border-radius: 4px;
+      &:hover {
+         cursor: pointer;
+         filter: brightness(85%);
+      }
    }
    // ----------------------------------------- Grid Row 4 -----------------------------------------
    #timeline-track-area {
@@ -268,9 +282,10 @@ body {
          display: flex;
          align-items: center;
          #play-button {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             margin-right: 5px;
+            padding: 8px;
             border: none;
             background-color: $playButtonBGColor;
             display: grid;
@@ -285,33 +300,44 @@ body {
             &:hover {
                filter: brightness(85%);
             }
+            &:focus {
+               outline: none;
+            }
          }
          #timeline-track {
+            $trackHeight: 36px;
             width: calc(100% - 45px);
+            height: $trackHeight; //for firefox
             -webkit-appearance: none;
+            border: 2px solid $timelineTrackBGColor;
+            border-radius: 4px;
             &::-webkit-slider-runnable-track {
-               height: 36px;
-               cursor: pointer;
+               height: $trackHeight;
                background: $timelineTrackBGColor;
             }
             &::-webkit-slider-thumb {
-               height: 36px;
+               height: $trackHeight;
                width: 2px;
+               border-radius: 1px;
                background: $timelineTrackThumbColor;
-               cursor: pointer;
                -webkit-appearance: none;
             }
             &::-moz-range-track {
-               height: 36px;
-               cursor: pointer;
+               height: $trackHeight;
                background: $timelineTrackBGColor;
             }
             &::-moz-range-thumb {
-               height: 36px;
+               height: $trackHeight;
                width: 2px;
+               border-radius: 1px;
                background: $timelineTrackThumbColor;
-               cursor: pointer;
                -webkit-appearance: none;
+            }
+            &:hover {
+               cursor: pointer;
+            }
+            &:focus {
+               outline: none;
             }
          }
       }
@@ -345,11 +371,11 @@ body {
       grid-row: 5;
       grid-column: 1/3;
       position: relative;
-      top: -7px;
+      top: -3px;
       #play-button-loop-checkbox-label {
          color: white;
          position: relative;
-         bottom: 8px;
+         bottom: 10px;
          left: 3px;
       }
       #play-button-loop-checkbox {
