@@ -8,6 +8,7 @@ import RenderView from "./RenderView";
 import SelectionInfoView from "./SelectionInfoView";
 import { PlayIcon, PauseIcon } from "./icons";
 import useStateRef from "./useStateRef";
+import * as sdpLogo from "../assets/images/sdp-logo-3.png";
 
 import "./App.scss";
 
@@ -243,7 +244,7 @@ export default function App() {
 			</div>
 			<div id={"logo"}>Movilo</div>
 			<div id={"output-area-title"}>Selection Info</div>
-			{/* ---------------------------------------------- Grid Row 2/3 ---------------------------------------------- */}
+			{/* --------------------------------------------- Grid Row 2-3 --------------------------------------------- */}
 			<div id={"viz-area"}>
 				<RenderView frame={frame} markerData={markerFileData} forceData={forceFileData}
 					selectedMarkers={selectedMarkers} setSelectedMarkers={setSelectedMarkers}
@@ -271,9 +272,7 @@ export default function App() {
 				</div>
 			</div>
 			<div id={"output-area"}><SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame} /></div>
-			<img id={"sdp-logo"} src={"https://drive.google.com/uc?export=view&id=10VJZEoeTEN7JKled94_VoUMK4c_PEfZc"} alt={"senior design project logo"}
-				 onClick={() => setSdpInfo(!sdpInfo)}
-			/>
+			<img id={"sdp-logo"} src={sdpLogo} alt={"senior design project logo"} onClick={()=>setSdpInfo(!sdpInfo)} />
 			{/* ---------------------------------------------- Grid Row 4 ---------------------------------------------- */}
 			<div id={"timeline-track-area"}>
 				<div id="timeline-track-flex">

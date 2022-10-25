@@ -29,7 +29,7 @@ module.exports = {
 			},
 			{
 				test: /\.(png|jpe?g)$/i,
-				loader : "url-loader"
+				type: "asset/resource"
 			}
 		]
 	}
