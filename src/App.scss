@@ -49,7 +49,7 @@ body {
    $row5Height: 14px;
 
    $col1Width: auto; //responsive width for: file-area, viz-area, timeline-track-area
-   $col2Width: 100px;
+   $col2Width: 200px;
    $col3Width: 155px;
 
    $gridGap: 5px;
@@ -99,13 +99,33 @@ body {
          padding-left: 5px;
       }
    }
-   #logo {
+   #logo-area-flex {
       grid-row: 1;
       grid-column: 2;
-      text-align: right;
-      font-size: 18pt;
-      line-height: 26pt;
-      font-weight: 900;
+      display: flex;
+      flex-direction: row;
+      justify-content: right;
+      //background-color: red;
+      margin-bottom: -4px; //lower button to top of viz area
+      #logo {
+         text-align: right;
+         font-size: 18pt;
+         line-height: 26pt;
+         font-weight: 900;
+      }
+      #main-menu-button {
+         color: $playButtonIconColor;
+         background-color: $playButtonBGColor;
+         width: 28px;
+         height: 26px;
+         border: none;
+         border-radius: 5px;
+         margin-left: 6px;
+         padding: 6px;
+         &:hover {
+            filter: brightness(85%);
+         }
+      }
    }
    #output-area-title {
       grid-row: 1;
@@ -151,8 +171,54 @@ body {
          white-space: pre;
          cursor: text;
       }
-      #sdp-info-popup {
+      #main-menu-popup {
          z-index: calc($popupZindex + 2);
+         position: absolute;
+         padding: $popupPadding;
+         width: calc(100% - 2*$popupPadding);
+         height: calc(100% - 2*$popupPadding);
+         visibility: visible; //todo remove
+         display: flex;
+         font-size: inherit;
+         background-color: white;
+         #popup-image-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            overflow-y: auto;
+            width: 100%; //maintain width even when no image is displayed
+            img {
+               width: 100%;
+            }
+         }
+         #main-menu-options {
+            $definitionTermWidth: 100px;
+            border: solid 2px #444444;
+            padding: 10px;
+            > * {
+               font-size: 9pt;
+            }
+            dt {
+               float: left;
+               clear: left;
+               width: $definitionTermWidth;
+               text-align: right;
+               font-weight: bold;
+               color: #025675;
+               &::after {
+                  content: ":";
+               }
+            }
+            dd {
+               margin-left: calc($definitionTermWidth + 10px);
+               &:hover {
+                  color: #9b9b0b;
+               }
+            }
+         }
+      }
+      #sdp-info-popup {
+         z-index: calc($popupZindex + 3);
          position: absolute;
          padding: $popupPadding;
          width: calc(100% - 2*$popupPadding);
@@ -173,6 +239,7 @@ body {
             font-weight: bold;
          }
       }
+
    }
    #output-area {
       grid-row: 2;
@@ -218,6 +285,9 @@ body {
             > svg {
                width: 100%;
                color: $playButtonIconColor;
+            }
+            &:hover {
+               filter: brightness(85%);
             }
          }
          #timeline-track {

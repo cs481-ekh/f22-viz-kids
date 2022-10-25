@@ -12,7 +12,7 @@ interface Props {
 export default function SelectionInfoView(props: Props) {
 
     if(props.selectedMarkers.length === 0)
-        return <div id={"selection-info-view"}><p>Nothing selected.</p></div>;
+        return <div id={"selection-info-view"}><p>Nothing selected</p></div>;
 
     const selectedMarkersMetadata = <>
         {

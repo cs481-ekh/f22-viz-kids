@@ -16,3 +16,11 @@ export function PauseIcon() {
 		<rect x="22" y="1" width="12" height="34" />
 	</Icon>;
 }
+
+export function MenuIcon() {
+	return <Icon id={"menu-icon"}>
+		<rect x="0" y="2" width="36" height="4"/>
+		<rect x="0" y="14" width="36" height="4"/>
+		<rect x="0" y="26" width="36" height="4"/>
+	</Icon>
+}

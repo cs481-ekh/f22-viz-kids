@@ -6,9 +6,11 @@ import { ForceFileData, MarkerFileData } from "./DataTypes";
 import { parseForceFileData, parseMarkerFileData } from "./Parser";
 import RenderView from "./RenderView";
 import SelectionInfoView from "./SelectionInfoView";
-import { PlayIcon, PauseIcon } from "./icons";
+import {PlayIcon, PauseIcon, MenuIcon} from "./icons";
 import useStateRef from "./useStateRef";
 import * as sdpLogo from "../assets/images/sdp-logo-3.png";
+import * as cameraControlsImg from "../assets/images/camera-controls.png";
+import * as selectionControlsImg from "../assets/images/selection-controls.png";
 
 import "./App.scss";
 
@@ -168,6 +170,8 @@ export default function App() {
 	// ---------------------------------------------------- Controls ---------------------------------------------------
 
 	const [sdpInfo,setSdpInfo] = useState(false);
+	const [menu,setMenu] = useState(false);
+	const [controlsHelpImgNum,setControlsHelpImgNum] = useState(0);
 
 	/* Play button (on click) */
 	const togglePlaying = useCallback(() => setPlaying(current => {
@@ -242,7 +246,10 @@ export default function App() {
 					<span id={"force-file-name"} className={"file-chosen-name"}>{forceFile && !forceParsingError ? forceFile.name : "No file chosen"}</span>
 				</div>
 			</div>
-			<div id={"logo"}>Movilo</div>
+			<div id={"logo-area-flex"}>
+				<div id={"logo"}>Movilo</div>
+				<button id={"main-menu-button"} onClick={()=>setMenu(!menu)}><MenuIcon /></button>
+			</div>
 			<div id={"output-area-title"}>Selection Info</div>
 			{/* --------------------------------------------- Grid Row 2-3 --------------------------------------------- */}
 			<div id={"viz-area"}>
@@ -269,6 +276,19 @@ export default function App() {
 					<a href={"https://www.boisestate.edu/coen-cs/community/cs481-senior-design-project/"} target={'_blank'}>
 						https://www.boisestate.edu/coen-cs/community/cs481-senior-design-project/
 					</a>
+				</div>
+				<div id={"main-menu-popup"} style={menu ? {visibility: 'visible'} : {visibility: 'hidden'}}>
+					<div id={"popup-image-container"}>
+						<img id={"camera-controls-img"} src={cameraControlsImg} alt={"camera controls help image"}
+							 style={controlsHelpImgNum===0 ? {display: "block"} : {display: "none"}} />
+						<img id={"selection-controls-img"} src={selectionControlsImg} alt={"selection controls help image"}
+							 style={controlsHelpImgNum===1 ? {display: "block"} : {display: "none"}} />
+					</div>
+					<dl id={"main-menu-options"}>
+						<dt>Controls Help</dt>
+						<dd id={"camera-controls"} onMouseOver={()=>setControlsHelpImgNum(0)}>camera</dd>
+						<dd id={"selection-controls"} onMouseOver={()=>setControlsHelpImgNum(1)}>selection</dd>
+					</dl>
 				</div>
 			</div>
 			<div id={"output-area"}><SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame} /></div>
