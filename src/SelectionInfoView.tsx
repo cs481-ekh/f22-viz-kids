@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { MarkerFileData } from "./DataTypes";
+import { computeAngle } from "./Calculations";
 
 interface Props {
     markerData: MarkerFileData;
@@ -9,8 +10,11 @@ interface Props {
 }
 
 export default function SelectionInfoView(props: Props) {
-    if(props.selectedMarkers.length === 0) return <div id={"selection-info-view"}><p>Nothing selected.</p></div>;
-    return <div id={"selection-info-view"}>
+
+    if(props.selectedMarkers.length === 0)
+        return <div id={"selection-info-view"}><p>Nothing selected.</p></div>;
+
+    const selectedMarkersMetadata = <>
         {
             props.selectedMarkers.map(idx => {
                 const info = props.markerData.markers[idx];
@@ -30,5 +34,25 @@ export default function SelectionInfoView(props: Props) {
                 </p>;
             })
         }
+    </>;
+
+    const thetaLabel = props.markerData.markers[props.selectedMarkers[0]].label;
+    let angle: number|null = null;
+    let angleOutput;
+
+    if (props.selectedMarkers.length >= 3) {
+        const first3Pos = props.selectedMarkers.slice(0,3).map(idx => props.markerData.frames[props.frame].positions[idx]);
+        angle = computeAngle(first3Pos);
+        if (angle!==null) {
+            angle = Math.round(10*angle) / 10; //round to nearest tenth
+            angleOutput = <p>{thetaLabel} Angle: {angle} deg</p>;
+        }
+        else angleOutput = <p>Unknown angle (missing marker)</p>;
+    }
+    else angleOutput = <></>;
+
+    return <div id={"selection-info-view"}>
+        {angleOutput}
+        {selectedMarkersMetadata}
     </div>;
 }
