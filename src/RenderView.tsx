@@ -355,5 +355,5 @@ export default function RenderView(props: Props) {
 	/* Free GPU resources when renderer is no longer needed */
 	useEffect(() => () => renderer.dispose(), [renderer]);
 
-	return <div ref={root} onClick={handleRaycast} />;
+	return <div id={"render-view"} ref={root} onClick={handleRaycast} />;
 }
