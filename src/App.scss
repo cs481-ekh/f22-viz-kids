@@ -292,12 +292,12 @@ body {
             justify-content: center;
             align-items: center;
             border-radius: 3px;
-            cursor: pointer;
             > svg {
                width: 100%;
                color: $playButtonIconColor;
             }
             &:hover {
+               cursor: pointer;
                filter: brightness(85%);
             }
             &:focus {
