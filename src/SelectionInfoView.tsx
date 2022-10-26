@@ -47,7 +47,7 @@ export default function SelectionInfoView(props: Props) {
 		}
 		else angleOutput = <p>Unknown angle (missing marker)</p>;
 	}
-	else angleOutput = <></>;
+	else angleOutput = <></>; //no output: not enough selected
 
 	return <div id={"selection-info-view"}>
 		{angleOutput}
