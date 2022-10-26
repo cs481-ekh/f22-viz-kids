@@ -1,5 +1,5 @@
 import * as TSV from 'papaparse';
-import {MarkerFileData, ForceFileData, Point3D, Force} from './DataTypes';
+import {MarkerFileData, ForceFileData, Point3D, Force} from '../dataTypes';
 
 
 export async function parseMarkerFileData(file: File): Promise<MarkerFileData> {

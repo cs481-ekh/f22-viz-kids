@@ -1,4 +1,4 @@
-import { Point3D } from './DataTypes';
+import { Point3D } from '../dataTypes';
 
 
 /* Compute the angle between the first three Point3Ds in the provided Array

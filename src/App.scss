@@ -19,6 +19,7 @@ $vizAreaBGColor:          hsl(   0,   0%,  13%);
 $errorPopupBGColor:       hsla(  0,   0%,  13%, 0.8);
 $errorPopupTextColor:     hsl(   0, 100%,  33%);
 $menuBGColor:             hsl(   0,   0%, 100%);
+$menuOptionsBGColor:      hsl(  80,  10%,  70%);
 $menuParentOptionColor:   hsl(  30,  90%,  50%);
 $menuOptionHoverColor:    hsl( 221,  90%,  30%);
 $sdpInfoPopupBGColor:     hsl( 221, 100%,  31%);
@@ -80,18 +81,6 @@ body {
       grid-column: 1;
       display: flex;
       flex-direction: column;
-      #marker-file-div {
-         #marker-file-button {
-         }
-         #marker-file-name {
-         }
-      }
-      #force-file-div {
-         #force-file-button {
-         }
-         #force-file-name {
-         }
-      }
       .file-upload-button {
          background-color: $playButtonBGColor;
          width: 185px;
@@ -193,7 +182,7 @@ body {
          display: flex;
          font-size: inherit;
          background-color: $menuBGColor;
-         #popup-image-container {
+         #menu-image-container {
             display: flex;
             align-items: center;
             overflow-y: auto;
@@ -213,6 +202,7 @@ body {
             #menu-options {
                $descriptionTermWidth: 108px;
                border: solid 2px hsl(0, 0%, 0%);
+               background-color: $menuOptionsBGColor;
                padding: 10px;
                margin-top: 0;
                height: calc(100% - $titleHeight - 2*$popupPadding);
@@ -325,7 +315,7 @@ body {
          }
          #timeline-track {
             $trackHeight: 36px;
-            width: calc(100% - 45px);
+            width: calc(100% - 51px);
             height: $trackHeight; //for firefox
             -webkit-appearance: none;
             border: 2px solid $timelineTrackBGColor;

@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { MarkerFileData } from "./DataTypes";
-import { computeAngle } from "./Calculations";
+import { MarkerFileData } from "../dataTypes";
+import { computeAngle } from "../modules/Calculations";
 
 interface Props {
 	markerData: MarkerFileData;
@@ -12,7 +12,7 @@ interface Props {
 export default function SelectionInfoView(props: Props) {
 
 	if(props.selectedMarkers.length === 0)
-		return <div id={"selection-info-view"}><p>Nothing selected</p></div>;
+		return <div id={"output-area"}><div id={"selection-info-view"}><p>Nothing selected</p></div></div>;
 
 	const selectedMarkersMetadata = <>
 		{
@@ -49,8 +49,10 @@ export default function SelectionInfoView(props: Props) {
 	}
 	else angleOutput = <></>; //no output: not enough selected
 
-	return <div id={"selection-info-view"}>
-		{angleOutput}
-		{selectedMarkersMetadata}
+	return <div id={"output-area"}>
+		<div id={"selection-info-view"}>
+			{angleOutput}
+			{selectedMarkersMetadata}
+		</div>
 	</div>;
 }

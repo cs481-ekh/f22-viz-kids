@@ -1,18 +1,25 @@
 import * as React from "react";
-import { ChangeEvent, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useFilePicker } from "use-file-picker";
 
-import { ForceFileData, MarkerFileData } from "./DataTypes";
-import { parseForceFileData, parseMarkerFileData } from "./Parser";
-import RenderView from "./RenderView";
-import SelectionInfoView from "./SelectionInfoView";
-import {PlayIcon, PauseIcon, MenuIcon} from "./icons";
+import { parseForceFileData, parseMarkerFileData } from "./modules/Parser";
+
+import FileUploadView from "./views/FileUploadView";
+import RenderView from "./views/RenderView";
+import PopupView from "./views/PopupView";
+import SelectionInfoView from "./views/SelectionInfoView";
+import TimelineTrackView from "./views/TimelineTrackView";
+import UnderTimelineTrackView from "./views/UnderTimelineTrackView";
+import TimelineTextView from "./views/TimelineTextView";
+
+import { ForceFileData, MarkerFileData } from "./dataTypes";
+import { MenuIcon } from "./icons";
 import useStateRef from "./useStateRef";
+
 import * as sdpLogo from "../assets/images/sdp-logo-3.png";
-import * as cameraControlsImg from "../assets/images/camera-controls.png";
-import * as selectionControlsImg from "../assets/images/selection-controls.png";
 
 import "./App.scss";
+
 
 const MILLIS_PER_SEC = 1000;
 
@@ -167,197 +174,50 @@ export default function App() {
 	/* Array of the indices of the currently selected markers */
 	const [selectedMarkers, setSelectedMarkers] = useState<number[]>([]);
 
-	// ---------------------------------------------------- Controls ---------------------------------------------------
+	// ---------------------------------------------------- Popups -----------------------------------------------------
 
-	const [sdpInfo,setSdpInfo] = useState(false);
-	const [menu,setMenu] = useState(false);
-	const [controlsHelpImgNum,setControlsHelpImgNum] = useState(0);
-
-	/* Play button (on click) */
-	const togglePlaying = useCallback(() => setPlaying(current => {
-		/* Handle start from pause on last frame, if encountered */
-		if (frameRef.current>=frameCropEnd) setFrame(frameCropStart);
-		/* Invert current playing status */
-		return !current;
-	}), [frameRef, frameCropStart, frameCropEnd]);
-
-	/* Play button loop checkbox (on change) */
-	const toggleLooping = useCallback(({target: {checked}}: ChangeEvent<HTMLInputElement>) => {
-		setLoopPlayback(checked);
-	}, []);
-
-	/* Timeline track thumb (on change) */
-	const timelineTrackSeek = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
-		const thumbVal = parseInt(value);
-		if (frameCropStart<=thumbVal && thumbVal<=frameCropEnd) setFrame(thumbVal);
-		else if (thumbVal<frameCropStart && frameRef.current-1>=frameCropStart) setFrame(frameRef.current-1);
-		else if (thumbVal>frameCropEnd && frameRef.current+1<=frameCropEnd) setFrame(frameRef.current+1);
-	}, [frameRef, frameCropStart, frameCropEnd]);
-
-	/* Timeline track (on context menu) */
-	const timelineTrackResetCrop = useCallback((e: MouseEvent<HTMLInputElement>) => {
-		e.preventDefault();
-		if (e.button==2) {
-			setCropStart(frameStart);
-			setCropEnd(frameEnd);
-		}
-	}, [frameEnd]);
-
-	/* Timeline text start frame cell (on change) */
-	const timelineTextCropStart = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
-		const inputVal = parseInt(value);
-		if (frameStart<=inputVal && inputVal<frameCropEnd) {
-			setCropStart(inputVal);
-			if (inputVal>frameRef.current)
-				setFrame(inputVal);
-		}
-	}, [frameRef, frameStart, frameCropEnd]);
-
-	/* Timeline text current frame cell (on change) */
-	const timelineTextCurrentFrameSeek = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
-		const inputVal = parseInt(value);
-		if (frameCropStart<=inputVal && inputVal<=frameCropEnd)
-			setFrame(inputVal);
-	}, [frameCropStart, frameCropEnd]);
-
-	/* Timeline text end frame cell (on change) */
-	const timelineTextCropEnd = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
-		const inputVal = parseInt(value);
-		if (frameCropStart<inputVal && inputVal<=frameEnd) {
-			setCropEnd(inputVal);
-			if (inputVal<frameRef.current)
-				setFrame(inputVal);
-		}
-	}, [frameRef, frameCropStart, frameEnd]);
+	const [menu, setMenu] = useState(false);
+	const [controlsHelpImgNum, setControlsHelpImgNum] = useState(0);
+	const [sdpInfo, setSdpInfo] = useState(false);
 
 	// ---------------------------------------------------- App JSX ----------------------------------------------------
 
 	/* Elements/components in the grid are organized top->bottom, left->right */
-	return <>
-		<div id={"app-grid"} style={(markersLoading||forcesLoading) ? {cursor: "progress"} : {cursor: "default"}}>
-			{/* ---------------------------------------------- Grid Row 1 ---------------------------------------------- */}
-			<div id={"file-area-flex"}>
-				<div id={"marker-file-div"}>
-					<input id={"marker-file-button"} className={"file-upload-button"} type={"button"} value={"Choose Marker Data File"} onClick={openMarkerFileSelector} />
-					<span id={"marker-file-name"} className={"file-chosen-name"}>{markerFile && !markerParsingError ? markerFile.name : "No file chosen"}</span>
-				</div>
-				<div id={"force-file-div"}>
-					<input id={"force-file-button"} className={"file-upload-button"} type={"button"} value={"Choose Force Plate Data File"} onClick={openForceFileSelector} />
-					<span id={"force-file-name"} className={"file-chosen-name"}>{forceFile && !forceParsingError ? forceFile.name : "No file chosen"}</span>
-				</div>
-			</div>
-			<div id={"logo-area-flex"}>
-				<div id={"logo"}>Movilo</div>
-				<button id={"main-menu-button"} onClick={()=>setMenu(!menu)}><MenuIcon /></button>
-			</div>
-			<div id={"output-area-title"}>Selection Info</div>
-			{/* --------------------------------------------- Grid Row 2-3 --------------------------------------------- */}
-			<div id={"viz-area"}>
-				<RenderView frame={frame} markerData={markerFileData} forceData={forceFileData}
-					selectedMarkers={selectedMarkers} setSelectedMarkers={setSelectedMarkers}
-				/>
-			</div>
-			<div id={"popup-area"}>
-				<div id={"error-popup"} style={error ? {visibility: 'visible'} : {visibility: 'hidden'}}>
-					Error: {error?.message}
-				</div>
-				<div id={"sdp-info-popup"} style={sdpInfo ? {visibility: 'visible'} : {visibility: 'hidden'}}>
-					{`This website was created for a Boise State University
-					Computer Science Senior Design Project by
-					
-					Colin Reeder
-					Connor Jackson
-					Cory Tomlinson
-					Javier Trejo
-					William Kenny
-					
-					For information about sponsoring a project, go to
-					`}
-					<a href={"https://www.boisestate.edu/coen-cs/community/cs481-senior-design-project/"} target={'_blank'}>
-						https://www.boisestate.edu/coen-cs/community/cs481-senior-design-project/
-					</a>
-				</div>
-				<div id={"main-menu-popup"} style={menu ? {visibility: 'visible'} : {visibility: 'hidden'}}>
-					<div id={"popup-image-container"}>
-						<img id={"camera-controls-img"} src={cameraControlsImg} alt={"camera controls help image"}
-							 style={controlsHelpImgNum===0 ? {display: "block"} : {display: "none"}} />
-						<img id={"selection-controls-img"} src={selectionControlsImg} alt={"selection controls help image"}
-							 style={controlsHelpImgNum===1 ? {display: "block"} : {display: "none"}} />
-					</div>
-					<div id={"menu-dropdown-container"}>
-						<div id={"menu-title"}>Main Menu</div>
-						<dl id={"menu-options"}>
-							<dt>Controls Help</dt>
-							<dd id={"camera-controls"} onMouseOver={()=>setControlsHelpImgNum(0)}>camera</dd>
-							<dd id={"selection-controls"} onMouseOver={()=>setControlsHelpImgNum(1)}>selection</dd>
-						</dl>
-					</div>
-				</div>
-			</div>
-			<div id={"output-area"}><SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame} /></div>
-			<img id={"sdp-logo"} src={sdpLogo} alt={"senior design project logo"} onClick={()=>setSdpInfo(!sdpInfo)} />
-			{/* ---------------------------------------------- Grid Row 4 ---------------------------------------------- */}
-			<div id={"timeline-track-area"}>
-				<div id="timeline-track-flex">
-					<button id={"play-button"} onClick={togglePlaying}>{playing ? <PauseIcon /> : <PlayIcon />}</button>
-					<input id={"timeline-track"} type={"range"}
-						value={frame} min={frameStart} max={frameEnd}
-						onChange={timelineTrackSeek}
-						onContextMenu={timelineTrackResetCrop}
-					/>
-				</div>
-			</div>
-			<div id={"timeline-manual-area"}>
-				<table>
-					<tr>
-						{/* Start frame */}
-						<td><input className={"timeline-cell"} type={"number"}
-							value={frameCropStart} min={frameStart} max={frameCropEnd-1}
-							onChange={timelineTextCropStart}
-						/></td>
-						{/* Current frame */}
-						<td><input className={"timeline-cell"} type={"number"}
-							value={frame} min={frameCropStart} max={frameCropEnd}
-							onChange={timelineTextCurrentFrameSeek}
-						/></td>
-						{/* End frame */}
-						<td><input className={"timeline-cell"} type={"number"}
-							value={frameCropEnd} min={frameCropStart+1} max={frameEnd}
-							onChange={timelineTextCropEnd}
-						/></td>
-					</tr>
-					<tr>
-						{/* Start time */}
-						<td><input className={"timeline-cell"} type={"number"} disabled
-							value={frameEnd>0 ? markerFileData.frames[frameCropStart]?.time : 0}
-						/></td>
-						{/* Current time */}
-						<td><input className={"timeline-cell"} type={"number"} disabled
-							value={frameEnd>0 ? markerFileData.frames[frame]?.time : 0}
-						/></td>
-						{/* End time */}
-						<td><input className={"timeline-cell"} type={"number"} disabled
-							value={frameEnd>0 ? markerFileData.frames[frameCropEnd]?.time : 0}
-						/></td>
-					</tr>
-					<tr>
-						<td><span className={"timeline-cell label"}>Start</span></td>
-						<td><span className={"timeline-cell label"}>Current</span></td>
-						<td><span className={"timeline-cell label"}>End</span></td>
-					</tr>
-				</table>
-			</div>
-			{/* ---------------------------------------------- Grid Row 5 ---------------------------------------------- */}
-			<div id={"timeline-track-under-area"}>
-				<label id={"play-button-loop-checkbox-label"}>Loop:
-					<input id={"play-button-loop-checkbox"} type={"checkbox"}
-						checked={loopPlayback}
-						onChange={toggleLooping}
-					/>
-				</label>
-			</div>
+	return <div id={"app-grid"} style={(markersLoading||forcesLoading) ? {cursor: "progress"} : {cursor: "default"}}>
+		{/* ---------------------------------------------- Grid Row 1 ---------------------------------------------- */}
+		<FileUploadView openMarkerFileSelector={openMarkerFileSelector} openForceFileSelector={openForceFileSelector}
+			markerFile={markerFile} markerParsingError={markerParsingError}
+			forceFile={forceFile} forceParsingError={forceParsingError}
+		/>
+		<div id={"logo-area-flex"}>
+			<div id={"logo"}>Movilo</div>
+			<button id={"main-menu-button"} onClick={()=>setMenu(!menu)}><MenuIcon /></button>
 		</div>
-		{/* --------------------------------------------- Beneath App grid --------------------------------------------- */}
-
-	</>;
+		<div id={"output-area-title"}>
+			Selection Info
+		</div>
+		{/* --------------------------------------------- Grid Row 2-3 --------------------------------------------- */}
+		<RenderView frame={frame} markerData={markerFileData} forceData={forceFileData}
+			selectedMarkers={selectedMarkers} setSelectedMarkers={setSelectedMarkers}
+		/>
+		<PopupView error={error} sdpInfo={sdpInfo} menu={menu}
+			controlsHelpImgNum={controlsHelpImgNum} setControlsHelpImgNum={setControlsHelpImgNum}
+		/>
+		<SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame}
+		/>
+		<img id={"sdp-logo"} src={sdpLogo} alt={"senior design project logo"} onClick={()=>setSdpInfo(!sdpInfo)}
+		/>
+		{/* ---------------------------------------------- Grid Row 4 ---------------------------------------------- */}
+		<TimelineTrackView frameStart={frameStart} frame={frame} frameRef={frameRef} frameEnd={frameEnd}
+			frameCropStart={frameCropStart}  frameCropEnd={frameCropEnd} playing={playing}
+			setFrame={setFrame} setCropStart={setCropStart} setCropEnd={setCropEnd} setPlaying={setPlaying}
+		/>
+		<TimelineTextView frameStart={frameStart} frame={frame} frameRef={frameRef} frameEnd={frameEnd}
+			frameCropStart={frameCropStart} frameCropEnd={frameCropEnd} markerFileData={markerFileData}
+			setFrame={setFrame} setCropStart={setCropStart}  setCropEnd={setCropEnd}
+		/>
+		{/* ---------------------------------------------- Grid Row 5 ---------------------------------------------- */}
+		<UnderTimelineTrackView loopPlayback={loopPlayback} setLoopPlayback={setLoopPlayback}
+		/>
+	</div>;
 }

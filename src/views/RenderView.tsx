@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 
-import { ForceFileData, MarkerFileData } from "./DataTypes";
+import { ForceFileData, MarkerFileData } from "../dataTypes";
 
 /* Axis reference */                    /* THREE's relation to trial subject */
 //THREE X == Vicon -X == OpenSim -Z     (+left/-right)
@@ -355,5 +355,5 @@ export default function RenderView(props: Props) {
 	/* Free GPU resources when renderer is no longer needed */
 	useEffect(() => () => renderer.dispose(), [renderer]);
 
-	return <div id={"render-view"} ref={root} onClick={handleRaycast} />;
+	return <div id={"viz-area"}><div id={"render-view"} ref={root} onClick={handleRaycast} /></div>;
 }

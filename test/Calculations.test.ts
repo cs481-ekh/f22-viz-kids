@@ -1,5 +1,5 @@
-import {computeAngle} from "../src/Calculations";
-import {Point3D} from '../src/DataTypes';
+import {computeAngle} from "../src/modules/Calculations";
+import {Point3D} from '../src/dataTypes';
 
 
 test('valid angle (frame 0 left hip-knee-ankle angle)', () => {
