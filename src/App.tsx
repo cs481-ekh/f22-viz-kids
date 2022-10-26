@@ -284,11 +284,14 @@ export default function App() {
 						<img id={"selection-controls-img"} src={selectionControlsImg} alt={"selection controls help image"}
 							 style={controlsHelpImgNum===1 ? {display: "block"} : {display: "none"}} />
 					</div>
-					<dl id={"main-menu-options"}>
-						<dt>Controls Help</dt>
-						<dd id={"camera-controls"} onMouseOver={()=>setControlsHelpImgNum(0)}>camera</dd>
-						<dd id={"selection-controls"} onMouseOver={()=>setControlsHelpImgNum(1)}>selection</dd>
-					</dl>
+					<div id={"menu-dropdown-container"}>
+						<div id={"menu-title"}>Main Menu</div>
+						<dl id={"menu-options"}>
+							<dt>Controls Help</dt>
+							<dd id={"camera-controls"} onMouseOver={()=>setControlsHelpImgNum(0)}>camera</dd>
+							<dd id={"selection-controls"} onMouseOver={()=>setControlsHelpImgNum(1)}>selection</dd>
+						</dl>
+					</div>
 				</div>
 			</div>
 			<div id={"output-area"}><SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame} /></div>
@@ -307,7 +310,6 @@ export default function App() {
 			<div id={"timeline-manual-area"}>
 				<table>
 					<tr>
-						<td><span className={"timeline-cell label"}>Frame</span></td>
 						{/* Start frame */}
 						<td><input className={"timeline-cell"} type={"number"}
 							value={frameCropStart} min={frameStart} max={frameCropEnd-1}
@@ -325,7 +327,6 @@ export default function App() {
 						/></td>
 					</tr>
 					<tr>
-						<td><span className={"timeline-cell label"}>Time</span></td>
 						{/* Start time */}
 						<td><input className={"timeline-cell"} type={"number"} disabled
 							value={frameEnd>0 ? markerFileData.frames[frameCropStart]?.time : 0}
@@ -340,7 +341,6 @@ export default function App() {
 						/></td>
 					</tr>
 					<tr>
-						<td><span className={"timeline-cell label"}></span></td>
 						<td><span className={"timeline-cell label"}>Start</span></td>
 						<td><span className={"timeline-cell label"}>Current</span></td>
 						<td><span className={"timeline-cell label"}>End</span></td>
