@@ -17,13 +17,20 @@ interface Props {
 
 export default function TimelineTextView(
     {
-        frameStart, frame, frameEnd, frameCropStart, frameCropEnd, frameRef,
-        setFrame, setCropStart, setCropEnd,
+        frameStart,
+        frame, setFrame,
+        frameEnd,
+
+        frameCropStart, setCropStart,
+        frameCropEnd, setCropEnd,
+
+        frameRef,
+
         markerFileData,
     }: Props
 ) {
-    /* Timeline text start frame cell (on change) */
-    const timelineTextCropStart = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
+    /* Start cell (on change) */
+    const cropStart = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
         const inputVal = parseInt(value);
         if (frameStart<=inputVal && inputVal<frameCropEnd) {
             setCropStart(inputVal);
@@ -32,15 +39,15 @@ export default function TimelineTextView(
         }
     }, [frameRef, frameStart, frameCropEnd]);
 
-    /* Timeline text current frame cell (on change) */
-    const timelineTextCurrentFrameSeek = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
+    /* Current cell (on change) */
+    const seek = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
         const inputVal = parseInt(value);
         if (frameCropStart<=inputVal && inputVal<=frameCropEnd)
             setFrame(inputVal);
     }, [frameCropStart, frameCropEnd]);
 
-    /* Timeline text end frame cell (on change) */
-    const timelineTextCropEnd = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
+    /* End cell (on change) */
+    const cropEnd = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
         const inputVal = parseInt(value);
         if (frameCropStart<inputVal && inputVal<=frameEnd) {
             setCropEnd(inputVal);
@@ -49,23 +56,23 @@ export default function TimelineTextView(
         }
     }, [frameRef, frameCropStart, frameEnd]);
 
-    return <div id={"timeline-manual-area"}>
+    return <div id={"timeline-text-view"}>
         <table>
             <tr>
                 {/* Start frame */}
                 <td><input className={"timeline-cell"} type={"number"}
                            value={frameCropStart} min={frameStart} max={frameCropEnd-1}
-                           onChange={timelineTextCropStart}
+                           onChange={cropStart}
                 /></td>
                 {/* Current frame */}
                 <td><input className={"timeline-cell"} type={"number"}
                            value={frame} min={frameCropStart} max={frameCropEnd}
-                           onChange={timelineTextCurrentFrameSeek}
+                           onChange={seek}
                 /></td>
                 {/* End frame */}
                 <td><input className={"timeline-cell"} type={"number"}
                            value={frameCropEnd} min={frameCropStart+1} max={frameEnd}
-                           onChange={timelineTextCropEnd}
+                           onChange={cropEnd}
                 /></td>
             </tr>
             <tr>

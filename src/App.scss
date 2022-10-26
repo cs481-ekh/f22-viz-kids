@@ -351,13 +351,13 @@ body {
          }
       }
    }
-   #timeline-manual-area {
-      grid-row: 4/6;
+   #timeline-text-view {
+      grid-row: 4/6; //extends into row below timeline
       grid-column: 3;
-      text-align: center;
+      text-align: center; //for labels
       .timeline-cell {
          $negativeMargin: -2px;
-         width: 53px;
+         width: calc($col3Width/3 + 4*$negativeMargin);
          height: calc($row4Height/2 + 2*$negativeMargin);
          margin: $negativeMargin;
          padding: 0 2px;
@@ -369,7 +369,7 @@ body {
             color: $timelineCellLabelColor;
          }
       }
-      input:disabled {
+      input:disabled { //hide up & down arrows for time cells to allow value to span the entire width
          -moz-appearance: textfield;
          &::-webkit-inner-spin-button {
             -webkit-appearance: none;
