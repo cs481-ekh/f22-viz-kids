@@ -32,8 +32,10 @@ export default function TimelineTextView(
     /* Start cell (on change) */
     const cropStart = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
         const inputVal = parseInt(value);
+        /* Setting new crop start is constrained by crop end (and start of data) */
         if (frameStart<=inputVal && inputVal<frameCropEnd) {
             setCropStart(inputVal);
+            /* Advance current frame to be in new crop range if needed */
             if (inputVal>frameRef.current)
                 setFrame(inputVal);
         }
@@ -42,6 +44,7 @@ export default function TimelineTextView(
     /* Current cell (on change) */
     const seek = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
         const inputVal = parseInt(value);
+        /* Setting current frame must be in crop range */
         if (frameCropStart<=inputVal && inputVal<=frameCropEnd)
             setFrame(inputVal);
     }, [frameCropStart, frameCropEnd]);
@@ -49,8 +52,10 @@ export default function TimelineTextView(
     /* End cell (on change) */
     const cropEnd = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
         const inputVal = parseInt(value);
+        /* Setting new crop end is constrained by crop start (and end of data) */
         if (frameCropStart<inputVal && inputVal<=frameEnd) {
             setCropEnd(inputVal);
+            /* Rewind current frame to be in new crop range if needed */
             if (inputVal<frameRef.current)
                 setFrame(inputVal);
         }
@@ -90,6 +95,7 @@ export default function TimelineTextView(
                 /></td>
             </tr>
             <tr>
+                {/* Labels */}
                 <td><span className={"timeline-cell label"}>Start</span></td>
                 <td><span className={"timeline-cell label"}>Current</span></td>
                 <td><span className={"timeline-cell label"}>End</span></td>
