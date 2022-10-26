@@ -17,8 +17,15 @@ interface Props {
 
 export default function TimelineTrackView(
     {
-        frameStart, frame, frameEnd, frameCropStart, frameCropEnd, frameRef,
-        setFrame, setCropStart, setCropEnd,
+        frameStart,
+        frame, setFrame,
+        frameEnd,
+
+        frameCropStart, setCropStart,
+        frameCropEnd, setCropEnd,
+
+        frameRef,
+
         playing, setPlaying,
     }: Props
 ) {
@@ -31,32 +38,36 @@ export default function TimelineTrackView(
     }), [frameRef, frameCropStart, frameCropEnd]);
 
     /* Timeline track thumb (on change) */
-    const timelineTrackSeek = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
+    const seek = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
         const thumbVal = parseInt(value);
-        if (frameCropStart<=thumbVal && thumbVal<=frameCropEnd) setFrame(thumbVal);
-        else if (thumbVal<frameCropStart && frameRef.current-1>=frameCropStart) setFrame(frameRef.current-1);
-        else if (thumbVal>frameCropEnd && frameRef.current+1<=frameCropEnd) setFrame(frameRef.current+1);
+        /* ThumbVal is in range: set frame to it */
+        if (frameCropStart<=thumbVal && thumbVal<=frameCropEnd)
+            setFrame(thumbVal);
+        /* ThumbVal is too low: decrement frame until at crop start */
+        else if (thumbVal<frameCropStart && frameRef.current-1>=frameCropStart)
+            setFrame(frameRef.current-1);
+        /* ThumbVal is too high: increment frame until at crop end */
+        else if (thumbVal>frameCropEnd && frameRef.current+1<=frameCropEnd)
+            setFrame(frameRef.current+1);
     }, [frameRef, frameCropStart, frameCropEnd]);
 
     /* Timeline track (on context menu) */
-    const timelineTrackResetCrop = useCallback((e: MouseEvent<HTMLInputElement>) => {
+    const resetCrop = useCallback((e: MouseEvent<HTMLInputElement>) => {
         e.preventDefault();
         if (e.button==2) {
+            /* Undo crop */
             setCropStart(frameStart);
             setCropEnd(frameEnd);
         }
     }, [frameEnd]);
 
-    return <div id={"timeline-track-area"}>
-        <div id="timeline-track-flex">
-            <button id={"play-button"}
-                    onClick={togglePlaying}>{playing ? <PauseIcon /> : <PlayIcon />}
-            </button>
-            <input id={"timeline-track"} type={"range"}
-                   value={frame} min={frameStart} max={frameEnd}
-                   onChange={timelineTrackSeek}
-                   onContextMenu={timelineTrackResetCrop}
-            />
-        </div>
+    return <div id={"timeline-track-view"}>
+        <button id={"play-button"} onClick={togglePlaying}>
+            {playing ? <PauseIcon /> : <PlayIcon />}
+        </button>
+        <input id={"timeline-track"} type={"range"}
+               value={frame} min={frameStart} max={frameEnd}
+               onChange={seek} onContextMenu={resetCrop}
+        />
     </div>;
 }
