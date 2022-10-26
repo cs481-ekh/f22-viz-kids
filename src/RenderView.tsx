@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 
-import {ForceFileData, MarkerFileData} from "./DataTypes";
+import { ForceFileData, MarkerFileData } from "./DataTypes";
 
 /* Axis reference */                    /* THREE's relation to trial subject */
 //THREE X == Vicon -X == OpenSim -Z     (+left/-right)

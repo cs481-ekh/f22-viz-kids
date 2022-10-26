@@ -104,7 +104,7 @@ export async function parseForceFileData(file: File): Promise<ForceFileData> {
                 torque: parseFloat(tsvTable[row][trqCol])
             };
             const invalid = isNaN(force.position.x) || isNaN(force.position.y) || isNaN(force.position.z)
-                || (force.position.x===0 && force.position.y===0 && force.position.z===0);
+                            || (force.position.x===0 && force.position.y===0 && force.position.z===0);
             if (!invalid)
                 fileData.frames[row-frame1Row].forces.push(force);
         }
