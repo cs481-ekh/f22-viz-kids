@@ -27,9 +27,9 @@ export default function SelectionInfoView(
                         frameInfo === null ?
                             "Unknown position" :
                             <>
-                                x: {frameInfo.x}<br />
-                                y: {frameInfo.y}<br />
-                                z: {frameInfo.z}
+                                x: {(frameInfo.x>=0 ? "+" : "") + frameInfo.x}<br />
+                                y: {(frameInfo.y>=0 ? "+" : "") + frameInfo.y}<br />
+                                z: {(frameInfo.z>=0 ? "+" : "") + frameInfo.z}
                             </>
                     }
                 </p>;

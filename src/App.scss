@@ -81,6 +81,8 @@ body {
 
    display: grid;
    box-sizing: border-box;
+   min-width: 720px;
+   min-height: 330px;
    width: calc(100vw - 2*$gridMargin);
    height: calc(100vh - 2*$gridMargin);
    grid-template-rows: $row1Height $row2Height $row3Height $row4Height $row5Height;
@@ -283,7 +285,9 @@ body {
       overflow-y: auto;
       border-radius: $sharedBorderRadius;
       * {
+         font-family: monospace;
          font-size: 10pt;
+         font-weight: bold;
       }
       :first-child {
          margin-top: 0;
