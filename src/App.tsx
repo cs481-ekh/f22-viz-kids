@@ -188,11 +188,11 @@ export default function App() {
 			markerFile={markerFile} markerParsingError={markerParsingError}
 			forceFile={forceFile} forceParsingError={forceParsingError}
 		/>
-		<div id={"logo-area-flex"}>
+		<div id={"logo-menu-button-div"}>
 			<div id={"logo"}>Movilo</div>
 			<button id={"main-menu-button"} onClick={()=>setMenu(!menu)}><MenuIcon /></button>
 		</div>
-		<div id={"output-area-title"}>
+		<div id={"selection-info-title"}>
 			Selection Info
 		</div>
 		{/* --------------------------------------------- Grid Row 2-3 --------------------------------------------- */}

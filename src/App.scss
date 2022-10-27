@@ -106,7 +106,7 @@ body {
       }
    } //#file-upload-view
 
-   #logo-area-flex {
+   #logo-menu-button-div {
       grid-row: 1;
       grid-column: 2;
       display: flex;
@@ -133,9 +133,9 @@ body {
             cursor: pointer;
          }
       }
-   } //#logo-area-flex
+   } //#logo-menu-button-div
 
-   #output-area-title {
+   #selection-info-title {
       grid-row: 1;
       grid-column: 3;
       text-align: center;
@@ -143,7 +143,7 @@ body {
       font-weight: bold;
       line-height: 38pt;
       color: $outputAreaTitleColor;
-   } //#output-area-title
+   } //#selection-info-title
 
    // ---------------------------------------- Grid Rows 2-3 ---------------------------------------
 
@@ -372,22 +372,7 @@ body {
          flex-direction: column; //options should stack vertically under play button
          font-size: 7pt; //all options inherit
          #rate-div {
-            color: white;
-            font-size: inherit;
-            #rate-input {
-               height: calc($row5Height/$numOptions);
-               width: 24px;
-               padding: 0;
-               background-color: transparent;
-               border: none;
-               color: inherit;
-               font-size: inherit;
-               text-align: right;
-               -moz-appearance: textfield;
-               &::-webkit-inner-spin-button {
-                  -webkit-appearance: none;
-               }
-            }
+            //TODO <--------------------------------------------------------------------------------
          }
          #loop-div {
             color: $playbackLoopLabelColor;
@@ -402,10 +387,11 @@ body {
          }
       } //#play-button-options
 
-      #gait-suggestion-area {
+      #gait-suggestion-div {
+         grid-row: 2; //timeline sub-grid
+         grid-column: 2; //timeline sub-grid
          //TODO <-----------------------------------------------------------------------------------
-         //background-color: yellow;
-      } //#gait-suggestion-area
+      } //#gait-suggestion-div
 
    } //#timeline-track-view
 

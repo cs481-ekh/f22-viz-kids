@@ -79,6 +79,7 @@ export default function TimelineTrackView(
         />
         {/* ---------------------------------------------- Sub-Grid Row 2 ---------------------------------------------- */}
         <div id={"play-button-options"}>
+            {/* option divs are stacked in flex column */}
             <div id={"loop-div"}>
                 Loop: <input id={"loop-checkbox"} type={"checkbox"} checked={loopPlayback} onChange={toggleLooping} />
             </div>
@@ -86,7 +87,7 @@ export default function TimelineTrackView(
                 {/* TODO: add rate input */}
             </div>
         </div>
-        <div id={"gait-suggestion-area"}>
+        <div id={"gait-suggestion-div"}>
             {/* TODO: add buttons */}
         </div>
     </div>;
