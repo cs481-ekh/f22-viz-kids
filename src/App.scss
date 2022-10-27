@@ -147,16 +147,14 @@ body {
 
    // ---------------------------------------- Grid Rows 2-3 ---------------------------------------
 
-   #viz-area {
+   #render-view {
       grid-row: 2/4;
       grid-column: 1/3;
       background-color: $vizAreaBGColor;
       overflow: hidden;
-      #render-view {
-         height: 100%;
-         width: 100%;
-      }
-   } //#viz-area
+      height: 100%;
+      width: 100%;
+   } //#render-view
 
    #popup-view {
       $popupPadding: 15px;
