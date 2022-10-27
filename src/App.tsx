@@ -22,7 +22,7 @@ export default function App() {
 	const [frameStart, setStart] = useState(0);
 	const [frameEnd, setEnd] = useState(0);
 
-	const [checked, setChecked] = useState(true);
+	const [loopCheck, setLoopCheck] = useState(true);
 
 	const [sdpInfo, setSdpInfo] = useState(false); //to toggle displaying SDP info popup
 
@@ -120,8 +120,8 @@ export default function App() {
 					interFrameTimeRef.current -= timeStep;
 					setFrame(current => {
 						if(current + 1 < markerFileData.frames.length && current + 1 < frameEnd) {return current + 1;
-						} else if(checked == false) { //if loop checkbox unchecked then don't loop
-								setPlaying(checked); //changed play to pause once reaches end if loop unchecked, for frame manipulation 
+						} else if(loopCheck == false) { //if loop checkbox unchecked then don't loop
+								setPlaying(loopCheck); //changed play to pause once reaches end if loop unchecked, for frame manipulation 
 								return current; //returns last frame - 1, based on calculation in first if statement
 						}
 							else return frameStart; //loop if loop checkbox is checked
@@ -134,7 +134,7 @@ export default function App() {
 		}
 		
 		animationRef.current = requestAnimationFrame(animationLoop);
-	}, [markerFileData, timeStep, frameEnd, frameStart, checked]);
+	}, [markerFileData, timeStep, frameEnd, frameStart, loopCheck]);
 
 	useEffect(() => {
 		if(playing) {
@@ -146,10 +146,10 @@ export default function App() {
 	const togglePlaying = useCallback(() => {
 		setPlaying(current => {
 			if(current) return false;
-			if(checked == true && frameRef.current >= markerFileData.frames.length - 1) setFrame(frameStart); // restart if at end
+			if(frameRef.current >= markerFileData.frames.length - 1) setFrame(frameStart); // restart if at end
 			return true;
 		});
-	}, [markerFileData.frames.length, frameRef, frameStart, checked]);
+	}, [markerFileData.frames.length, frameRef, frameStart]);
 
 	
 	
@@ -209,8 +209,8 @@ export default function App() {
 				</button>
 				<input id={"timeline-track"} type={"range"} min={"0"} max={markerFileData.frames.length - 1}
 					onChange={(e) => setFrame(parseInt(e.target.value))} value={frame} />
-				<label><input type="checkbox" checked={checked} onChange={(e) => {
-					setChecked(e.target.checked);
+				<label><input type="checkbox" checked={loopCheck} onChange={(e) => {
+					setLoopCheck(e.target.checked);
 					/*if (!checked) {
 						setPlaying(true); //sets from pause to play if you check loop box again
 					}*/
