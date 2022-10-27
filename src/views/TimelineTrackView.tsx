@@ -51,10 +51,10 @@ export default function TimelineTrackView(
         if (frameCropStart<=thumbVal && thumbVal<=frameCropEnd)
             setFrame(thumbVal);
         /* ThumbVal is too low: decrement frame until at crop start */
-        else if (thumbVal<frameCropStart && frameRef.current-1>=frameCropStart)
+        else if (thumbVal<frameCropStart && frameCropStart<=frameRef.current-1)
             setFrame(frameRef.current-1);
         /* ThumbVal is too high: increment frame until at crop end */
-        else if (thumbVal>frameCropEnd && frameRef.current+1<=frameCropEnd)
+        else if (thumbVal>frameCropEnd && frameCropEnd>=frameRef.current+1)
             setFrame(frameRef.current+1);
     }, [frameRef, frameCropStart, frameCropEnd]);
 
