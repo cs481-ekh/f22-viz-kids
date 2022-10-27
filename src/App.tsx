@@ -9,7 +9,6 @@ import RenderView from "./views/RenderView";
 import PopupView from "./views/PopupView";
 import SelectionInfoView from "./views/SelectionInfoView";
 import TimelineTrackView from "./views/TimelineTrackView";
-import UnderTimelineTrackView from "./views/UnderTimelineTrackView";
 import TimelineTextView from "./views/TimelineTextView";
 
 import { ForceFileData, MarkerFileData } from "./dataTypes";
@@ -207,17 +206,16 @@ export default function App() {
 		/>
 		<img id={"sdp-logo"} src={sdpLogo} alt={"senior design project logo"} onClick={()=>setSdpInfo(!sdpInfo)}
 		/>
-		{/* ---------------------------------------------- Grid Row 4 ---------------------------------------------- */}
+		{/* --------------------------------------------- Grid Row 4-5 --------------------------------------------- */}
 		<TimelineTrackView frameStart={frameStart} frame={frame} frameRef={frameRef} frameEnd={frameEnd}
-			frameCropStart={frameCropStart}  frameCropEnd={frameCropEnd} playing={playing}
-			setFrame={setFrame} setCropStart={setCropStart} setCropEnd={setCropEnd} setPlaying={setPlaying}
+			frameCropStart={frameCropStart}  frameCropEnd={frameCropEnd}
+			playing={playing} loopPlayback={loopPlayback}
+			setPlaying={setPlaying} setLoopPlayback={setLoopPlayback}
+			setFrame={setFrame} setCropStart={setCropStart} setCropEnd={setCropEnd}
 		/>
 		<TimelineTextView frameStart={frameStart} frame={frame} frameRef={frameRef} frameEnd={frameEnd}
 			frameCropStart={frameCropStart} frameCropEnd={frameCropEnd} markerFileData={markerFileData}
 			setFrame={setFrame} setCropStart={setCropStart}  setCropEnd={setCropEnd}
-		/>
-		{/* ---------------------------------------------- Grid Row 5 ---------------------------------------------- */}
-		<UnderTimelineTrackView loopPlayback={loopPlayback} setLoopPlayback={setLoopPlayback}
 		/>
 	</div>;
 }

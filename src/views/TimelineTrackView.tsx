@@ -13,6 +13,7 @@ interface Props {
     frameRef: React.MutableRefObject<number>,
 
     playing: boolean, setPlaying: React.Dispatch<React.SetStateAction<boolean>>,
+    loopPlayback: boolean, setLoopPlayback: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 export default function TimelineTrackView(
@@ -27,6 +28,7 @@ export default function TimelineTrackView(
         frameRef,
 
         playing, setPlaying,
+        loopPlayback, setLoopPlayback,
     }: Props
 ) {
     /* Play button (on click) */
@@ -36,6 +38,11 @@ export default function TimelineTrackView(
         /* Invert current playing status */
         return !current;
     }), [frameRef, frameCropStart, frameCropEnd]);
+
+    /* Play button loop checkbox (on change) */
+    const toggleLooping = useCallback(({target: {checked}}: ChangeEvent<HTMLInputElement>) => {
+        setLoopPlayback(checked);
+    }, []);
 
     /* Timeline track thumb (on change) */
     const seek = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
@@ -62,6 +69,7 @@ export default function TimelineTrackView(
     }, [frameEnd]);
 
     return <div id={"timeline-track-view"}>
+        {/* ---------------------------------------------- Sub-Grid Row 1 ---------------------------------------------- */}
         <button id={"play-button"} onClick={togglePlaying}>
             {playing ? <PauseIcon /> : <PlayIcon />}
         </button>
@@ -69,5 +77,17 @@ export default function TimelineTrackView(
                value={frame} min={frameStart} max={frameEnd}
                onChange={seek} onContextMenu={resetCrop}
         />
+        {/* ---------------------------------------------- Sub-Grid Row 2 ---------------------------------------------- */}
+        <div id={"play-button-options"}>
+            <div id={"loop-div"}>
+                Loop: <input id={"loop-checkbox"} type={"checkbox"} checked={loopPlayback} onChange={toggleLooping} />
+            </div>
+            <div id={"rate-div"}>
+                <input id={"rate-input"} type={"number"} step={0.1} /> x
+            </div>
+        </div>
+        <div id={"gait-suggestion-area"}>
+
+        </div>
     </div>;
 }
