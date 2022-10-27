@@ -83,11 +83,11 @@ export default function TimelineTrackView(
                 Loop: <input id={"loop-checkbox"} type={"checkbox"} checked={loopPlayback} onChange={toggleLooping} />
             </div>
             <div id={"rate-div"}>
-                <input id={"rate-input"} type={"number"} step={0.1} /> x
+                {/* TODO: add rate input */}
             </div>
         </div>
         <div id={"gait-suggestion-area"}>
-
+            {/* TODO: add buttons */}
         </div>
     </div>;
 }
