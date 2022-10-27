@@ -160,5 +160,7 @@ async function tsvToTable(file: File): Promise<string[]> {
         ));
     }
 
+    parseResult.data.pop(); //PapaParse leaves an empty row at end
+
     return parseResult.data;
 }

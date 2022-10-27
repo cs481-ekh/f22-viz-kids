@@ -159,7 +159,7 @@ export default function App() {
 
     /* Set end frame from newly-parsed data for animation controls */
     useEffect(() => {
-        const lastFrameParsed = markerFileData.frames.length-2;
+        const lastFrameParsed = markerFileData.frames.length-1;
         if (lastFrameParsed > 0) {
             setEnd(lastFrameParsed);
             setCropEnd(lastFrameParsed);
