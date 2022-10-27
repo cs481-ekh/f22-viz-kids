@@ -33,9 +33,9 @@ test('valid angle (frame 0 Right hip-knee-ankle angle)', () => {
 });
 
 test('valid angle (frame 1 Right hip-knee-ankle angle)', () => {
-    const RKJC: Point3D  = {x:0.24812, y:-1.23409, z:0.52646}; //left knee joint center
-    const RASIS: Point3D = {x:0.29697, y:-1.33212, z:0.93449}; //left anterior-superior-iliac-spine (front edge of hip)
-    const RAJC: Point3D  = {x:0.26594, y:-1.18703, z:0.13959}; //left ankle joint center
+    const RKJC: Point3D  = {x:0.24812, y:-1.23409, z:0.52646}; //Right knee joint center
+    const RASIS: Point3D = {x:0.29697, y:-1.33212, z:0.93449}; //Right anterior-superior-iliac-spine (front edge of hip)
+    const RAJC: Point3D  = {x:0.26594, y:-1.18703, z:0.13959}; //Right ankle joint center
     const theta = computeAngle([RKJC,RASIS,RAJC]);
     const expected =168.65204332562732; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     const digitsPrecision = 9;
@@ -43,9 +43,9 @@ test('valid angle (frame 1 Right hip-knee-ankle angle)', () => {
 });
 
 test('valid angle (frame 494 Right hip-knee-ankle angle)', () => {
-    const RKJC: Point3D  = {x:0.29999, y:0.70808, z:0.50836}; //left knee joint center
-    const RASIS: Point3D = {x:0.35362, y:0.69912, z:0.95498}; //left anterior-superior-iliac-spine (front edge of hip)
-    const RAJC: Point3D  = {x:0.31261, y:0.4275, z:0.23976}; //left ankle joint center
+    const RKJC: Point3D  = {x:0.29999, y:0.70808, z:0.50836}; //Right knee joint center
+    const RASIS: Point3D = {x:0.35362, y:0.69912, z:0.95498}; //Right anterior-superior-iliac-spine (front edge of hip)
+    const RAJC: Point3D  = {x:0.31261, y:0.4275, z:0.23976}; //Right ankle joint center
     const theta = computeAngle([RKJC,RASIS,RAJC]);
     const expected = 131.90041068945374; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     const digitsPrecision = 9;
@@ -63,9 +63,9 @@ test('valid angle (frame 494 left hip-knee-ankle angle)', () => {
 });
 
 test('valid angle (frame 0 left shoulder-elbow-hand)', () => {
-    const LMEB: Point3D  = {x:-0.02519, y:-1.40287, z:1.02347}; //left knee joint center
-    const LSHO: Point3D = {x:0.00984, y:-1.3699, z:1.33941}; //left anterior-superior-iliac-spine (front edge of hip)
-    const LHAND: Point3D  = {x:-0.09351, y:-1.1928, z:0.87744}; //left ankle joint center
+    const LMEB: Point3D  = {x:-0.02519, y:-1.40287, z:1.02347}; //left elbow
+    const LSHO: Point3D = {x:0.00984, y:-1.3699, z:1.33941}; //left shoulder
+    const LHAND: Point3D  = {x:-0.09351, y:-1.1928, z:0.87744}; //left hand
     const theta = computeAngle([LMEB,LSHO,LHAND]);
     const expected = 119.44691263275874; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     const digitsPrecision = 9;
@@ -73,9 +73,9 @@ test('valid angle (frame 0 left shoulder-elbow-hand)', () => {
 });
 
 test('valid angle (frame 1 left shoulder-elbow-hand)', () => {
-    const LMEB: Point3D  = {x:-0.02484, y:-1.39762, z:1.02257}; //left knee joint center
-    const LSHO: Point3D = {x:0.01038, y:-1.36522, z:1.33846}; //left anterior-superior-iliac-spine (front edge of hip)
-    const LHAND: Point3D  = {x:-0.09352, y:-1.18697, z:0.87771}; //left ankle joint center
+    const LMEB: Point3D  = {x:-0.02484, y:-1.39762, z:1.02257}; //left elbow
+    const LSHO: Point3D = {x:0.01038, y:-1.36522, z:1.33846}; //left Shoulder
+    const LHAND: Point3D  = {x:-0.09352, y:-1.18697, z:0.87771}; //left hand
     const theta = computeAngle([LMEB,LSHO,LHAND]);
     const expected = 119.27199541696437; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     const digitsPrecision = 9;
@@ -83,9 +83,9 @@ test('valid angle (frame 1 left shoulder-elbow-hand)', () => {
 });
 
 test('valid angle (frame 494 left shoulder-elbow-hand angle)', () => {
-    const LMEB: Point3D  = {x:0.05491, y:0.52679, z:1.05451}; //left knee joint center
-    const LSHO: Point3D = {x:0.0614, y:0.62164, z:1.35794}; //left anterior-superior-iliac-spine (front edge of hip)
-    const LHAND: Point3D  = {x:-0.00987, y:0.65488, z:0.83173}; //left ankle joint center
+    const LMEB: Point3D  = {x:0.05491, y:0.52679, z:1.05451}; //left Elbow
+    const LSHO: Point3D = {x:0.0614, y:0.62164, z:1.35794}; //left Shoulder
+    const LHAND: Point3D  = {x:-0.00987, y:0.65488, z:0.83173}; //left hand
     const theta = computeAngle([LMEB,LSHO,LHAND]);
     const expected = 131.52795596572224; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     const digitsPrecision = 9;
@@ -93,9 +93,9 @@ test('valid angle (frame 494 left shoulder-elbow-hand angle)', () => {
 });
 
 test('valid angle (frame 0 right shoulder-elbow-hand angle)', () => {
-    const RMEB: Point3D  = {x:0.31224, y:-1.5443, z:1.07604}; //left knee joint center
-    const RSHO: Point3D = {x:0.34511, y:-1.39145, z:1.33606}; //left anterior-superior-iliac-spine (front edge of hip)
-    const RHAND: Point3D  = {x:0.37097, y:-1.5462, z:0.81724}; //left ankle joint center
+    const RMEB: Point3D  = {x:0.31224, y:-1.5443, z:1.07604}; //right Elbow
+    const RSHO: Point3D = {x:0.34511, y:-1.39145, z:1.33606}; //right Shoulder
+    const RHAND: Point3D  = {x:0.37097, y:-1.5462, z:0.81724}; //right Hand
     const theta = computeAngle([RMEB,RSHO,RHAND]);
     const expected = 144.62393601668833; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     const digitsPrecision = 9;
@@ -103,9 +103,9 @@ test('valid angle (frame 0 right shoulder-elbow-hand angle)', () => {
 });
 
 test('valid angle (frame 1 right shoulder-elbow-hand angle)', () => {
-    const RMEB: Point3D  = {x:0.31251, y:-1.53961, z:1.07533}; //left knee joint center
-    const RSHO: Point3D = {x:0.34569, y:-1.3866, z:1.33511}; //left anterior-superior-iliac-spine (front edge of hip)
-    const RHAND: Point3D  = {x:0.37128, y:-1.54186, z:0.81649}; //left ankle joint center
+    const RMEB: Point3D  = {x:0.31251, y:-1.53961, z:1.07533}; //right Elbow
+    const RSHO: Point3D = {x:0.34569, y:-1.3866, z:1.33511}; //right Shoulder
+    const RHAND: Point3D  = {x:0.37128, y:-1.54186, z:0.81649}; //right Hand
     const theta = computeAngle([RMEB,RSHO,RHAND]);
     const expected = 144.61143274389914; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     const digitsPrecision = 9;
@@ -113,9 +113,9 @@ test('valid angle (frame 1 right shoulder-elbow-hand angle)', () => {
 });
 
 test('valid angle (frame 494 right shoulder-elbow-hand angle)', () => {
-    const RMEB: Point3D  = {x:0.37997, y:0.51703, z:1.066}; //left knee joint center
-    const RSHO: Point3D = {x:0.39966, y:0.60185, z:1.35986}; //left anterior-superior-iliac-spine (front edge of hip)
-    const RHAND: Point3D  = {x:0.47702, y:0.59593, z:0.83514}; //left ankle joint center
+    const RMEB: Point3D  = {x:0.37997, y:0.51703, z:1.066}; //right Elbow
+    const RSHO: Point3D = {x:0.39966, y:0.60185, z:1.35986}; //right Shoulder
+    const RHAND: Point3D  = {x:0.47702, y:0.59593, z:0.83514}; //right Hand
     const theta = computeAngle([RMEB,RSHO,RHAND]);
     const expected = 137.401167962484; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     const digitsPrecision = 9;
