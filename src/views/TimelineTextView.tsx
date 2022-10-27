@@ -63,43 +63,45 @@ export default function TimelineTextView(
 
     return <div id={"timeline-text-view"}>
         <table>
-            <tr>
-                {/* Start frame */}
-                <td><input className={"timeline-cell"} type={"number"}
-                           value={frameCropStart} min={frameStart} max={frameCropEnd-1}
-                           onChange={cropStart}
-                /></td>
-                {/* Current frame */}
-                <td><input className={"timeline-cell"} type={"number"}
-                           value={frame} min={frameCropStart} max={frameCropEnd}
-                           onChange={seek}
-                /></td>
-                {/* End frame */}
-                <td><input className={"timeline-cell"} type={"number"}
-                           value={frameCropEnd} min={frameCropStart+1} max={frameEnd}
-                           onChange={cropEnd}
-                /></td>
-            </tr>
-            <tr>
-                {/* Start time */}
-                <td><input className={"timeline-cell"} type={"number"} disabled
-                           value={frameEnd>0 ? markerFileData.frames[frameCropStart]?.time : 0}
-                /></td>
-                {/* Current time */}
-                <td><input className={"timeline-cell"} type={"number"} disabled
-                           value={frameEnd>0 ? markerFileData.frames[frame]?.time : 0}
-                /></td>
-                {/* End time */}
-                <td><input className={"timeline-cell"} type={"number"} disabled
-                           value={frameEnd>0 ? markerFileData.frames[frameCropEnd]?.time : 0}
-                /></td>
-            </tr>
-            <tr>
-                {/* Labels */}
-                <td><span className={"timeline-cell label"}>Start</span></td>
-                <td><span className={"timeline-cell label"}>Current</span></td>
-                <td><span className={"timeline-cell label"}>End</span></td>
-            </tr>
+            <tbody>
+                <tr>
+                    {/* Start frame */}
+                    <td><input className={"timeline-cell"} type={"number"}
+                               value={frameCropStart} min={frameStart} max={frameCropEnd-1}
+                               onChange={cropStart}
+                    /></td>
+                    {/* Current frame */}
+                    <td><input className={"timeline-cell"} type={"number"}
+                               value={frame} min={frameCropStart} max={frameCropEnd}
+                               onChange={seek}
+                    /></td>
+                    {/* End frame */}
+                    <td><input className={"timeline-cell"} type={"number"}
+                               value={frameCropEnd} min={frameCropStart+1} max={frameEnd}
+                               onChange={cropEnd}
+                    /></td>
+                </tr>
+                <tr>
+                    {/* Start time */}
+                    <td><input className={"timeline-cell"} type={"number"} disabled
+                               value={frameEnd>0 ? markerFileData.frames[frameCropStart]?.time : 0}
+                    /></td>
+                    {/* Current time */}
+                    <td><input className={"timeline-cell"} type={"number"} disabled
+                               value={frameEnd>0 ? markerFileData.frames[frame]?.time : 0}
+                    /></td>
+                    {/* End time */}
+                    <td><input className={"timeline-cell"} type={"number"} disabled
+                               value={frameEnd>0 ? markerFileData.frames[frameCropEnd]?.time : 0}
+                    /></td>
+                </tr>
+                <tr>
+                    {/* Labels */}
+                    <td><span className={"timeline-cell label"}>Start</span></td>
+                    <td><span className={"timeline-cell label"}>Current</span></td>
+                    <td><span className={"timeline-cell label"}>End</span></td>
+                </tr>
+            </tbody>
         </table>
     </div>;
 }
