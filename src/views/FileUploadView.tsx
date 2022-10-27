@@ -16,7 +16,7 @@ export default function FileUploadView(
         openForceFileSelector, forceFile, forceParsingError
     }: Props
 ) {
-    return <div id={"file-area-flex"}>
+    return <div id={"file-upload-view"}>
         <div>
             <input className={"file-upload-button"} type={"button"} value={"Choose Marker Data File"} onClick={openMarkerFileSelector} />
             <span className={"file-chosen-name"}>{markerFile && !markerParsingError ? markerFile.name : "No file chosen"}</span>
