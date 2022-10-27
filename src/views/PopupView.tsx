@@ -13,10 +13,10 @@ interface Props {
 
 export default function PopupView(
     {
-        error, sdpInfo, menu, controlsHelpImgNum, setControlsHelpImgNum
+        error, menu, sdpInfo, controlsHelpImgNum, setControlsHelpImgNum
     }: Props
 ) {
-    return <div id={"popup-area"}>
+    return <div id={"popup-view"}>
 
         <div id={"error-popup"} style={error ? {visibility: 'visible'} : {visibility: 'hidden'}}>
             Error: {error?.message}
