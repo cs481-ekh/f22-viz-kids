@@ -19,17 +19,17 @@ export default function SelectionInfoView(
     const selectedMarkersMetadata = <>
         {
             selectedMarkers.map(idx => {
-                const info = markerData.markers[idx];
-                const frameInfo = markerData.frames[frame].positions[idx];
+                const label = markerData.markers[idx].label;
+                const pos = markerData.frames[frame].positions[idx];
                 return <p key={idx}> {/* idx here is effectively an ID in the loaded data */}
-                    Label: {info.label}<br />
+                    Label: {label}<br />
                     {
-                        frameInfo === null ?
+                        pos === null ?
                             "Unknown position" :
                             <>
-                                x: {(frameInfo.x>=0 ? "+" : "") + frameInfo.x}<br />
-                                y: {(frameInfo.y>=0 ? "+" : "") + frameInfo.y}<br />
-                                z: {(frameInfo.z>=0 ? "+" : "") + frameInfo.z}
+                                x: {(pos.x>=0 ? "+" : "") + pos.x}<br />
+                                y: {(pos.y>=0 ? "+" : "") + pos.y}<br />
+                                z: {(pos.z>=0 ? "+" : "") + pos.z}
                             </>
                     }
                 </p>;
