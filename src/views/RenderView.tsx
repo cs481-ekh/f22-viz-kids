@@ -342,11 +342,12 @@ export default function RenderView(
         };
     }, [cameraControls, camera, renderer]);
 
-    /* Only re-render the scene when its visual arrangement changes (new frame, file, camera orientation, or selections) */
+    /* Only re-render the scene when its visual arrangement changes
+     * (new frame, file, camera orientation, selections, or aspect ratio) */
     useEffect(() => {
         requestAnimationFrame(() => renderer.render(scene, camera));
     }, [frame, markerData, forceData, selectedMarkers, renderer, scene,
-        camPosX, camPosY, camPosZ, camRotX, camRotY, camRotZ, camera]);
+        camPosX, camPosY, camPosZ, camRotX, camRotY, camRotZ, camera, aspectRatio]);
 
     /* Add the rendering to the DOM element we will return */
     useEffect(() => {root.current!.appendChild(renderer.domElement)}, [renderer]);
