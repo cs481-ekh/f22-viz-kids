@@ -1,5 +1,5 @@
 import * as TSV from 'papaparse';
-import {MarkerFileData, ForceFileData, Point3D, Force} from './DataTypes';
+import {MarkerFileData, ForceFileData, Point3D, Force} from '../dataTypes';
 
 
 export async function parseMarkerFileData(file: File): Promise<MarkerFileData> {
@@ -159,6 +159,8 @@ async function tsvToTable(file: File): Promise<string[]> {
             `https://docs.google.com/spreadsheets/d/1hCI3JGnILWrYeuYISfwEFBdMzEsuuWzSdFfUbpwdxsk/edit?usp=sharing`
         ));
     }
+
+    parseResult.data.pop(); //PapaParse leaves an empty row at end
 
     return parseResult.data;
 }

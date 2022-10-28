@@ -1,8 +1,8 @@
-import {parseMarkerFileData,parseForceFileData} from "../src/Parser";
+import {parseMarkerFileData,parseForceFileData} from "../src/modules/Parser";
 import * as fs from 'fs';
 import * as path from 'path';
 
-import type {MarkerFileData,MarkerFrame,Marker,Point3D,ForceFileData,ForceFrame,Force} from '../src/DataTypes';
+import type {MarkerFileData,MarkerFrame,Marker,Point3D,ForceFileData,ForceFrame,Force} from '../src/dataTypes';
 
 
 test('parse undefined', async () => {
