@@ -29,57 +29,57 @@ export const labeledSegments: [string,string][] = [
     ["RPSIS","MID_PSIS"], //inner back waist
 
     /* L Arm */
-    ["LSHO","LLEB"],
-    ["LSHO","LMEB"],
-    ["LLEB","LMWRT"],
-    ["LMEB","LLWRT"],
-    ["LHAND","LLWRT"],
-    ["LHAND","LMWRT"],
+    ["LSHO","LLEB"], //outer arm
+    ["LSHO","LMEB"], //inner arm
+    ["LLEB","LMWRT"], //outer forearm
+    ["LMEB","LLWRT"], //inner forearm
+    ["LHAND","LLWRT"], //thumb side of hand
+    ["LHAND","LMWRT"], //pinkie side of hand
 
     /* R Arm */
-    ["RSHO","RLEB"],
-    ["RSHO","RMEB"],
-    ["RLEB","RMWRT"],
-    ["RMEB","RLWRT"],
-    ["RHAND","RLWRT"],
-    ["RHAND","RMWRT"],
+    ["RSHO","RLEB"], //outer arm
+    ["RSHO","RMEB"], //inner arm
+    ["RLEB","RMWRT"], //outer forearm
+    ["RMEB","RLWRT"], //inner forearm
+    ["RHAND","RLWRT"], //thumb side of hand
+    ["RHAND","RMWRT"], //pinkie side of hand
 
      /* L Upper Leg */
-    ["LGTR","LLEP"],
-    ["MID_HJC","LMEP"],
-    ["LTHI","LLEP"],
-    ["LTHI","LMEP"],
-    ["LPSK","LLEP"],
-    ["LPSK","LMEP"],
+    ["LGTR","LLEP"], //outer leg
+    ["MID_HJC","LMEP"], //inner leg
+    ["LTHI","LLEP"], //outer top of kneecap
+    ["LTHI","LMEP"], //inner top of kneecap
+    ["LPSK","LLEP"], //outer bottom of kneecap
+    ["LPSK","LMEP"], //inner bottom of kneecap
 
     /* L Lower Leg */
-    ["LLEP","LLMAL"],
-    ["LMEP","LMMAL"],
-    ["LDSK","LLMAL"],
-    ["LDSK","LMMAL"],
+    ["LLEP","LLMAL"], //outer calf
+    ["LMEP","LMMAL"], //inner calf
+    ["LDSK","LLMAL"], //outer front of ankle
+    ["LDSK","LMMAL"], //inner front of ankle
 
     /* L Foot */
-    ["LHEEL","LTOE"],
-    ["LHEEL","LMET5"],
-    ["LTOE","LMET5"],
+    ["LHEEL","LTOE"], //inner edge of foot
+    ["LHEEL","LMET5"], //outer edge of foot
+    ["LTOE","LMET5"], //toes
 
     /* R Upper Leg */
-    ["RGTR","RLEP"],
-    ["MID_HJC","RMEP"],
-    ["RTHI","RLEP"],
-    ["RTHI","RMEP"],
-    ["RPSK","RLEP"],
-    ["RPSK","RMEP"],
+    ["RGTR","RLEP"], //outer leg
+    ["MID_HJC","RMEP"], //inner leg
+    ["RTHI","RLEP"], //outer top of kneecap
+    ["RTHI","RMEP"], //inner top of kneecap
+    ["RPSK","RLEP"], //outer bottom of kneecap
+    ["RPSK","RMEP"], //inner bottom of kneecap
 
     /* R Lower Leg */
-    ["RLEP","RLMAL"],
-    ["RMEP","RMMAL"],
-    ["RDSK","RLMAL"],
-    ["RDSK","RMMAL"],
+    ["RLEP","RLMAL"], //outer calf
+    ["RMEP","RMMAL"], //inner calf
+    ["RDSK","RLMAL"], //outer front of ankle
+    ["RDSK","RMMAL"], //inner front of ankle
 
     /* R Foot */
-    ["RHEEL","RTOE"],
-    ["RHEEL","RMET5"],
-    ["RTOE","RMET5"],
+    ["RHEEL","RTOE"], //inner edge of foot
+    ["RHEEL","RMET5"], //outer edge of foot
+    ["RTOE","RMET5"], //toes
 
 ];
