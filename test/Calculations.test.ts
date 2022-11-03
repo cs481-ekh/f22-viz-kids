@@ -20,5 +20,5 @@ test("suggested gait events for valid file", async () => {
     const fileContent: Buffer = fs.readFileSync(path.resolve(__dirname,"./fixtures/Trial001_Markers.tsv"));
     const file: File = new File([fileContent],"Trial001_Markers.tsv",{type: "text/tab-separated-values"});
     const data = await parseMarkerFileData(file);
-	expect(computeSuggestedGaitEvents(data)).toEqual([173, 448]);
+	expect(computeSuggestedGaitEvents(data)).toEqual([39, 173, 303, 448]);
 });
