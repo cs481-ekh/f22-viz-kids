@@ -2,12 +2,15 @@ import * as THREE from "three";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
-import { ForceFileData, MarkerFileData } from "../dataTypes";
+import {ForceFileData, MarkerFileData, Point3D} from "../dataTypes";
 
 /* Axis reference */                    /* THREE's relation to trial subject */
 //THREE X == Vicon -X == OpenSim -Z     (+left/-right)
 //THREE Y == Vicon Z  == OpenSim Y      (+up/-down)
 //THREE Z == Vicon Y  == OpenSim X      (+front/-back)
+
+const convertCoordsViconToThree = (coords: Point3D) => new THREE.Vector3(-coords.x, coords.z, coords.y);
+const convertCoordsOpenSimToThree = (coords: Point3D) => new THREE.Vector3(-coords.z, coords.y, coords.x);
 
 const THREE_X_AXIS = new THREE.Vector3(1,0,0);
 const THREE_Y_AXIS = new THREE.Vector3(0,1,0);
@@ -26,11 +29,12 @@ interface Props {
     forceData: ForceFileData;
     selectedMarkers: number[];
     setSelectedMarkers( replacementList: number[] | ((currentList: number[]) => number[]) ): void;
+    segmentIndices: [number,number][];
 }
 
 export default function RenderView(
     {
-        frame, markerData, forceData, selectedMarkers, setSelectedMarkers
+        frame, markerData, forceData, selectedMarkers, setSelectedMarkers, segmentIndices
     }: Props
 ) {
     const root = useRef<HTMLDivElement|null>(null);
@@ -113,6 +117,15 @@ export default function RenderView(
         return [vec1, vec2];
     });
 
+    /* An array of un-positioned body segments */
+    const segments = useMemo(() => {
+        return segmentIndices.map(seg => {
+            const line = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({color: 0x000088}));
+            line.visible = false;
+            return line;
+        });
+    }, [segmentIndices]);
+
     const [raycaster] = useState(() => new THREE.Raycaster());
 
     const handleRaycast = useCallback(({
@@ -177,9 +190,8 @@ export default function RenderView(
                 mesh.visible = false; //hide markers with invalid data
                 return;
             }
-            mesh.position.x = -pos.x; //Vicon x-axis is inverted with respect to THREE's
-            mesh.position.y = pos.z; //Vicon z-axis is THREE's y-axis
-            mesh.position.z = pos.y; //Vicon y-axis is THREE's z-axis
+            const p = convertCoordsViconToThree(pos);
+            mesh.position.set(p.x, p.y, p.z);
             mesh.visible = true; //show markers with valid data
         });
     }, [markerMeshes, markerData, frame]);
@@ -195,15 +207,31 @@ export default function RenderView(
                 vec.visible = false; //hide forces with no data
                 return;
             }
-            vec.position.x = -pos.z; //OpenSim's z-axis is THREE's -x-axis
-            vec.position.y = pos.y; //y-axis is the same
-            vec.position.z = pos.x; //OpenSim's x-axis is THREE's z-axis
+            const p = convertCoordsOpenSimToThree(pos);
+            vec.position.set(p.x, p.y, p.z);
             const magnitude = FORCE_VEC_SCALE_FACTOR * Math.sqrt((comps.x**2) + (comps.y**2) + (comps.z**2));
             vec.setLength(magnitude, FORCE_VEC_HEAD_LENGTH, FORCE_VEC_HEAD_WIDTH);
-            vec.setDirection(new THREE.Vector3(-comps.z, comps.y, comps.x).normalize());
+            vec.setDirection(convertCoordsOpenSimToThree(comps).normalize());
             vec.visible = true; //show forces with valid data
-        })
+        });
     }, [forceVectors, forceData, frame]);
+
+    /* Position body segments for the current frame */
+    useEffect(() => {
+        const frameData = markerData.frames[frame];
+        if (!frameData) return;
+        segments.forEach((seg,idx) => {
+            const startIdx = segmentIndices[idx][0];
+            const endIdx = segmentIndices[idx][1];
+            const startPos = frameData.positions[startIdx];
+            const endPos = frameData.positions[endIdx];
+            if (startPos && endPos) {
+                seg.geometry.setFromPoints([convertCoordsViconToThree(startPos),convertCoordsViconToThree(endPos)]);
+                seg.visible = true;
+            }
+            else seg.visible = false;
+        });
+    }, [segments, segmentIndices, markerData, frame]);
 
     /* Position axis helper relative to current camera position/rotation */
     useEffect(() => {
@@ -230,6 +258,12 @@ export default function RenderView(
         forceVectors.forEach(mesh => scene.add(mesh));
         return () => forceVectors.forEach(mesh => scene.remove(mesh)); //function for clearing the scene
     }, [scene, forceVectors]);
+
+    /* Add body segments to scene */
+    useEffect(() => {
+        segments.forEach(seg => scene.add(seg));
+        return () => segments.forEach(seg => scene.remove(seg));
+    }, [scene, segments]);
 
     /* Add ground grid to scene */
     useEffect(() => {
