@@ -60,8 +60,6 @@ export function computeSuggestedGaitEvents(markerData: MarkerFileData): number[]
 	const lowest_: {index: number} = lowest; // for some reason this makes typechecking work
 	const followMarker = lowest_.index;
 
-	console.log("following", markerData.markers[followMarker].label);
-
 	const result: number[] = [];
 
 	// skip first and last 2 frames since we compare against neighbours
@@ -76,8 +74,6 @@ export function computeSuggestedGaitEvents(markerData: MarkerFileData): number[]
 		const rightSlope = right.z - current.z;
 
 		if(leftSlope < -0.0025 && Math.abs(rightSlope) < 0.002) {
-			console.log(i, left.z, current.z, right.z, leftSlope, rightSlope);
-
 			result.push(i);
 		}
 	}
