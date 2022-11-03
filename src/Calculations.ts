@@ -1,4 +1,4 @@
-import { Point3D } from './DataTypes';
+import { MarkerFileData, Point3D } from './DataTypes';
 
 
 /* Compute the angle between the first three Point3Ds in the provided Array
@@ -42,4 +42,46 @@ export function computeAngle(points: Array<Point3D|null>): number|null {
     const theta = Math.acos(cosTheta) * 180/Math.PI; //convert to degrees
 
     return theta;
+}
+
+export function computeSuggestedGaitEvents(markerData: MarkerFileData): number[] {
+	let lowest: null | {index: number; z: number} = null;
+	markerData.frames.forEach(frame => {
+		frame.positions.forEach((pos, index) => {
+			if(pos !== null) {
+				if(lowest === null || lowest.z > pos.z) {
+					lowest = {index, z: pos.z};
+				}
+			}
+		});
+	});
+
+	if(lowest === null) throw new Error("No marker data");
+	const lowest_: {index: number} = lowest; // for some reason this makes typechecking work
+	const followMarker = lowest_.index;
+
+	console.log("following", markerData.markers[followMarker].label);
+
+	const result: number[] = [];
+
+	// skip first and last 2 frames since we compare against neighbours
+	for(let i = 2; i < markerData.frames.length - 2; i++) {
+		const left = markerData.frames[i - 2].positions[followMarker];
+		const current = markerData.frames[i].positions[followMarker];
+		const right = markerData.frames[i + 2].positions[followMarker];
+
+		if(left === null || current === null || right === null) continue;
+
+		const leftSlope = current.z - left.z;
+		const rightSlope = right.z - current.z;
+
+		if(leftSlope < -0.0025 && Math.abs(rightSlope) < 0.002) {
+			console.log(i, left.z, current.z, right.z, leftSlope, rightSlope);
+
+			result.push(i);
+		}
+	}
+
+	// remove consecutive results
+	return result.filter((x, index) => index === 0 || result[index - 1] !== x - 1);
 }
