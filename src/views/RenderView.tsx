@@ -346,7 +346,7 @@ export default function RenderView(
     useEffect(() => {
         requestAnimationFrame(() => renderer.render(scene, camera));
     }, [frame, markerData, forceData, selectedMarkers, renderer, scene,
-        camPosX, camPosY, camPosZ, camRotX, camRotY, camRotZ, camera]);
+        camPosX, camPosY, camPosZ, camRotX, camRotY, camRotZ, camera, aspectRatio]);
 
     /* Add the rendering to the DOM element we will return */
     useEffect(() => {root.current!.appendChild(renderer.domElement)}, [renderer]);
