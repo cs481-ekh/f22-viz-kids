@@ -1,21 +1,21 @@
 import * as React from "react";
 import * as cameraControlsImg from "../../assets/images/camera-controls.png";
 import * as selectionControlsImg from "../../assets/images/selection-controls.png";
+import {useState} from "react";
 
 interface Props {
     error: Error|null,
     menu: boolean,
     sdpInfo: boolean,
-
-    controlsHelpImgNum: number,
-    setControlsHelpImgNum: React.Dispatch<React.SetStateAction<number>>,
 }
 
 export default function PopupView(
     {
-        error, menu, sdpInfo, controlsHelpImgNum, setControlsHelpImgNum
+        error, menu, sdpInfo
     }: Props
 ) {
+    const [controlsHelpImgNum, setControlsHelpImgNum] = useState(0);
+
     return <div id={"popup-view"}>
 
         <div id={"error-popup"} style={error ? {visibility: 'visible'} : {visibility: 'hidden'}}>
