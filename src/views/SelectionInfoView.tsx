@@ -16,6 +16,8 @@ export default function SelectionInfoView(
     if(selectedMarkers.length === 0)
         return <div id={"selection-info-view"}><p>Nothing selected</p></div>;
 
+    const signedValAsString = (n: number) => (n>=0 ? "+" : "") + n;
+
     const selectedMarkersMetadata = <>
         {
             selectedMarkers.map(idx => {
@@ -27,9 +29,9 @@ export default function SelectionInfoView(
                         pos === null ?
                             "Unknown position" :
                             <>
-                                x: {(pos.x>=0 ? "+" : "") + pos.x}<br />
-                                y: {(pos.y>=0 ? "+" : "") + pos.y}<br />
-                                z: {(pos.z>=0 ? "+" : "") + pos.z}
+                                x: {signedValAsString(pos.x)}<br />
+                                y: {signedValAsString(pos.y)}<br />
+                                z: {signedValAsString(pos.z)}
                             </>
                     }
                 </p>;
