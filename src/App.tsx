@@ -175,7 +175,7 @@ export default function App() {
     // ------------------------------------------------- Body Segments -------------------------------------------------
 
     /* Array of pairs of marker indices; each pair defines a body segment */
-    const [segmentIndices, setSegmentIndices] = useState<[number,number][]>([]);
+    const [segmentIndices, setSegmentIndices] = useState<Array<[number,number]|null>>([]);
 
     /* Once marker file data is loaded, map the labeled segments to their corresponding marker indices for the renderer to use */
     useEffect(() => {
@@ -191,7 +191,7 @@ export default function App() {
                     if (segStartIdx!==undefined && segEndIdx!==undefined)
                         return [segStartIdx, segEndIdx];
                     else
-                        return [0, 0];
+                        return null;
                 })
             );
         }

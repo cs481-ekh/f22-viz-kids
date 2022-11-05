@@ -29,7 +29,7 @@ interface Props {
     forceData: ForceFileData;
     selectedMarkers: number[];
     setSelectedMarkers( replacementList: number[] | ((currentList: number[]) => number[]) ): void;
-    segmentIndices: [number,number][];
+    segmentIndices: Array<[number,number]|null>;
 }
 
 export default function RenderView(
@@ -120,7 +120,17 @@ export default function RenderView(
     /* An array of un-positioned body segments */
     const segments = useMemo(() => {
         return segmentIndices.map(seg => {
-            const line = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({color: 0x000088}));
+            const lineCoords = new Float32Array([
+                0.0, 0.0, 0.0, //xyz of start point
+                0.0, 0.0, 0.0, //xyz of end point
+            ]);
+            const sizeOfLineCoordsElem = 3; //each point in the line consists of 3 (grouped) coords
+            const geometry = new THREE.BufferGeometry();
+            const posAttribute = new THREE.BufferAttribute(lineCoords, sizeOfLineCoordsElem); //groups each set of xyz coords as a single index (vector)
+            geometry.setAttribute('position', posAttribute);
+            const material = new THREE.LineBasicMaterial({color: 0x001199, linewidth: 3});
+            const line = new THREE.Line(geometry, material);
+            line.frustumCulled = false; //prevent line from disappearing if one point is outside camera's view
             line.visible = false;
             return line;
         });
@@ -221,12 +231,16 @@ export default function RenderView(
         const frameData = markerData.frames[frame];
         if (!frameData) return;
         segments.forEach((seg,idx) => {
-            const startIdx = segmentIndices[idx][0];
-            const endIdx = segmentIndices[idx][1];
+            const markerIndexPair = segmentIndices[idx];
+            if (markerIndexPair==null) return;
+            const [startIdx, endIdx] = markerIndexPair;
             const startPos = frameData.positions[startIdx];
             const endPos = frameData.positions[endIdx];
-            if (startPos && endPos) {
-                seg.geometry.setFromPoints([convertCoordsViconToThree(startPos),convertCoordsViconToThree(endPos)]);
+            if (startPos!==null && endPos!==null) {
+                // seg.geometry.setFromPoints([convertCoordsViconToThree(startPos),convertCoordsViconToThree(endPos)]);
+                seg.geometry.attributes.position.setXYZ(0,-startPos.x,startPos.z,startPos.y); //Vicon coord conversion is -x,z,y
+                seg.geometry.attributes.position.setXYZ(1,-endPos.x,endPos.z,endPos.y);
+                seg.geometry.attributes.position.needsUpdate = true;
                 seg.visible = true;
             }
             else seg.visible = false;

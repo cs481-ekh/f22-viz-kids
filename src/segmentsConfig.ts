@@ -9,8 +9,8 @@ export const labeledSegments: [string,string][] = [
 
     /* Center Torso */
     ["LACR","RACR"], //collar bone
-    ["MID_HJC","MID_ASIS"], //crotch front
-    ["MID_HJC","MID_PSIS"], //crotch back
+    ["MID_HJC","MID_ASIS"], //groin front
+    ["MID_HJC","MID_PSIS"], //groin back
 
     /* L Torso */
     ["LILCR","LACR"], //upper side
@@ -31,16 +31,20 @@ export const labeledSegments: [string,string][] = [
     /* L Arm */
     ["LSHO","LLEB"], //outer arm
     ["LSHO","LMEB"], //inner arm
+    ["LLEB","LMEB"], //elbow crease
     ["LLEB","LMWRT"], //outer forearm
     ["LMEB","LLWRT"], //inner forearm
+    ["LLWRT","LMWRT"], //wrist crease
     ["LHAND","LLWRT"], //thumb side of hand
     ["LHAND","LMWRT"], //pinkie side of hand
 
     /* R Arm */
     ["RSHO","RLEB"], //outer arm
     ["RSHO","RMEB"], //inner arm
+    ["RLEB","RMEB"], //elbow crease
     ["RLEB","RMWRT"], //outer forearm
     ["RMEB","RLWRT"], //inner forearm
+    ["RLWRT","RMWRT"], //wrist crease
     ["RHAND","RLWRT"], //thumb side of hand
     ["RHAND","RMWRT"], //pinkie side of hand
 
@@ -51,16 +55,20 @@ export const labeledSegments: [string,string][] = [
     ["LTHI","LMEP"], //inner top of kneecap
     ["LPSK","LLEP"], //outer bottom of kneecap
     ["LPSK","LMEP"], //inner bottom of kneecap
+    ["LASIS","LTHI"], //front of thigh
 
     /* L Lower Leg */
     ["LLEP","LLMAL"], //outer calf
     ["LMEP","LMMAL"], //inner calf
     ["LDSK","LLMAL"], //outer front of ankle
     ["LDSK","LMMAL"], //inner front of ankle
+    ["LDSK","LPSK"], //front of shin
 
     /* L Foot */
     ["LHEEL","LTOE"], //inner edge of foot
     ["LHEEL","LMET5"], //outer edge of foot
+    ["LHEEL","LLMAL"], //outer top of heel
+    ["LHEEL","LMMAL"], //inner top of heel
     ["LTOE","LMET5"], //toes
 
     /* R Upper Leg */
@@ -70,16 +78,20 @@ export const labeledSegments: [string,string][] = [
     ["RTHI","RMEP"], //inner top of kneecap
     ["RPSK","RLEP"], //outer bottom of kneecap
     ["RPSK","RMEP"], //inner bottom of kneecap
+    ["RASIS","RTHI"], //front of thigh
 
     /* R Lower Leg */
     ["RLEP","RLMAL"], //outer calf
     ["RMEP","RMMAL"], //inner calf
     ["RDSK","RLMAL"], //outer front of ankle
     ["RDSK","RMMAL"], //inner front of ankle
+    ["RDSK","RPSK"], //front of shin
 
     /* R Foot */
     ["RHEEL","RTOE"], //inner edge of foot
     ["RHEEL","RMET5"], //outer edge of foot
+    ["RHEEL","RLMAL"], //outer top of heel
+    ["RHEEL","RMMAL"], //inner top of heel
     ["RTOE","RMET5"], //toes
 
 ];
