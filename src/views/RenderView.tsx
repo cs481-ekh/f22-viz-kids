@@ -134,7 +134,7 @@ export default function RenderView(
         const hit: number|undefined = hitList[0]?.object.userData.index; //get idx of the closest mesh to the camera, if present
         /* Update selected markers list with result  */
         setSelectedMarkers.call(undefined, currentList =>
-            hit||hit===0?
+            hit!==undefined?
                 multiSelect?
                     currentList.includes(hit)?
                         currentList.filter(keep=>keep!==hit)
