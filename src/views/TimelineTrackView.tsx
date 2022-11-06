@@ -61,11 +61,8 @@ export default function TimelineTrackView(
     /* Timeline track (on context menu) */
     const resetCrop = useCallback((e: MouseEvent<HTMLInputElement>) => {
         e.preventDefault();
-        if (e.button==2) {
-            /* Undo crop */
-            setCropStart(frameStart);
-            setCropEnd(frameEnd);
-        }
+        setCropStart(frameStart);
+        setCropEnd(frameEnd);
     }, [frameEnd]);
 
     return <div id={"timeline-track-view"}>
