@@ -1,6 +1,7 @@
 import * as React from "react";
 import {PauseIcon, PlayIcon} from "../icons";
 import {ChangeEvent, MouseEvent, useCallback} from "react";
+import useStateRef from "../useStateRef";
 
 interface Props {
     frameStart: number,
@@ -9,8 +10,6 @@ interface Props {
 
     frameCropStart: number, setCropStart: React.Dispatch<React.SetStateAction<number>>,
     frameCropEnd: number, setCropEnd: React.Dispatch<React.SetStateAction<number>>,
-
-    frameRef: React.MutableRefObject<number>,
 
     playing: boolean, setPlaying: React.Dispatch<React.SetStateAction<boolean>>,
     loopPlayback: boolean, setLoopPlayback: React.Dispatch<React.SetStateAction<boolean>>,
@@ -25,12 +24,13 @@ export default function TimelineTrackView(
         frameCropStart, setCropStart,
         frameCropEnd, setCropEnd,
 
-        frameRef,
-
         playing, setPlaying,
         loopPlayback, setLoopPlayback,
     }: Props
 ) {
+    /* Current frame reference for use in dependency arrays where we don't want to trigger on every frame change */
+    const frameRef = useStateRef(frame);
+
     /* Play button (on click) */
     const togglePlaying = useCallback(() => setPlaying(current => {
         /* Handle start from pause on last frame, if encountered */

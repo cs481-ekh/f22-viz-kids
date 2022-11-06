@@ -13,7 +13,6 @@ import TimelineTextView from "./views/TimelineTextView";
 
 import { ForceFileData, MarkerFileData } from "./dataTypes";
 import { MenuIcon } from "./icons";
-import useStateRef from "./useStateRef";
 import { labeledSegments } from './segmentsConfig';
 
 import * as sdpLogo from "../assets/images/sdp-logo-3.png";
@@ -103,9 +102,6 @@ export default function App() {
     /* User-selected start and end frames (for cropping) */
     const [frameCropStart, setCropStart] = useState(0);
     const [frameCropEnd, setCropEnd] = useState(0);
-
-    /* Current frame reference for use in dependency arrays where we don't want to trigger on every frame change */
-    const frameRef = useStateRef(frame);
 
     /* Flags for playback */
     const [playing, setPlaying] = useState(false);
@@ -234,13 +230,13 @@ export default function App() {
         <img id={"sdp-logo"} src={sdpLogo} alt={"senior design project logo"} onClick={()=>setSdpInfo(!sdpInfo)}
         />
         {/* --------------------------------------------- Grid Row 4-5 --------------------------------------------- */}
-        <TimelineTrackView frameStart={frameStart} frame={frame} frameRef={frameRef} frameEnd={frameEnd}
+        <TimelineTrackView frameStart={frameStart} frame={frame} frameEnd={frameEnd}
                            frameCropStart={frameCropStart}  frameCropEnd={frameCropEnd}
                            playing={playing} loopPlayback={loopPlayback}
                            setPlaying={setPlaying} setLoopPlayback={setLoopPlayback}
                            setFrame={setFrame} setCropStart={setCropStart} setCropEnd={setCropEnd}
         />
-        <TimelineTextView frameStart={frameStart} frame={frame} frameRef={frameRef} frameEnd={frameEnd}
+        <TimelineTextView frameStart={frameStart} frame={frame} frameEnd={frameEnd}
                           frameCropStart={frameCropStart} frameCropEnd={frameCropEnd} markerFileData={markerFileData}
                           setFrame={setFrame} setCropStart={setCropStart}  setCropEnd={setCropEnd}
         />
