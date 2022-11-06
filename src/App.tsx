@@ -203,7 +203,6 @@ export default function App() {
     // ---------------------------------------------------- Popups -----------------------------------------------------
 
     const [menu, setMenu] = useState(false);
-    const [controlsHelpImgNum, setControlsHelpImgNum] = useState(0);
     const [sdpInfo, setSdpInfo] = useState(false);
 
     // ---------------------------------------------------- App JSX ----------------------------------------------------
@@ -228,7 +227,6 @@ export default function App() {
                     selectedMarkers={selectedMarkers} setSelectedMarkers={setSelectedMarkers}
         />
         <PopupView error={error} sdpInfo={sdpInfo} menu={menu}
-                   controlsHelpImgNum={controlsHelpImgNum} setControlsHelpImgNum={setControlsHelpImgNum}
                    showSegments={showSegments} setShowSegments={setShowSegments}
         />
         <SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame}
