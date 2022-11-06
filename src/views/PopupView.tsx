@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as cameraControlsImg from "../../assets/images/camera-controls.png";
 import * as selectionControlsImg from "../../assets/images/selection-controls.png";
+import {useCallback} from "react";
 
 interface Props {
     error: Error|null,
@@ -9,11 +10,14 @@ interface Props {
 
     controlsHelpImgNum: number,
     setControlsHelpImgNum: React.Dispatch<React.SetStateAction<number>>,
+
+    showSegments: boolean,
+    setShowSegments: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 export default function PopupView(
     {
-        error, menu, sdpInfo, controlsHelpImgNum, setControlsHelpImgNum
+        error, menu, sdpInfo, controlsHelpImgNum, setControlsHelpImgNum, showSegments, setShowSegments
     }: Props
 ) {
     return <div id={"popup-view"}>
@@ -37,6 +41,9 @@ export default function PopupView(
                     <dt>Controls Help</dt>
                     <dd onMouseOver={()=>setControlsHelpImgNum(0)}>camera</dd>
                     <dd onMouseOver={()=>setControlsHelpImgNum(1)}>selection</dd>
+                    <li><div>Body Segments
+                        <input type={"checkbox"} checked={showSegments} onChange={()=>setShowSegments(!showSegments)} />
+                    </div></li>
                 </dl>
             </div>
         </div>
