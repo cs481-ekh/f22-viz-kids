@@ -171,27 +171,25 @@ export default function App() {
     // ------------------------------------------------- Body Segments -------------------------------------------------
 
     /* Array of pairs of marker indices; each pair defines a body segment */
-    const [segmentIndices, setSegmentIndices] = useState<Array<[number,number]|null>>([]);
-
-    /* Once marker file data is loaded, map the labeled segments to their corresponding marker indices for the renderer to use */
-    useEffect(() => {
+    const segmentIndices = useMemo<Array<[number,number]|null>>(() => {
+        /* Once marker file data is loaded, map the labeled segments to their corresponding marker indices for the renderer to use */
         if (markerFileData?.frames.length >= 1) {
             const labelToIdxMap = new Map<string, number>();
             markerFileData.markers.forEach((marker, idx) => {
                 labelToIdxMap.set(marker.label, idx);
             });
-            setSegmentIndices(
-                labeledSegments.map(seg => {
-                    const segStartIdx = labelToIdxMap.get(seg[0]);
-                    const segEndIdx = labelToIdxMap.get(seg[1]);
-                    if (segStartIdx!==undefined && segEndIdx!==undefined)
-                        return [segStartIdx, segEndIdx];
-                    else
-                        return null;
-                })
-            );
+            return labeledSegments.map(seg => {
+                const segStartIdx = labelToIdxMap.get(seg[0]);
+                const segEndIdx = labelToIdxMap.get(seg[1]);
+                if (segStartIdx!==undefined && segEndIdx!==undefined)
+                    return [segStartIdx, segEndIdx];
+                else
+                    return null;
+            });
         }
-    }, [markerFileData, setSegmentIndices]);
+        /* Before marker file data is loaded, there are no segments */
+        else return [];
+    }, [markerFileData]);
 
     // ---------------------------------------------------- Popups -----------------------------------------------------
 
