@@ -2,6 +2,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useFilePicker } from "use-file-picker";
 
+import { computeSuggestedGaitEvents } from "./modules/Calculations";
 import { parseForceFileData, parseMarkerFileData } from "./modules/Parser";
 
 import FileUploadView from "./views/FileUploadView";
@@ -90,6 +91,18 @@ export default function App() {
          * Effectively abandons stale results. */
         return () => {fileHasNotChanged = false};
     }, [forceFile]);
+
+    // ------------------------------------------------- Computed Data -------------------------------------------------
+    const gaitEventSuggestions = useMemo(() => {
+        try {
+            return computeSuggestedGaitEvents(markerFileData);
+        }
+        catch(e) {
+            // maybe should show in UI somewhere?
+            console.error("Failed to compute gait event suggestions:", e);
+            return [];
+        }
+    }, [markerFileData]);
 
     // --------------------------------------- Animation & Animation Control Data --------------------------------------
 
