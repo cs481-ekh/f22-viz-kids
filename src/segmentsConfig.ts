@@ -32,8 +32,8 @@ export const labeledSegments: [string,string][] = [
     ["LSHO","LLEB"], //outer arm
     ["LSHO","LMEB"], //inner arm
     ["LLEB","LMEB"], //elbow crease
-    ["LLEB","LMWRT"], //outer forearm
-    ["LMEB","LLWRT"], //inner forearm
+    ["LLEB","LLWRT"], //outer forearm
+    ["LMEB","LMWRT"], //inner forearm
     ["LLWRT","LMWRT"], //wrist crease
     ["LHAND","LLWRT"], //thumb side of hand
     ["LHAND","LMWRT"], //pinkie side of hand
@@ -42,8 +42,8 @@ export const labeledSegments: [string,string][] = [
     ["RSHO","RLEB"], //outer arm
     ["RSHO","RMEB"], //inner arm
     ["RLEB","RMEB"], //elbow crease
-    ["RLEB","RMWRT"], //outer forearm
-    ["RMEB","RLWRT"], //inner forearm
+    ["RLEB","RLWRT"], //outer forearm
+    ["RMEB","RMWRT"], //inner forearm
     ["RLWRT","RMWRT"], //wrist crease
     ["RHAND","RLWRT"], //thumb side of hand
     ["RHAND","RMWRT"], //pinkie side of hand
