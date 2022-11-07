@@ -13,6 +13,7 @@ import TimelineTextView from "./views/TimelineTextView";
 
 import { ForceFileData, MarkerFileData } from "./dataTypes";
 import { MenuIcon } from "./icons";
+import { labeledSegments } from './segmentsConfig';
 
 import * as sdpLogo from "../assets/images/sdp-logo-3.png";
 
@@ -166,6 +167,31 @@ export default function App() {
 
     /* Array of the indices of the currently selected markers */
     const [selectedMarkers, setSelectedMarkers] = useState<number[]>([]);
+
+    // ------------------------------------------------- Body Segments -------------------------------------------------
+
+    /* Array of pairs of marker indices; each pair defines a body segment */
+    const [segmentIndices, setSegmentIndices] = useState<Array<[number,number]|null>>([]);
+
+    /* Once marker file data is loaded, map the labeled segments to their corresponding marker indices for the renderer to use */
+    useEffect(() => {
+        if (markerFileData?.frames.length >= 1) {
+            const labelToIdxMap = new Map<string, number>();
+            markerFileData.markers.forEach((marker, idx) => {
+                labelToIdxMap.set(marker.label, idx);
+            });
+            setSegmentIndices(
+                labeledSegments.map(seg => {
+                    const segStartIdx = labelToIdxMap.get(seg[0]);
+                    const segEndIdx = labelToIdxMap.get(seg[1]);
+                    if (segStartIdx!==undefined && segEndIdx!==undefined)
+                        return [segStartIdx, segEndIdx];
+                    else
+                        return null;
+                })
+            );
+        }
+    }, [markerFileData, setSegmentIndices]);
 
     // ---------------------------------------------------- Popups -----------------------------------------------------
 
