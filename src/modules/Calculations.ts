@@ -1,4 +1,4 @@
-import { Point3D } from '../dataTypes';
+import { MarkerFileData, Point3D } from '../dataTypes';
 
 
 /* Compute the angle between the first three Point3Ds in the provided Array
@@ -42,4 +42,70 @@ export function computeAngle(points: Array<Point3D|null>): number|null {
     const theta = Math.acos(cosTheta) * 180/Math.PI; //convert to degrees
 
     return theta;
+}
+
+
+export function computeSuggestedGaitEvents(markerData: MarkerFileData): number[] {
+	// find the marker with the lowest position across the whole timeline
+
+	let lowest: null | {index: number; z: number} = null;
+	markerData.frames.forEach(frame => {
+		frame.positions.forEach((pos, index) => {
+			if(pos !== null) {
+				if(lowest === null || lowest.z > pos.z) {
+					lowest = {index, z: pos.z};
+				}
+			}
+		});
+	});
+
+	if(lowest === null) throw new Error("No marker data");
+	const lowest_: {index: number} = lowest; // for some reason this makes typechecking work
+	const followMarker1 = lowest_.index; // should be one of the feet
+
+	// now, to find the other, we find the lowest point at the time that the first point is highest
+
+	let bestOther: null | {index: number; z1: number; z2: number} = null;
+	markerData.frames.forEach(frame => {
+		const pos1 = frame.positions[followMarker1];
+		if(pos1 !== null) {
+			const z1 = pos1.z;
+			if(bestOther === null || z1 > bestOther.z1) {
+				frame.positions.forEach((pos, index) => {
+					if(pos !== null) {
+						if(bestOther === null || z1 > bestOther.z1 || bestOther.z2 > pos.z) {
+							bestOther = {index, z1, z2: pos.z};
+						}
+					}
+				});
+			}
+		}
+	});
+
+	if(bestOther === null) throw new Error("Failed to find other point"); // shouldn't happen?
+	const bestOther_: {index: number} = bestOther;
+	const followMarkers = [followMarker1, bestOther_.index];
+
+	const result: number[] = [];
+
+	// skip first and last 2 frames since we compare against neighbours
+	for(let i = 2; i < markerData.frames.length - 2; i++) {
+		followMarkers.forEach(followMarker => {
+			const left = markerData.frames[i - 2].positions[followMarker];
+			const current = markerData.frames[i].positions[followMarker];
+			const right = markerData.frames[i + 2].positions[followMarker];
+
+			if(left === null || current === null || right === null) return;
+
+			const leftSlope = current.z - left.z;
+			const rightSlope = right.z - current.z;
+
+			if(leftSlope < -0.0025 && Math.abs(rightSlope) < 0.002) {
+				result.push(i);
+			}
+		});
+	}
+
+	// remove consecutive results
+	return result.filter((x, index) => index === 0 || (result[index - 1] !== x - 1 && result[index - 1] !== x));
 }
