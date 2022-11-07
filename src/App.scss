@@ -1,101 +1,185 @@
 @import "@fontsource/goldman/latin.css";
 
-/* Colors */
-$BG_Gradient: linear-gradient(45deg,#002446,#3c78d8,#70c7e4,#96d358,#e4ff66);
-$fileUploadButtonBGColor: #90c55b;
-$fileChosenNameColor: white;
-$outputAreaTitleColor: #666666;
-$outputAreaBGColor: #4d4d4d9d;
-$vizAreaBGColor: #222222;
-$errorPopupTextColor: #aa0000;
-$errorPopupBGColor: #202020cc;
-$sdpInfoPopupBGColor: #00329e;
-$sdpInfoPopupTextColor: #ffffff;
-$sdpLinkColor: #d74309;
-$playButtonBGColor: #6aa84f;
-$timelineTrackBGColor: #4d4d4d;
-$timelineTrackThumbColor: white;
-$timelineCellLabelColor: yellow;
+/* Colors (hue ref: 0=red, 30=orange, 60=yellow, 120=green, 180=cyan, 240=blue, 270=purple, 300=pink, 360=red) */
+$BG_Gradient: linear-gradient(
+                           45deg,
+                           hsl( 225,  75%,  18%)  5%,
+                           hsl( 218,  63%,  50%) 35%,
+                           hsl( 190,  72%,  62%) 50%,
+                           hsl(  90,  59%,  58%) 78%,
+                           hsl(  67,  92%,  66%) 94%
+);
+$BG_Color:                 hsl(  60,  20%,   8%);
+// ---------------- Grid Row 1 ------------------
+$fileUploadButtonBGColor:  hsl(  90,  48%,  56%);
+$fileChosenNameColor:      hsl(   0,   0%, 100%);
+$selectionInfoTitleColor:  hsl(   0,   0%,  40%);
+// --------------- Grid Rows 2-3 ----------------
+$renderViewBGColor:        hsl(   0,   0%,  13%);
+$errorPopupBGColor:        hsla(  0,   0%,  13% , 0.8);
+$errorPopupTextColor:      hsl(   0, 100%,  33%);
+$menuBGColor:              hsl(   0,   0%, 100%);
+$menuOptionsBGColor:       hsl(  80,  10%,  70%);
+$menuParentOptionColor:    hsl(  30,  90%,  50%);
+$menuOptionHoverColor:     hsl( 221,  90%,  30%);
+$sdpInfoBGColor:           hsl( 221, 100%,  31%);
+$sdpInfoTextColor:         hsl(   0,   0%, 100%);
+$sdpInfoLinkColor:         hsl(  17,  92%,  44%);
+$selectionInfoViewBGColor: hsla(  0,   0%,  30% , 0.62);
+// --------------- Grid Rows 4-5 ----------------
+$playButtonBGColor:        hsl( 102,  36%,  48%);
+$playButtonIconColor:      hsl( 120, 100%,  25%);
+$timelineTrackBGColor:     hsl( 180,   5%,  35%);
+$timelineTrackThumbColor:  hsl(  60, 100%,  50%);
+$timelineCellLabelColor:   hsl(  60, 100%,  50%);
+$loopLabelColor:           hsl(   0,   0%, 100%);
+
 
 * {
    font-family: 'Goldman', sans-serif;
-   font-size: 5pt;
+   font-size: 8pt;
+   &:focus {
+      outline: none; //get rid of default white outline that appears when using RenderView mouse controls
+   }
 }
 
 body {
-	margin: 0;
+   margin: 0;
+   background-color: $BG_Color; //behind app-grid
 }
 
-/* Styles in the grid are organized top->bottom, left->right */
+/* Components in the grid are organized top->bottom, left->right */
 #app-grid {
-   width: 100vw;
-   height: 100vh;
-   box-sizing: border-box;
+   // ------------------------------------- Row/Col reference --------------------------------------
+   //
+   //    [1]                                             [2]                    [3]
+   //[1] file-upload-view                              | logo-menu-button-div | selection-info-title
+   //    -------------------------------------------------------------------------------------------
+   //[2] render-view / popup-view                                             | selection-info-view
+   //                                                                         | --------------------
+   //[3]                                                                      | sdp-logo
+   //    -------------------------------------------------------------------------------------------
+   //[4] timeline-track-view                                                  | timeline-text-view
+   //                                                                         |
+   //[5] (timeline-track-view sub-grid row 2)                                 |
+
+   $row1Height: 29px;
+   $row2Height: auto; //responsive height for: render-view, selection-info-view
+   $row3Height: 104px;
+   $row4Height: 42px;
+   $row5Height: 19px;
+
+   $col1Width: auto; //responsive width for: file-upload-view, render-view, timeline-track-view
+   $col2Width: 200px;
+   $col3Width: 185px;
+
+   $gridMargin: 10px;
+   $gridPadding: 5px;
+   $gridGap: 5px;
+
+   $sharedBorderRadius: 4px;
 
    display: grid;
-   grid-template-rows: 22px auto 87px 60px; //viz-area, output-area may resize in height (once implemented)
-   grid-template-columns: auto 100px 155px; //file-area, viz-area, timeline-track-area may resize in width (once implemented)
-   gap: 5px;
-   padding: 5px;
+   box-sizing: border-box;
+   min-width: 720px;
+   min-height: 330px;
+   width: calc(100vw - 2*$gridMargin);
+   height: calc(100vh - 2*$gridMargin);
+   grid-template-rows: $row1Height $row2Height $row3Height $row4Height $row5Height;
+   grid-template-columns: $col1Width $col2Width $col3Width;
+   margin: $gridMargin;
+   padding: $gridPadding;
+   gap: $gridGap;
    background-image: $BG_Gradient;
+   border-radius: calc(2*$sharedBorderRadius);
+   box-shadow: black 0 0 8px;
+
    // ----------------------------------------- Grid Row 1 -----------------------------------------
-   #file-area-flex {
+
+   #file-upload-view {
       grid-row: 1;
       grid-column: 1;
       display: flex;
       flex-direction: column;
-      #marker-file-div { //see .file-upload-button and .file-chosen-name for shared props
-         #marker-file-button {
-         }
-         #marker-file-name {
+      .file-upload-button {
+         background-color: $playButtonBGColor;
+         width: 185px;
+         height: 15px;
+         font-weight: bold;
+         border: none;
+         border-radius: $sharedBorderRadius;
+         margin-bottom: 2px;
+         &:hover {
+            cursor: pointer;
+            filter: brightness(85%);
          }
       }
-      #force-file-div { //see .file-upload-button and .file-chosen-name for shared props
-         #force-file-button {
-         }
-         #force-file-name {
-         }
+      .file-chosen-name {
+         color: $fileChosenNameColor;
+         padding-left: 5px;
       }
-   }
-   #logo {
+   } //#file-upload-view
+
+   #logo-menu-button-div {
       grid-row: 1;
       grid-column: 2;
-      text-align: right;
-      font-size: 18pt;
-      line-height: 26pt;
-      font-weight: 900;
-   }
-   #output-area-title {
+      display: flex;
+      flex-direction: row;
+      justify-content: right;
+      margin-bottom: -4px; //lower button to top of viz area
+      #logo {
+         text-align: right;
+         font-size: 24pt;
+         line-height: 34pt;
+         font-weight: 900;
+      }
+      #main-menu-button {
+         color: $playButtonIconColor;
+         background-color: $playButtonBGColor;
+         width: 36px;
+         height: 32px;
+         border: none;
+         border-radius: $sharedBorderRadius;
+         margin-left: 6px;
+         padding: 6px;
+         &:hover {
+            filter: brightness(85%);
+            cursor: pointer;
+         }
+      }
+   } //#logo-menu-button-div
+
+   #selection-info-title {
       grid-row: 1;
       grid-column: 3;
       text-align: center;
-      font-size: 8pt;
+      font-size: 12pt;
       font-weight: bold;
-      line-height: 30pt;
-      color: $outputAreaTitleColor;
-   }
-   // ---------------------------------------- Grid Row 2-3 ----------------------------------------
-   #viz-area {
+      line-height: 38pt;
+      color: $selectionInfoTitleColor;
+   } //#selection-info-title
+
+   // ---------------------------------------- Grid Rows 2-3 ---------------------------------------
+
+   #render-view {
       grid-row: 2/4;
       grid-column: 1/3;
-      background-color: $vizAreaBGColor;
+      background-color: $renderViewBGColor;
+      overflow: hidden;
+      height: 100%;
+      width: 100%;
+   } //#render-view
 
-	  // shouldn't affect anything visually but the default value caused the page to never shrink
-	  overflow-y: hidden;
-
-	  > div {
-		  height: 100%;
-	  }
-   }
-   #popup-area {
+   #popup-view {
       $popupPadding: 15px;
       $popupZindex: 1;
       z-index: $popupZindex;
       grid-row: 2/4;
       grid-column: 1/3;
       position: relative; //base for child popups' absolute positioning
-      font-size: 9pt; //for child popups to inherit
+      font-size: 11pt; //for child popups to inherit
       visibility: hidden;
+
       #error-popup {
          z-index: calc($popupZindex + 1);
          position: absolute;
@@ -109,15 +193,73 @@ body {
          font-size: inherit;
          white-space: pre;
          cursor: text;
-      }
-      #sdp-info-popup {
+      } //#error-popup
+
+      #main-menu-popup {
          z-index: calc($popupZindex + 2);
          position: absolute;
          padding: $popupPadding;
          width: calc(100% - 2*$popupPadding);
          height: calc(100% - 2*$popupPadding);
-         background-color: $sdpInfoPopupBGColor;
-         color: $sdpInfoPopupTextColor;
+         display: flex;
+         font-size: inherit;
+         background-color: $menuBGColor;
+         #menu-image-container {
+            display: flex;
+            align-items: center;
+            overflow-y: auto;
+            width: 100%; //maintain width even when no image is displayed
+            img {
+               width: 100%;
+            }
+         }
+         #menu-dropdown-container {
+            $titleHeight: 20px;
+            #menu-title {
+               height: $titleHeight;
+               text-align: center;
+               font-size: 14pt;
+               font-weight: bold;
+            }
+            #menu-options {
+               $descriptionTermWidth: 108px;
+               border: solid 2px black;
+               background-color: $menuOptionsBGColor;
+               padding: 10px;
+               margin-top: 0;
+               height: calc(100% - $titleHeight - 2*$popupPadding);
+               * {
+                  font-size: 10pt;
+               }
+               dt { //description term, i.e., "Controls Help:", for menu options that need sub-options
+                  float: left;
+                  clear: left;
+                  width: $descriptionTermWidth;
+                  text-align: right;
+                  font-weight: bold;
+                  color: $menuParentOptionColor;
+                  &::after {
+                     content: ":";
+                  }
+               }
+               dd { //description details, i.e., "camera, selection, etc.", for menu sub-options
+                  margin-left: calc($descriptionTermWidth + 10px);
+                  &:hover {
+                     color: $menuOptionHoverColor;
+                  }
+               }
+            }
+         }
+      } //#main-menu-popup
+
+      #sdp-info-popup {
+         z-index: calc($popupZindex + 3);
+         position: absolute;
+         padding: $popupPadding;
+         width: calc(100% - 2*$popupPadding);
+         height: calc(100% - 2*$popupPadding);
+         background-color: $sdpInfoBGColor;
+         color: $sdpInfoTextColor;
          font-size: inherit;
          white-space: pre-line;
          display: flex;
@@ -127,142 +269,169 @@ body {
          text-align: center;
          a {
             text-decoration: none;
-            color: $sdpLinkColor;
+            color: $sdpInfoLinkColor;
             font-size: inherit;
             font-weight: bold;
          }
-      }
-      #help-popup {
-         z-index: calc($popupZindex + 2);
-         position: absolute;
-         padding: $popupPadding;
-         width: calc(100% - 2*$popupPadding);
-         height: calc(100% - 2*$popupPadding);
-         white-space: pre-line;
-         display: flex;
-         flex-direction: column;
-         justify-content: center;
-         align-items: center;
-         text-align: center;
-         
-      }
-   }
-   #output-area {
+      } //#sdp-info-popup
+
+   } //#popup-view
+
+   #selection-info-view {
       grid-row: 2;
       grid-column: 3;
-      background-color: $outputAreaBGColor;
-      white-space: pre-line;
+      background-color: $selectionInfoViewBGColor;
       padding: 5px;
-      font-size: 9pt;
       overflow-y: auto;
-   }
+      border-radius: $sharedBorderRadius;
+      * {
+         font-family: monospace;
+         font-size: 10pt;
+         font-weight: bold;
+      }
+      :first-child {
+         margin-top: 0;
+      }
+   } //#selection-info-view
+
    #sdp-logo {
       grid-row: 3;
       grid-column: 3;
-      cursor: pointer;
-      width: 100%; //height: 87px;
-   }
-
-   #hamburger {
-      grid-row: 3;
-      grid-column: 3;
-      cursor: pointer;
-      width: 10%; 
-   }
-
-   #helpimg1 {
-      grid-row: 3;
-      grid-column: 3;
-      cursor: pointer;
-      width: 60%;
-      
-   }
-   // ----------------------------------------- Grid Row 4 -----------------------------------------
-   #timeline-track-area {
-      grid-row: 4;
-      grid-column: 1/3;
-      display: flex;
-      flex-direction: column;
-
-      #timeline-track-main-area {
-         display: flex;
-         align-items: center;
+      width: 100%;
+      border-radius: $sharedBorderRadius;
+      &:hover {
+         cursor: pointer;
+         filter: brightness(85%);
       }
+   } //#sdp-logo
+
+   // ---------------------------------------- Grid Rows 4-5 ---------------------------------------
+
+   #timeline-track-view {
+      $playButtonSize: $row4Height;
+      grid-row: 4/6;
+      grid-column: 1/3;
+      display: grid; //subgrid for timeline track related items
+      grid-template-rows: $playButtonSize auto;
+      grid-template-columns: calc($playButtonSize + $gridGap) auto;
 
       #play-button {
-         width: 36px;
-         height: 36px;
-         margin-right: 5px;
+         grid-row: 1; //timeline sub-grid
+         grid-column: 1; //timeline sub-grid
+         width: $playButtonSize;
+         height: $playButtonSize;
+         padding: 8px;
          border: none;
          background-color: $playButtonBGColor;
          display: grid;
          justify-content: center;
          align-items: center;
-
+         border-radius: $sharedBorderRadius;
          > svg {
             width: 100%;
+            color: $playButtonIconColor;
          }
-      }
-      #timeline-track {
-         width: calc(100% - 45px);
-         -webkit-appearance: none;
-         &::-webkit-slider-runnable-track {
-            width: calc(100% - 45px);
-            height: 36px;
+         &:hover {
             cursor: pointer;
+            filter: brightness(85%);
+         }
+      } //#play-button
+
+      #timeline-track {
+         $trackBorderWidth: 2px;
+         $trackHeight: calc($playButtonSize - 2*$trackBorderWidth);
+         grid-row: 1; //timeline sub-grid
+         grid-column: 2; //timeline sub-grid
+         width: calc(100% - 2*$trackBorderWidth);
+         height: $trackHeight; //for firefox
+         margin: 0;
+         -webkit-appearance: none;
+         border: $trackBorderWidth solid $timelineTrackBGColor;
+         border-radius: $sharedBorderRadius;
+         &::-webkit-slider-runnable-track {
+            height: $trackHeight;
             background: $timelineTrackBGColor;
          }
          &::-webkit-slider-thumb {
-            height: 36px;
+            height: $trackHeight;
             width: 2px;
+            border-radius: 1px;
             background: $timelineTrackThumbColor;
-            cursor: pointer;
             -webkit-appearance: none;
          }
          &::-moz-range-track {
-            height: 36px;
-            cursor: pointer;
+            height: $trackHeight;
             background: $timelineTrackBGColor;
          }
          &::-moz-range-thumb {
-            height: 35px;
-            width: 1px;
+            height: $trackHeight;
+            width: 2px;
+            border-radius: 1px;
             background: $timelineTrackThumbColor;
+            -webkit-appearance: none;
+         }
+         &:hover {
             cursor: pointer;
+         }
+      } //#timeline-track
+
+      #play-button-options {
+         $numOptions: 2;
+         grid-row: 2; //timeline sub-grid
+         grid-column: 1; //timeline sub-grid
+         width: $playButtonSize;
+         display: flex;
+         flex-direction: column; //options should stack vertically under play button
+         font-size: 7pt; //all options inherit
+         #rate-div {
+            //TODO <--------------------------------------------------------------------------------
+
+         }
+         #loop-div {
+            color: $loopLabelColor;
+            font-size: inherit;
+            #loop-checkbox {
+               width: calc($row5Height/$numOptions);
+               height: calc($row5Height/$numOptions);
+               margin: 0 0 0 2px;
+               position: relative;
+               bottom: -2px;
+            }
+         }
+      } //#play-button-options
+
+      #gait-suggestion-div {
+         grid-row: 2; //timeline sub-grid
+         grid-column: 2; //timeline sub-grid
+         //TODO <-----------------------------------------------------------------------------------
+
+      } //#gait-suggestion-div
+
+   } //#timeline-track-view
+
+   #timeline-text-view {
+      grid-row: 4/6;
+      grid-column: 3;
+      text-align: center; //for labels
+      .timeline-cell {
+         $negativeMargin: -1px;
+         width: calc($col3Width/3 + 6*$negativeMargin);
+         height: calc($row4Height/2 + 2*$negativeMargin);
+         margin: $negativeMargin;
+         padding: 0 2px;
+         text-align: left;
+         border: none;
+         border-radius: $sharedBorderRadius;
+         &.label {
+            color: $timelineCellLabelColor;
+         }
+      }
+      input:disabled { //hide up & down arrows for time cells to allow value to span the entire width
+         -moz-appearance: textfield;
+         &::-webkit-inner-spin-button {
             -webkit-appearance: none;
          }
       }
-   }
-   #timeline-manual-area {
-      grid-row: 4;
-      grid-column: 3;
-      text-align: center;
-   }
-}
+   } //#timeline-text-view
 
-.file-upload-button {
-   background-color: $fileUploadButtonBGColor;
-   width: 124px;
-   height: 14px;
-   font-weight: bold;
-   border-radius: 4px;
-}
-
-.file-chosen-name {
-   color: $fileChosenNameColor;
-   padding-left: 5px;
-}
-
-.timeline-cell {
-   width: 34px;
-   height: 11px;
-   margin: -2px;
-   padding: 0px 2px;
-   text-align: center;
-   &:focus {
-      outline: none;
-   }
-   &.label {
-      color: $timelineCellLabelColor;
-   }
-}
+} //#app-grid

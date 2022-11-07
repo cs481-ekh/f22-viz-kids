@@ -1,9 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {computeAngle, computeSuggestedGaitEvents} from "../src/Calculations";
-import {parseMarkerFileData} from "../src/Parser";
-import {Point3D} from '../src/DataTypes';
+import {computeAngle, computeSuggestedGaitEvents} from "../src/modules/Calculations";
+import {parseMarkerFileData} from "../src/modules/Parser";
+import {Point3D} from '../src/dataTypes';
 
 
 const digitsPrecision = 9;
@@ -59,7 +59,7 @@ test('valid angle (frame 1 right hip-knee-ankle angle)', () => {
 test('valid angle (frame 494 right hip-knee-ankle angle)', () => {
     const RKJC: Point3D  = {x:0.29999, y:0.70808, z:0.50836}; //Right knee joint center
     const RASIS: Point3D = {x:0.35362, y:0.69912, z:0.95498}; //Right anterior-superior-iliac-spine (front edge of hip)
-    const RAJC: Point3D  = {x:0.31261, y:0.4275, z:0.23976}; //Right ankle joint center
+    const RAJC: Point3D  = {x:0.31261, y:0.4275,  z:0.23976}; //Right ankle joint center
     const theta = computeAngle([RKJC,RASIS,RAJC]);
     const expected = 131.90041068945374; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     expect(theta).toBeCloseTo(expected,digitsPrecision);
@@ -69,8 +69,8 @@ test('valid angle (frame 494 right hip-knee-ankle angle)', () => {
 
 test('valid angle (frame 0 left shoulder-elbow-hand angle)', () => {
     const LMEB: Point3D  = {x:-0.02519, y:-1.40287, z:1.02347}; //left elbow
-    const LSHO: Point3D = {x:0.00984, y:-1.3699, z:1.33941}; //left shoulder
-    const LHAND: Point3D  = {x:-0.09351, y:-1.1928, z:0.87744}; //left hand
+    const LSHO: Point3D  = {x:0.00984,  y:-1.3699,  z:1.33941}; //left shoulder
+    const LHAND: Point3D = {x:-0.09351, y:-1.1928,  z:0.87744}; //left hand
     const theta = computeAngle([LMEB,LSHO,LHAND]);
     const expected = 119.44691263275874; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     expect(theta).toBeCloseTo(expected,digitsPrecision);
@@ -78,17 +78,17 @@ test('valid angle (frame 0 left shoulder-elbow-hand angle)', () => {
 
 test('valid angle (frame 1 left shoulder-elbow-hand angle)', () => {
     const LMEB: Point3D  = {x:-0.02484, y:-1.39762, z:1.02257}; //left elbow
-    const LSHO: Point3D = {x:0.01038, y:-1.36522, z:1.33846}; //left Shoulder
-    const LHAND: Point3D  = {x:-0.09352, y:-1.18697, z:0.87771}; //left hand
+    const LSHO: Point3D  = {x:0.01038,  y:-1.36522, z:1.33846}; //left Shoulder
+    const LHAND: Point3D = {x:-0.09352, y:-1.18697, z:0.87771}; //left hand
     const theta = computeAngle([LMEB,LSHO,LHAND]);
     const expected = 119.27199541696437; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     expect(theta).toBeCloseTo(expected,digitsPrecision);
 });
 
 test('valid angle (frame 494 left shoulder-elbow-hand angle)', () => {
-    const LMEB: Point3D  = {x:0.05491, y:0.52679, z:1.05451}; //left Elbow
-    const LSHO: Point3D = {x:0.0614, y:0.62164, z:1.35794}; //left Shoulder
-    const LHAND: Point3D  = {x:-0.00987, y:0.65488, z:0.83173}; //left hand
+    const LMEB: Point3D  = {x:0.05491,  y:0.52679, z:1.05451}; //left Elbow
+    const LSHO: Point3D  = {x:0.0614,   y:0.62164, z:1.35794}; //left Shoulder
+    const LHAND: Point3D = {x:-0.00987, y:0.65488, z:0.83173}; //left hand
     const theta = computeAngle([LMEB,LSHO,LHAND]);
     const expected = 131.52795596572224; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     expect(theta).toBeCloseTo(expected,digitsPrecision);
@@ -97,9 +97,9 @@ test('valid angle (frame 494 left shoulder-elbow-hand angle)', () => {
 
 
 test('valid angle (frame 0 right shoulder-elbow-hand angle)', () => {
-    const RMEB: Point3D  = {x:0.31224, y:-1.5443, z:1.07604}; //right Elbow
-    const RSHO: Point3D = {x:0.34511, y:-1.39145, z:1.33606}; //right Shoulder
-    const RHAND: Point3D  = {x:0.37097, y:-1.5462, z:0.81724}; //right Hand
+    const RMEB: Point3D  = {x:0.31224, y:-1.5443,  z:1.07604}; //right Elbow
+    const RSHO: Point3D  = {x:0.34511, y:-1.39145, z:1.33606}; //right Shoulder
+    const RHAND: Point3D = {x:0.37097, y:-1.5462,  z:0.81724}; //right Hand
     const theta = computeAngle([RMEB,RSHO,RHAND]);
     const expected = 144.62393601668833; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     expect(theta).toBeCloseTo(expected,digitsPrecision);
@@ -107,17 +107,17 @@ test('valid angle (frame 0 right shoulder-elbow-hand angle)', () => {
 
 test('valid angle (frame 1 right shoulder-elbow-hand angle)', () => {
     const RMEB: Point3D  = {x:0.31251, y:-1.53961, z:1.07533}; //right Elbow
-    const RSHO: Point3D = {x:0.34569, y:-1.3866, z:1.33511}; //right Shoulder
-    const RHAND: Point3D  = {x:0.37128, y:-1.54186, z:0.81649}; //right Hand
+    const RSHO: Point3D  = {x:0.34569, y:-1.3866,  z:1.33511}; //right Shoulder
+    const RHAND: Point3D = {x:0.37128, y:-1.54186, z:0.81649}; //right Hand
     const theta = computeAngle([RMEB,RSHO,RHAND]);
     const expected = 144.61143274389914; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     expect(theta).toBeCloseTo(expected,digitsPrecision);
 });
 
 test('valid angle (frame 494 right shoulder-elbow-hand angle)', () => {
-    const RMEB: Point3D  = {x:0.37997, y:0.51703, z:1.066}; //right Elbow
-    const RSHO: Point3D = {x:0.39966, y:0.60185, z:1.35986}; //right Shoulder
-    const RHAND: Point3D  = {x:0.47702, y:0.59593, z:0.83514}; //right Hand
+    const RMEB: Point3D  = {x:0.37997, y:0.51703, z:1.066};   //right Elbow
+    const RSHO: Point3D  = {x:0.39966, y:0.60185, z:1.35986}; //right Shoulder
+    const RHAND: Point3D = {x:0.47702, y:0.59593, z:0.83514}; //right Hand
     const theta = computeAngle([RMEB,RSHO,RHAND]);
     const expected = 137.401167962484; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     expect(theta).toBeCloseTo(expected,digitsPrecision);

@@ -1,4 +1,4 @@
-import { MarkerFileData, Point3D } from './DataTypes';
+import { MarkerFileData, Point3D } from '../dataTypes';
 
 
 /* Compute the angle between the first three Point3Ds in the provided Array
@@ -43,6 +43,7 @@ export function computeAngle(points: Array<Point3D|null>): number|null {
 
     return theta;
 }
+
 
 export function computeSuggestedGaitEvents(markerData: MarkerFileData): number[] {
 	// find the marker with the lowest position across the whole timeline
