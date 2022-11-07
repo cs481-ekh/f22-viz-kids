@@ -1,4 +1,8 @@
-import {computeAngle} from "../src/Calculations";
+import * as fs from 'fs';
+import * as path from 'path';
+
+import {computeAngle, computeSuggestedGaitEvents} from "../src/Calculations";
+import {parseMarkerFileData} from "../src/Parser";
 import {Point3D} from '../src/DataTypes';
 
 
@@ -10,4 +14,11 @@ test('valid angle (frame 0 left hip-knee-ankle angle)', () => {
     const expected = 178.600363111; //calculated using https://onlinemschool.com/math/assistance/vector/angl/
     const digitsPrecision = 9;
     expect(theta).toBeCloseTo(expected,digitsPrecision);
+});
+
+test("suggested gait events for valid file", async () => {
+    const fileContent: Buffer = fs.readFileSync(path.resolve(__dirname,"./fixtures/Trial001_Markers.tsv"));
+    const file: File = new File([fileContent],"Trial001_Markers.tsv",{type: "text/tab-separated-values"});
+    const data = await parseMarkerFileData(file);
+	expect(computeSuggestedGaitEvents(data)).toEqual([39, 173, 303, 448]);
 });
