@@ -116,6 +116,8 @@ export default function App() {
     const [frameCropStart, setCropStart] = useState(0);
     const [frameCropEnd, setCropEnd] = useState(0);
 
+    const [frameSpeed, setFrameSpeed] = useState(1.0);
+
     /* Flags for playback */
     const [playing, setPlaying] = useState(false);
     const [loopPlayback, setLoopPlayback] = useState(true);
@@ -126,8 +128,8 @@ export default function App() {
     /* The time for one marker/force frame in ms */
     const timeStepMillis = useMemo(() => {
         if (markerFileData.frames.length<2) return null;
-        return markerFileData.frames[1].time * MILLIS_PER_SEC; //convert from secs to millis
-    }, [markerFileData]);
+        return markerFileData.frames[1].time * (MILLIS_PER_SEC / frameSpeed) ; //convert from secs to millis
+    }, [markerFileData, frameSpeed]);
 
     /* Time of previous animation loop iteration (most recent render).
      * For finding elapsed time between loops to determine which marker/force frame to render next. */
@@ -242,10 +244,11 @@ export default function App() {
                            playing={playing} loopPlayback={loopPlayback}
                            setPlaying={setPlaying} setLoopPlayback={setLoopPlayback}
                            setFrame={setFrame} setCropStart={setCropStart} setCropEnd={setCropEnd}
+                           frameSpeed={frameSpeed} setFrameSpeed={setFrameSpeed}
         />
         <TimelineTextView frameStart={frameStart} frame={frame} frameEnd={frameEnd}
                           frameCropStart={frameCropStart} frameCropEnd={frameCropEnd} markerFileData={markerFileData}
-                          setFrame={setFrame} setCropStart={setCropStart}  setCropEnd={setCropEnd}
+                          setFrame={setFrame} setCropStart={setCropStart}  setCropEnd={setCropEnd} 
         />
     </div>;
 }

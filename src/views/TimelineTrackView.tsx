@@ -11,6 +11,8 @@ interface Props {
     frameCropStart: number, setCropStart: React.Dispatch<React.SetStateAction<number>>,
     frameCropEnd: number, setCropEnd: React.Dispatch<React.SetStateAction<number>>,
 
+    frameSpeed: number, setFrameSpeed: React.Dispatch<React.SetStateAction<number>>,
+
     playing: boolean, setPlaying: React.Dispatch<React.SetStateAction<boolean>>,
     loopPlayback: boolean, setLoopPlayback: React.Dispatch<React.SetStateAction<boolean>>,
 }
@@ -24,6 +26,8 @@ export default function TimelineTrackView(
         frameCropStart, setCropStart,
         frameCropEnd, setCropEnd,
 
+        frameSpeed, setFrameSpeed,   
+        
         playing, setPlaying,
         loopPlayback, setLoopPlayback,
     }: Props
@@ -65,6 +69,12 @@ export default function TimelineTrackView(
         setCropEnd(frameEnd);
     }, [frameEnd, frameStart, setCropEnd, setCropStart]);
 
+    const frameSpeedOnChange = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
+        const inputVal = parseFloat(value);
+        setFrameSpeed(inputVal);
+        
+    }, [setFrameSpeed]);
+
     return <div id={"timeline-track-view"}>
         {/* ---------------------------------------------- Sub-Grid Row 1 ---------------------------------------------- */}
         <button id={"play-button"} onClick={togglePlaying}>
@@ -81,7 +91,8 @@ export default function TimelineTrackView(
                 Loop: <input id={"loop-checkbox"} type={"checkbox"} checked={loopPlayback} onChange={toggleLooping} />
             </div>
             <div id={"rate-div"}>
-                {/* TODO: add rate input */}
+                <input id={"rate-input"} type={"number"} step={0.1} value={frameSpeed} min={0.1} max={5.0} 
+                        onChange={frameSpeedOnChange}/>x
             </div>
         </div>
         <div id={"gait-suggestion-div"}>
