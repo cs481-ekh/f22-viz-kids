@@ -27,11 +27,12 @@ interface Props {
     selectedMarkers: number[];
     setSelectedMarkers( replacementList: number[] | ((currentList: number[]) => number[]) ): void;
     segmentIndices: Array<[number,number]|null>;
+    showSegments: boolean;
 }
 
 export default function RenderView(
     {
-        frame, markerData, forceData, selectedMarkers, setSelectedMarkers, segmentIndices
+        frame, markerData, forceData, selectedMarkers, setSelectedMarkers, segmentIndices, showSegments
     }: Props
 ) {
     const root = useRef<HTMLDivElement|null>(null);
@@ -230,20 +231,23 @@ export default function RenderView(
         const frameData = markerData.frames[frame];
         if (!frameData) return;
         segments.forEach((seg,idx) => {
-            const markerIndexPair = segmentIndices[idx];
-            if (markerIndexPair==null) return;
-            const [startIdx, endIdx] = markerIndexPair;
-            const startPos = frameData.positions[startIdx];
-            const endPos = frameData.positions[endIdx];
-            if (startPos!==null && endPos!==null) {
-                seg.geometry.attributes.position.setXYZ(0,-startPos.x,startPos.z,startPos.y); //Vicon coord conversion is -x,z,y
-                seg.geometry.attributes.position.setXYZ(1,-endPos.x,endPos.z,endPos.y);
-                seg.geometry.attributes.position.needsUpdate = true;
-                seg.visible = true;
+            if (!showSegments) seg.visible = false; //hide all when toggled off, and skip positioning
+            else {
+                const markerIndexPair = segmentIndices[idx];
+                if (markerIndexPair == null) return;
+                const [startIdx, endIdx] = markerIndexPair;
+                const startPos = frameData.positions[startIdx];
+                const endPos = frameData.positions[endIdx];
+                if (startPos!==null && endPos!==null) {
+                    seg.geometry.attributes.position.setXYZ(0,-startPos.x,startPos.z,startPos.y); //Vicon coord conversion is -x,z,y
+                    seg.geometry.attributes.position.setXYZ(1,-endPos.x,endPos.z,endPos.y);
+                    seg.geometry.attributes.position.needsUpdate = true;
+                    seg.visible = true;
+                }
+                else seg.visible = false; //hide segments for frames that are missing its start or end point
             }
-            else seg.visible = false;
         });
-    }, [segments, segmentIndices, markerData, frame]);
+    }, [segments, segmentIndices, showSegments, markerData, frame]);
 
     /* Position axis helper relative to current camera position/rotation */
     useEffect(() => {
@@ -391,7 +395,7 @@ export default function RenderView(
     /* Only re-render the scene when its visual arrangement changes (new frame, file, camera orientation, or selections) */
     useEffect(() => {
         requestAnimationFrame(() => renderer.render(scene, camera));
-    }, [frame, markerData, forceData, selectedMarkers, renderer, scene,
+    }, [frame, markerData, forceData, selectedMarkers, showSegments, renderer, scene,
         camPosX, camPosY, camPosZ, camRotX, camRotY, camRotZ, camera, aspectRatio]);
 
     /* Add the rendering to the DOM element we will return */

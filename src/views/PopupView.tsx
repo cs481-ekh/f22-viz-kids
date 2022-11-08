@@ -7,11 +7,14 @@ interface Props {
     error: Error|null,
     menu: boolean,
     sdpInfo: boolean,
+
+    showSegments: boolean,
+    setShowSegments: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 export default function PopupView(
     {
-        error, menu, sdpInfo
+        error, menu, sdpInfo, showSegments, setShowSegments
     }: Props
 ) {
     const [controlsHelpImgNum, setControlsHelpImgNum] = useState(0);
@@ -37,6 +40,8 @@ export default function PopupView(
                     <dt>Controls Help</dt>
                     <dd onMouseOver={()=>setControlsHelpImgNum(0)}>camera</dd>
                     <dd onMouseOver={()=>setControlsHelpImgNum(1)}>selection</dd>
+                    <dt>Body Segments</dt>
+                    <dd><input type={"checkbox"} checked={showSegments} onChange={()=>setShowSegments(!showSegments)} /></dd>
                 </dl>
             </div>
         </div>

@@ -185,6 +185,9 @@ export default function App() {
 
     // ------------------------------------------------- Body Segments -------------------------------------------------
 
+    /* Flag for toggling body segment rendering */
+    const [showSegments, setShowSegments] = useState(true);
+
     /* Array of pairs of marker indices; each pair defines a body segment */
     const segmentIndices = useMemo<Array<[number,number]|null>>(() => {
         /* Once marker file data is loaded, map the labeled segments to their corresponding marker indices for the renderer to use */
@@ -230,9 +233,10 @@ export default function App() {
         {/* --------------------------------------------- Grid Row 2-3 --------------------------------------------- */}
         <RenderView frame={frame} markerData={markerFileData} forceData={forceFileData}
                     selectedMarkers={selectedMarkers} setSelectedMarkers={setSelectedMarkers}
-                    segmentIndices={segmentIndices}
+                    segmentIndices={segmentIndices} showSegments={showSegments}
         />
         <PopupView error={error} sdpInfo={sdpInfo} menu={menu}
+                   showSegments={showSegments} setShowSegments={setShowSegments}
         />
         <SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame}
         />
