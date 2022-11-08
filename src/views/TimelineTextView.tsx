@@ -39,7 +39,7 @@ export default function TimelineTextView(
             if (inputVal>frameRef.current)
                 setFrame(inputVal);
         }
-    }, [frameRef, frameStart, frameCropEnd]);
+    }, [frameRef, frameStart, frameCropEnd, setCropStart, setFrame]);
 
     /* Current cell (on change) */
     const seek = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +47,7 @@ export default function TimelineTextView(
         /* Setting current frame must be in crop range */
         if (frameCropStart<=inputVal && inputVal<=frameCropEnd)
             setFrame(inputVal);
-    }, [frameCropStart, frameCropEnd]);
+    }, [frameCropStart, frameCropEnd, setFrame]);
 
     /* End cell (on change) */
     const cropEnd = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +59,7 @@ export default function TimelineTextView(
             if (inputVal<frameRef.current)
                 setFrame(inputVal);
         }
-    }, [frameRef, frameCropStart, frameEnd]);
+    }, [frameRef, frameCropStart, frameEnd, setCropEnd, setFrame]);
 
     return <div id={"timeline-text-view"}>
         <table>

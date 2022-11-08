@@ -37,12 +37,12 @@ export default function TimelineTrackView(
         if (frameRef.current>=frameCropEnd) setFrame(frameCropStart);
         /* Invert current playing status */
         return !current;
-    }), [frameRef, frameCropStart, frameCropEnd]);
+    }), [frameRef, frameCropStart, frameCropEnd, setFrame, setPlaying]);
 
     /* Play button loop checkbox (on change) */
     const toggleLooping = useCallback(({target: {checked}}: ChangeEvent<HTMLInputElement>) => {
         setLoopPlayback(checked);
-    }, []);
+    }, [setLoopPlayback]);
 
     /* Timeline track thumb (on change) */
     const seek = useCallback(({target: {value}}: ChangeEvent<HTMLInputElement>) => {
@@ -56,14 +56,14 @@ export default function TimelineTrackView(
         /* ThumbVal is too high: increment frame until at crop end */
         else if (thumbVal>frameCropEnd && frameCropEnd>=frameRef.current+1)
             setFrame(frameRef.current+1);
-    }, [frameRef, frameCropStart, frameCropEnd]);
+    }, [frameRef, frameCropStart, frameCropEnd, setFrame]);
 
     /* Timeline track (on context menu) */
     const resetCrop = useCallback((e: MouseEvent<HTMLInputElement>) => {
         e.preventDefault();
         setCropStart(frameStart);
         setCropEnd(frameEnd);
-    }, [frameEnd]);
+    }, [frameEnd, frameStart, setCropEnd, setCropStart]);
 
     return <div id={"timeline-track-view"}>
         {/* ---------------------------------------------- Sub-Grid Row 1 ---------------------------------------------- */}
