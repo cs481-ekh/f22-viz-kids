@@ -1,41 +1,41 @@
 import * as React from "react";
-import { MarkerFileData } from "../dataTypes";
+import { ForceFileData, MarkerFileData } from "../dataTypes";
 import { computeAngle } from "../modules/Calculations";
 
 interface Props {
     markerData: MarkerFileData;
     selectedMarkers: number[];
     frame: number;
+    forceData: ForceFileData;
 }
 
 export default function SelectionInfoView(
     {
-        markerData, selectedMarkers, frame
+        markerData, selectedMarkers, forceData, frame
     }: Props
 ) {
-    if(selectedMarkers.length === 0)
-        return <div id={"selection-info-view"}><p>Nothing selected</p></div>;
-
     const signedValAsString = (n: number) => (n>=0 ? "+" : "") + n;
 
     const selectedMarkersMetadata = <>
         {
-            selectedMarkers.map(idx => {
-                const label = markerData.markers[idx].label;
-                const pos = markerData.frames[frame].positions[idx];
-                return <p key={idx}> {/* idx here is effectively an ID in the loaded data */}
-                    Label: {label}<br />
-                    {
-                        pos === null ?
-                            "Unknown position" :
-                            <>
-                                x: {signedValAsString(pos.x)}<br />
-                                y: {signedValAsString(pos.y)}<br />
-                                z: {signedValAsString(pos.z)}
-                            </>
-                    }
-                </p>;
-            })
+            selectedMarkers.length === 0 ?
+                <p>Nothing selected</p> :
+                selectedMarkers.map(idx => {
+                    const label = markerData.markers[idx].label;
+                    const pos = markerData.frames[frame].positions[idx];
+                    return <p key={idx}> {/* idx here is effectively an ID in the loaded data */}
+                        Label: {label}<br />
+                        {
+                            pos === null ?
+                                "Unknown position" :
+                                <>
+                                    x: {signedValAsString(pos.x)}<br />
+                                    y: {signedValAsString(pos.y)}<br />
+                                    z: {signedValAsString(pos.z)}
+                                </>
+                        }
+                    </p>;
+                })
         }
     </>;
 
@@ -51,9 +51,35 @@ export default function SelectionInfoView(
         else angleOutput = <p>Unknown angle (missing marker)</p>;
     }
     else angleOutput = <></>; //no output: not enough selected
+    /* Always display force metadata when a force file is loaded */
+    const forcesMetadata = <>
+        {
+            /* Forces, when present, are always at index 0 and 1 */
+            [0,1].map(idx => {
+                const force = forceData?.frames[frame]?.forces[idx];
+                return <p key={"f"+(idx+1)}>
+                    {
+                        force === undefined ?
+                            <></> :
+                            <>
+                                Force {idx+1}<br />
+                                px: {signedValAsString(force.position.x)}<br />
+                                py: {signedValAsString(force.position.y)}<br />
+                                pz: {signedValAsString(force.position.z)}<br />
+                                vx: {signedValAsString(force.components.x)}<br />
+                                vy: {signedValAsString(force.components.y)}<br />
+                                vz: {signedValAsString(force.components.z)}<br />
+                                torque: {signedValAsString(force.torque)}
+                            </>
+                    }
+                </p>;
+            })
+        }
+    </>;
 
     return <div id={"selection-info-view"}>
         {angleOutput}
         {selectedMarkersMetadata}
+        {forcesMetadata}
     </div>;
 }
