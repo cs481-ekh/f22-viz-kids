@@ -248,6 +248,12 @@ body {
                      color: $menuOptionHoverColor;
                   }
                }
+               li {
+                  list-style-type: none;
+                  font-weight: bold;
+                  color: $menuParentOptionColor;
+                  margin-top: 10px;
+               }
             }
          }
       } //#main-menu-popup
