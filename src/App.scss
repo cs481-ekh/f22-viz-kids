@@ -384,7 +384,21 @@ body {
          flex-direction: column; //options should stack vertically under play button
          font-size: 7pt; //all options inherit
          #rate-div {
-            //TODO <--------------------------------------------------------------------------------
+            color: white;
+            font-size: inherit;
+            #rate-input {
+               height: calc($row5Height/$numOptions);
+               width: 24px;
+               padding: 0;
+               background-color: transparent;
+               border: none;
+               color: inherit;
+               text-align: right;
+               -moz-appearance: textfield;
+               &::-webkit-inner-spin-button{
+                  -webkit-appearance: none;
+               }
+            }//TODO <--------------------------------------------------------------------------------
 
          }
          #loop-div {

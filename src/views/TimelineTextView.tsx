@@ -7,7 +7,6 @@ interface Props {
     frameStart: number,
     frame: number, setFrame: React.Dispatch<React.SetStateAction<number>>,
     frameEnd: number,
-
     frameCropStart: number, setCropStart: React.Dispatch<React.SetStateAction<number>>,
     frameCropEnd: number, setCropEnd: React.Dispatch<React.SetStateAction<number>>,
 
@@ -19,10 +18,8 @@ export default function TimelineTextView(
         frameStart,
         frame, setFrame,
         frameEnd,
-
         frameCropStart, setCropStart,
         frameCropEnd, setCropEnd,
-
         markerFileData,
     }: Props
 ) {
