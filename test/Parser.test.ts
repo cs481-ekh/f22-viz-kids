@@ -316,7 +316,10 @@ test('parse valid force data (frame 151, .mot format)', async () => {
                                 y: 556.103516,
                                 z: -26.744749
                             },
-                            torque: -0.803734
+                            torque: {
+                                x:  -0.803734,
+                                y: 0.00000,
+                                z: 0.00000
                         },
                         {
                             position: {
@@ -329,7 +332,10 @@ test('parse valid force data (frame 151, .mot format)', async () => {
                                 y: 22.52507,
                                 z: 0.041487
                             },
-                            torque: 0.360246
+                            torque: {
+                                x:  0.360246,
+                                y: 0.00000,
+                                z: NaN
                         }
                     ])
                 }
@@ -359,7 +365,10 @@ test('parse valid force data (frame 23)', async () => {
                                 y: 27.719698,
                                 z: 0.682527
                             },
-                            torque: 0.157576
+                            torque: {
+                                x:  0.157576,
+                                y: 0.00000,
+                                z: 0.00000
                         }
                     ])
                 }
