@@ -222,7 +222,7 @@ body {
                font-weight: bold;
             }
             #menu-options {
-               $descriptionTermWidth: 108px;
+               $descriptionTermWidth: 120px;
                border: solid 2px black;
                background-color: $menuOptionsBGColor;
                padding: 10px;
@@ -230,6 +230,7 @@ body {
                height: calc(100% - $titleHeight - 2*$popupPadding);
                * {
                   font-size: 10pt;
+                  margin-bottom: 5px;
                }
                dt { //description term, i.e., "Controls Help:", for menu options that need sub-options
                   float: left;
@@ -247,12 +248,6 @@ body {
                   &:hover {
                      color: $menuOptionHoverColor;
                   }
-               }
-               li {
-                  list-style-type: none;
-                  font-weight: bold;
-                  color: $menuParentOptionColor;
-                  margin-top: 10px;
                }
             }
          }
