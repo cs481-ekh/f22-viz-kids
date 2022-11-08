@@ -26,11 +26,12 @@ interface Props {
     forceData: ForceFileData;
     selectedMarkers: number[];
     setSelectedMarkers( replacementList: number[] | ((currentList: number[]) => number[]) ): void;
+    segmentIndices: Array<[number,number]|null>;
 }
 
 export default function RenderView(
     {
-        frame, markerData, forceData, selectedMarkers, setSelectedMarkers
+        frame, markerData, forceData, selectedMarkers, setSelectedMarkers, segmentIndices
     }: Props
 ) {
     const root = useRef<HTMLDivElement|null>(null);
@@ -112,6 +113,25 @@ export default function RenderView(
         vec2.visible = false;
         return [vec1, vec2];
     });
+
+    /* An array of un-positioned body segments */
+    const segments = useMemo(() => {
+        return segmentIndices.map(seg => {
+            const lineCoords = new Float32Array([
+                0.0, 0.0, 0.0, //xyz of start point
+                0.0, 0.0, 0.0, //xyz of end point
+            ]);
+            const sizeOfLineCoordsElem = 3; //each point in the line consists of 3 (grouped) coords
+            const geometry = new THREE.BufferGeometry();
+            const posAttribute = new THREE.BufferAttribute(lineCoords, sizeOfLineCoordsElem); //groups each set of xyz coords as a single index (vector)
+            geometry.setAttribute('position', posAttribute);
+            const material = new THREE.LineBasicMaterial({color: 0x001199, linewidth: 3});
+            const line = new THREE.Line(geometry, material);
+            line.frustumCulled = false; //prevent line from disappearing if one point is outside camera's view
+            line.visible = false;
+            return line;
+        });
+    }, [segmentIndices]);
 
     const [raycaster] = useState(() => new THREE.Raycaster());
 
@@ -205,6 +225,26 @@ export default function RenderView(
         })
     }, [forceVectors, forceData, frame]);
 
+    /* Position body segments for the current frame */
+    useEffect(() => {
+        const frameData = markerData.frames[frame];
+        if (!frameData) return;
+        segments.forEach((seg,idx) => {
+            const markerIndexPair = segmentIndices[idx];
+            if (markerIndexPair==null) return;
+            const [startIdx, endIdx] = markerIndexPair;
+            const startPos = frameData.positions[startIdx];
+            const endPos = frameData.positions[endIdx];
+            if (startPos!==null && endPos!==null) {
+                seg.geometry.attributes.position.setXYZ(0,-startPos.x,startPos.z,startPos.y); //Vicon coord conversion is -x,z,y
+                seg.geometry.attributes.position.setXYZ(1,-endPos.x,endPos.z,endPos.y);
+                seg.geometry.attributes.position.needsUpdate = true;
+                seg.visible = true;
+            }
+            else seg.visible = false;
+        });
+    }, [segments, segmentIndices, markerData, frame]);
+
     /* Position axis helper relative to current camera position/rotation */
     useEffect(() => {
         const camDirVec = new THREE.Vector3();
@@ -230,6 +270,12 @@ export default function RenderView(
         forceVectors.forEach(mesh => scene.add(mesh));
         return () => forceVectors.forEach(mesh => scene.remove(mesh)); //function for clearing the scene
     }, [scene, forceVectors]);
+
+    /* Add body segments to scene */
+    useEffect(() => {
+        segments.forEach(seg => scene.add(seg));
+        return () => segments.forEach(seg => scene.remove(seg));
+    }, [scene, segments]);
 
     /* Add ground grid to scene */
     useEffect(() => {

@@ -228,6 +228,7 @@ export default function App() {
         {/* --------------------------------------------- Grid Row 2-3 --------------------------------------------- */}
         <RenderView frame={frame} markerData={markerFileData} forceData={forceFileData}
                     selectedMarkers={selectedMarkers} setSelectedMarkers={setSelectedMarkers}
+                    segmentIndices={segmentIndices}
         />
         <PopupView error={error} sdpInfo={sdpInfo} menu={menu}
         />
