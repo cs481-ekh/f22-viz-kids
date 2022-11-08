@@ -231,18 +231,21 @@ export default function RenderView(
         const frameData = markerData.frames[frame];
         if (!frameData) return;
         segments.forEach((seg,idx) => {
-            const markerIndexPair = segmentIndices[idx];
-            if (markerIndexPair==null) return;
-            const [startIdx, endIdx] = markerIndexPair;
-            const startPos = frameData.positions[startIdx];
-            const endPos = frameData.positions[endIdx];
-            if (startPos!==null && endPos!==null) {
-                seg.geometry.attributes.position.setXYZ(0,-startPos.x,startPos.z,startPos.y); //Vicon coord conversion is -x,z,y
-                seg.geometry.attributes.position.setXYZ(1,-endPos.x,endPos.z,endPos.y);
-                seg.geometry.attributes.position.needsUpdate = true;
-                seg.visible = showSegments;
+            if (!showSegments) seg.visible = false; //hide all when toggled off, and skip positioning
+            else {
+                const markerIndexPair = segmentIndices[idx];
+                if (markerIndexPair == null) return;
+                const [startIdx, endIdx] = markerIndexPair;
+                const startPos = frameData.positions[startIdx];
+                const endPos = frameData.positions[endIdx];
+                if (startPos!==null && endPos!==null) {
+                    seg.geometry.attributes.position.setXYZ(0,-startPos.x,startPos.z,startPos.y); //Vicon coord conversion is -x,z,y
+                    seg.geometry.attributes.position.setXYZ(1,-endPos.x,endPos.z,endPos.y);
+                    seg.geometry.attributes.position.needsUpdate = true;
+                    seg.visible = true;
+                }
+                else seg.visible = false; //hide segments for frames that are missing its start or end point
             }
-            else seg.visible = false;
         });
     }, [segments, segmentIndices, showSegments, markerData, frame]);
 
