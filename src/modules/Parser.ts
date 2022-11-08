@@ -62,10 +62,10 @@ export async function parseForceFileData(file: File): Promise<ForceFileData> {
     const timesCol = 0;
     const force1CompCol = 1;
     const force1PosCol = 4;
-    const force1TrqCol = 14;
+    const force1TrqCol = 13;
     const force2CompCol = 7;
     const force2PosCol = 10;
-    const force2TrqCol = 17;
+    const force2TrqCol = 16;
 
     const tsvTable = await tsvToTable(file);
     if (tsvTable[4][0]==="ITEM") {
