@@ -101,7 +101,11 @@ export async function parseForceFileData(file: File): Promise<ForceFileData> {
                     y: parseFloat(tsvTable[row][compCol+1]),
                     z: parseFloat(tsvTable[row][compCol+2])
                 },
-                torque: parseFloat(tsvTable[row][trqCol])
+                torque: {
+                    x: parseFloat(tsvTable[row][trqCol]),
+                    y: parseFloat(tsvTable[row][trqCol+1]),
+                    z: parseFloat(tsvTable[row][trqCol+2])
+                }
             };
             const invalid = isNaN(force.position.x) || isNaN(force.position.y) || isNaN(force.position.z)
                             || (force.position.x===0 && force.position.y===0 && force.position.z===0);
