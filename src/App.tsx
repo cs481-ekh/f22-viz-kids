@@ -232,7 +232,7 @@ export default function App() {
         />
         <PopupView error={error} sdpInfo={sdpInfo} menu={menu}
         />
-        <SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame}
+        <SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame} forceData={forceFileData}
         />
         <img id={"sdp-logo"} src={sdpLogo} alt={"senior design project logo"} onClick={()=>setSdpInfo(!sdpInfo)}
         />
