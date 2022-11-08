@@ -69,7 +69,15 @@ export default function SelectionInfoView(
                                 vx: {signedValAsString(force.components.x)}<br />
                                 vy: {signedValAsString(force.components.y)}<br />
                                 vz: {signedValAsString(force.components.z)}<br />
-                                torque: {signedValAsString(force.torque)}
+                                { force.torque.x !== 0 && <>
+                                torque x: {signedValAsString(force.torque.x)}<br /> 
+                                </>}
+                                { force.torque.y !== 0 && <>
+                                torque y: {signedValAsString(force.torque.y)}<br /> 
+                                </>}
+                                { force.torque.z !== 0 && <>
+                                torque z: {signedValAsString(force.torque.z)}<br /> 
+                                </>}
                             </>
                     }
                 </p>;
