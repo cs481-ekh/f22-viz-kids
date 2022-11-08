@@ -28,7 +28,7 @@ export interface MarkerFileData {
 export interface Force {
     position: Point3D;   //px, py, pz
     components: Point3D; //vx, vy, vz
-    torque: number;
+    torque: Point3D;
 }
 
 export interface ForceFrame {
