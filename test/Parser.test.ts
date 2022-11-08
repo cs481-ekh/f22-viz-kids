@@ -320,6 +320,7 @@ test('parse valid force data (frame 151, .mot format)', async () => {
                                 x:  -0.803734,
                                 y: 0.00000,
                                 z: 0.00000
+                            }
                         },
                         {
                             position: {
@@ -336,6 +337,7 @@ test('parse valid force data (frame 151, .mot format)', async () => {
                                 x:  0.360246,
                                 y: 0.00000,
                                 z: NaN
+                            }
                         }
                     ])
                 }
@@ -369,6 +371,7 @@ test('parse valid force data (frame 23)', async () => {
                                 x:  0.157576,
                                 y: 0.00000,
                                 z: 0.00000
+                            }
                         }
                     ])
                 }
