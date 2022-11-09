@@ -96,7 +96,9 @@ export default function TimelineTrackView(
             </div>
         </div>
         <div id={"gait-suggestion-div"}>
-            {/* TODO: add buttons */}
+            <button style={{left:"0%"}} />
+            <button style={{left:"calc(50% - 2px)"}} />
+            <button style={{left:"calc(100% - 2px)"}} />
         </div>
     </div>;
 }
