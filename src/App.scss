@@ -399,8 +399,7 @@ body {
                &::-webkit-inner-spin-button{
                   -webkit-appearance: none;
                }
-            }//TODO <--------------------------------------------------------------------------------
-
+            }
          }
          #loop-div {
             color: $loopLabelColor;
@@ -426,7 +425,7 @@ body {
          button {
             position: absolute;
             padding: 0;
-            width: 10px;
+            width: 4px;
             height: 12px;
             background-color:#cccccc;
             border: none;

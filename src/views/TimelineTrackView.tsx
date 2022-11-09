@@ -15,6 +15,8 @@ interface Props {
 
     playing: boolean, setPlaying: React.Dispatch<React.SetStateAction<boolean>>,
     loopPlayback: boolean, setLoopPlayback: React.Dispatch<React.SetStateAction<boolean>>,
+
+    gaitEventSuggestions: number[],
 }
 
 export default function TimelineTrackView(
@@ -30,6 +32,8 @@ export default function TimelineTrackView(
         
         playing, setPlaying,
         loopPlayback, setLoopPlayback,
+
+        gaitEventSuggestions,
     }: Props
 ) {
     /* Current frame reference for use in dependency arrays where we don't want to trigger on every frame change */
@@ -61,6 +65,28 @@ export default function TimelineTrackView(
         else if (thumbVal>frameCropEnd && frameCropEnd>=frameRef.current+1)
             setFrame(frameRef.current+1);
     }, [frameRef, frameCropStart, frameCropEnd, setFrame]);
+
+    /* Gait event button (on click) */
+    const cropStart = useCallback((eventFrame: number) => {
+        /* Setting new crop start is constrained by crop end (and start of data) */
+        if (frameStart<=eventFrame && eventFrame<frameCropEnd) {
+            setCropStart(eventFrame);
+            /* Advance current frame to be in new crop range if needed */
+            if (eventFrame>frameRef.current)
+                setFrame(eventFrame);
+        }
+    }, [frameStart, frameCropEnd, setCropStart, setFrame, frameRef]);
+
+    /* Gait event button (on context menu) */
+    const cropEnd = useCallback((eventFrame: number) => {
+        /* Setting new crop end is constrained by crop start (and end of data) */
+        if (frameCropStart<eventFrame && eventFrame<=frameEnd) {
+            setCropEnd(eventFrame);
+            /* Rewind current frame to be in new crop range if needed */
+            if (eventFrame<frameRef.current)
+                setFrame(eventFrame);
+        }
+    }, [frameCropStart, frameEnd, setCropEnd, setFrame, frameRef]);
 
     /* Timeline track (on context menu) */
     const resetCrop = useCallback((e: MouseEvent<HTMLInputElement>) => {
@@ -96,9 +122,16 @@ export default function TimelineTrackView(
             </div>
         </div>
         <div id={"gait-suggestion-div"}>
-            <button style={{left:"0%"}} />
-            <button style={{left:"calc(50% - 2px)"}} />
-            <button style={{left:"calc(100% - 2px)"}} />
+            {
+                gaitEventSuggestions.map(eventFrame => {
+                    const percentageOfPlayLength = (eventFrame/frameEnd) * 100;
+                    const buttonWidth = 4;
+                    return <button style={{left: `calc(${percentageOfPlayLength}% - ${buttonWidth/2}px)`}}
+                                   onClick={() => cropStart(eventFrame)}
+                                   onContextMenu={e => {e.preventDefault(); cropEnd(eventFrame);}}
+                    />
+                })
+            }
         </div>
     </div>;
 }
