@@ -249,6 +249,7 @@ export default function App() {
                            setPlaying={setPlaying} setLoopPlayback={setLoopPlayback}
                            setFrame={setFrame} setCropStart={setCropStart} setCropEnd={setCropEnd}
                            frameSpeed={frameSpeed} setFrameSpeed={setFrameSpeed}
+                           gaitEventSuggestions={gaitEventSuggestions}
         />
         <TimelineTextView frameStart={frameStart} frame={frame} frameEnd={frameEnd}
                           frameCropStart={frameCropStart} frameCropEnd={frameCropEnd} markerFileData={markerFileData}
