@@ -404,7 +404,7 @@ body {
          grid-row: 2; //timeline sub-grid
          grid-column: 2; //timeline sub-grid
          position: relative;
-         width: calc(100% - 12px);  //minus timeline track border and width of timeline thumb
+         width: calc(100% - 6px);  //minus timeline track border and width of timeline thumb
          left: 3px; //center under timeline
          display: flex;
          align-items: center;
