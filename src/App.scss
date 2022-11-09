@@ -403,8 +403,24 @@ body {
       #gait-suggestion-div {
          grid-row: 2; //timeline sub-grid
          grid-column: 2; //timeline sub-grid
-         //TODO <-----------------------------------------------------------------------------------
-
+         position: relative;
+         width: calc(100% - 12px);  //minus timeline track border and width of timeline thumb
+         left: 3px; //center under timeline
+         display: flex;
+         align-items: center;
+         button {
+            position: absolute;
+            padding: 0;
+            width: 10px;
+            height: 12px;
+            background-color:#cccccc;
+            border: none;
+            border-radius: 2px;
+            &:hover {
+               cursor: pointer;
+               filter: brightness(120%);
+            }
+         }
       } //#gait-suggestion-div
 
    } //#timeline-track-view
