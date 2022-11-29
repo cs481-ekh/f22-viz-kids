@@ -231,7 +231,7 @@ export default function App() {
 
         const a = document.createElement("a");
         a.href = url;
-        a.download = "";
+        a.download = "angles.tsv";
         a.click();
     }, [markerFileData, frameCropStart, frameCropEnd, selectedMarkers]);
 
