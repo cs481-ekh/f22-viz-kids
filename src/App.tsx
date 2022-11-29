@@ -216,7 +216,15 @@ export default function App() {
     const [sdpInfo, setSdpInfo] = useState(false);
 
     const exportAngles = useCallback(() => {
-        const content = getAngleExportContent(markerFileData, frameCropStart, frameCropEnd, selectedMarkers);
+        let content;
+        try {
+            content = getAngleExportContent(markerFileData, frameCropStart, frameCropEnd, selectedMarkers);
+        }
+        catch(ex) {
+            console.error(ex);
+            alert(ex);
+            return;
+        }
 
         const contentBlob = new Blob([content], {type: "text/tab-separated-values"});
         const url = URL.createObjectURL(contentBlob);
