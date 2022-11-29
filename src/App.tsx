@@ -216,15 +216,15 @@ export default function App() {
     const [sdpInfo, setSdpInfo] = useState(false);
 
     const exportAngles = useCallback(() => {
-      const content = getAngleExportContent(markerFileData, frameCropStart, frameCropEnd, selectedMarkers);
+        const content = getAngleExportContent(markerFileData, frameCropStart, frameCropEnd, selectedMarkers);
 
-      const contentBlob = new Blob([content], {type: "text/tab-separated-values"});
-      const url = URL.createObjectURL(contentBlob);
+        const contentBlob = new Blob([content], {type: "text/tab-separated-values"});
+        const url = URL.createObjectURL(contentBlob);
 
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "";
-      a.click();
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "";
+        a.click();
     }, [markerFileData, frameCropStart, frameCropEnd, selectedMarkers]);
 
     // ---------------------------------------------------- App JSX ----------------------------------------------------
