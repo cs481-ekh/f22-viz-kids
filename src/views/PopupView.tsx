@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as cameraControlsImg from "../../assets/images/camera-controls.png";
 import * as selectionControlsImg from "../../assets/images/selection-controls.png";
+import * as timelineControlsImg from "../../assets/images/timeline-controls.png";
 import {useState} from "react";
 
 interface Props {
@@ -33,6 +34,9 @@ export default function PopupView(
                 <img src={selectionControlsImg} alt={"selection controls help image"}
                      style={controlsHelpImgNum===1 ? {display: "block"} : {display: "none"}}
                 />
+                <img src={timelineControlsImg} alt={"timeline controls help image"}
+                     style={controlsHelpImgNum===2 ? {display: "block"} : {display: "none"}}
+                />
             </div>
             <div id={"menu-dropdown-container"}>
                 <div id={"menu-title"}>Main Menu</div>
@@ -40,6 +44,7 @@ export default function PopupView(
                     <dt>Controls Help</dt>
                     <dd onMouseOver={()=>setControlsHelpImgNum(0)}>camera</dd>
                     <dd onMouseOver={()=>setControlsHelpImgNum(1)}>selection</dd>
+                    <dd onMouseOver={()=>setControlsHelpImgNum(2)}>timeline</dd>
                     <dt>Body Segments</dt>
                     <dd><input type={"checkbox"} checked={showSegments} onChange={()=>setShowSegments(!showSegments)} /></dd>
                 </dl>
