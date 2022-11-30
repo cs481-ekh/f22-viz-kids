@@ -207,10 +207,25 @@ body {
          #menu-image-container {
             display: flex;
             align-items: center;
+            justify-content: center;
             overflow-y: auto;
             width: 100%; //maintain width even when no image is displayed
             img {
-               width: 100%;
+               max-width: 100%;
+               max-height: 100%;
+            }
+            div {
+               font-size: 13pt;
+               color: $menuParentOptionColor;
+               height: 100%;
+               ul {
+                  color: black;
+                  max-width: 100ch;
+                  padding-left: 10px;
+                  li {
+                     font-family: 'monospace','sans-serif';
+                  }
+               }
             }
          }
          #menu-dropdown-container {
