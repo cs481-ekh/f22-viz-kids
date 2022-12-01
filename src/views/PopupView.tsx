@@ -45,7 +45,7 @@ export default function PopupView(
                     <dt>Body Segments</dt>
                     <dd><input type={"checkbox"} checked={showSegments} onChange={()=>setShowSegments(!showSegments)} /></dd>
                     <dt>Export</dt>
-                    <dd onClick={exportAngles}>angles</dd>
+                    <dd><button onClick={exportAngles}>angles</button></dd>
                 </dl>
             </div>
         </div>
