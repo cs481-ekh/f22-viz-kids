@@ -103,8 +103,9 @@ export default function PopupView(
                     <dt>Controls Help</dt>
                     <dd onMouseOver={()=>setControlsHelpImgNum(0)}>camera</dd>
                     <dd onMouseOver={()=>setControlsHelpImgNum(1)}>selection</dd>
-                    <dd onMouseOver={()=>setControlsHelpImgNum(3)}>more</dd>
                     <dd onMouseOver={()=>setControlsHelpImgNum(2)}>timeline</dd>
+                    <dd onMouseOver={()=>setControlsHelpImgNum(3)}>more</dd>
+                    
                     <dt>Body Segments</dt>
                     <dd><input type={"checkbox"} checked={showSegments} onChange={()=>setShowSegments(!showSegments)} /></dd>
                 </dl>
