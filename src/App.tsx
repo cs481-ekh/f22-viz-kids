@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useFilePicker } from "use-file-picker";
 
 import { computeSuggestedGaitEvents } from "./modules/Calculations";
+import { getAngleExportContent } from "./modules/Export";
 import { parseForceFileData, parseMarkerFileData } from "./modules/Parser";
 
 import FileUploadView from "./views/FileUploadView";
@@ -214,6 +215,26 @@ export default function App() {
     const [menu, setMenu] = useState(false);
     const [sdpInfo, setSdpInfo] = useState(false);
 
+    const exportAngles = useCallback(() => {
+        let content;
+        try {
+            content = getAngleExportContent(markerFileData, frameCropStart, frameCropEnd, selectedMarkers);
+        }
+        catch(ex) {
+            console.error(ex);
+            alert(ex);
+            return;
+        }
+
+        const contentBlob = new Blob([content], {type: "text/tab-separated-values"});
+        const url = URL.createObjectURL(contentBlob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "angles.tsv";
+        a.click();
+    }, [markerFileData, frameCropStart, frameCropEnd, selectedMarkers]);
+
     // ---------------------------------------------------- App JSX ----------------------------------------------------
 
     /* Elements/components in the grid are organized top->bottom, left->right */
@@ -237,6 +258,7 @@ export default function App() {
         />
         <PopupView error={error} sdpInfo={sdpInfo} menu={menu}
                    showSegments={showSegments} setShowSegments={setShowSegments}
+                   exportAngles={exportAngles}
         />
         <SelectionInfoView markerData={markerFileData} selectedMarkers={selectedMarkers} frame={frame} forceData={forceFileData}
         />

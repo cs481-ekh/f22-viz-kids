@@ -11,11 +11,13 @@ interface Props {
 
     showSegments: boolean,
     setShowSegments: React.Dispatch<React.SetStateAction<boolean>>,
+
+    exportAngles(): void;
 }
 
 export default function PopupView(
     {
-        error, menu, sdpInfo, showSegments, setShowSegments
+        error, menu, sdpInfo, showSegments, setShowSegments, exportAngles
     }: Props
 ) {
     const [controlsHelpImgNum, setControlsHelpImgNum] = useState(0);
@@ -108,6 +110,8 @@ export default function PopupView(
                     
                     <dt>Body Segments</dt>
                     <dd><input type={"checkbox"} checked={showSegments} onChange={()=>setShowSegments(!showSegments)} /></dd>
+                    <dt>Export</dt>
+                    <dd><button onClick={exportAngles}>angles</button></dd>
                 </dl>
             </div>
         </div>
