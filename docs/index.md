@@ -11,7 +11,7 @@
 <!-- Project statement: ~200 words; descriptive enough for outsider to understand (employers & future contributors) -->
 
 Movilo is a web app we built for Boise State University's
-[Center For Othopaedic & Biomechanics Research Lab](https://www.boisestate.edu/cobr/)
+[Center For Orthopaedic & Biomechanics Research Lab](https://www.boisestate.edu/cobr/)
 that takes motion capture data in the form of a CSV/TSV file and displays it in a 3D environment. It is displayed as a
 dot cloud with connected body segments that resemble the human body. There are many software programs similar to Movilo
 such as Vicon Nexus, however they are very difficult for the average person to use. Movilo on the other hand can be
