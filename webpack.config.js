@@ -30,6 +30,13 @@ module.exports = {
 			{
 				test: /\.(png|jpe?g)$/i,
 				type: "asset/resource"
+			},
+			{
+				test: /\.tsv$/i,
+				type: "asset/resource",
+				generator: {
+					filename: "[name].[hash].[ext]",
+				}
 			}
 		]
 	}

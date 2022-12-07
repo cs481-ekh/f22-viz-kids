@@ -2,6 +2,8 @@ import * as React from "react";
 import * as cameraControlsImg from "../../assets/images/camera-controls.png";
 import * as selectionControlsImg from "../../assets/images/selection-controls.png";
 import * as timelineControlsImg from "../../assets/images/timeline-controls.png";
+import * as sampleDataMarkers from "../../assets/sampleData/Trial001_Markers.tsv";
+import * as sampleDataForces from "../../assets/sampleData/Trial001_Forces.tsv";
 import {useState} from "react";
 
 interface Props {
@@ -112,6 +114,9 @@ export default function PopupView(
                     <dd><input type={"checkbox"} checked={showSegments} onChange={()=>setShowSegments(!showSegments)} /></dd>
                     <dt>Export</dt>
                     <dd><button onClick={exportAngles}>angles</button></dd>
+					<dt>Sample Data</dt>
+					<dd><a href={sampleDataMarkers}>Markers</a></dd>
+					<dd><a href={sampleDataForces}>Forces</a></dd>
                 </dl>
             </div>
         </div>
