@@ -114,9 +114,9 @@ export default function PopupView(
                     <dd><input type={"checkbox"} checked={showSegments} onChange={()=>setShowSegments(!showSegments)} /></dd>
                     <dt>Export</dt>
                     <dd><button onClick={exportAngles}>angles</button></dd>
-					<dt>Sample Data</dt>
-					<dd><a href={sampleDataMarkers}>Markers</a></dd>
-					<dd><a href={sampleDataForces}>Forces</a></dd>
+                    <dt>Sample Data</dt>
+                    <dd><a href={sampleDataMarkers}>Markers</a></dd>
+                    <dd><a href={sampleDataForces}>Forces</a></dd>
                 </dl>
             </div>
         </div>
